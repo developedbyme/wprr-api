@@ -19,6 +19,17 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.2.2
+* Added permalink to posts
+* Added terms to post
+
+### 0.2.1
+* Moved template selection parameters to own object
+* Made query and queried object private to be used for debug only
+
+### 0.2.0
+* Added posts
+
 ### 0.1.1
 * Added readme.
 * Added query to response.

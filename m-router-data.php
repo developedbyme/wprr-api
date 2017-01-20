@@ -3,7 +3,7 @@
 	Plugin Name: mRouter data
 	Plugin URI: http://oddalice.se
 	Description: Providing data for the mRouter
-	Version: 0.2.2
+	Version: 0.2.3
 	Author: Odd alice
 	Author URI: http://oddalice.se
 	*/
@@ -13,7 +13,7 @@
 	define("M_ROUTER_DATA_MAIN_FILE", __FILE__);
 	define("M_ROUTER_DATA_DIR", untrailingslashit( dirname( __FILE__ )  ) );
 	define("M_ROUTER_DATA_URL", untrailingslashit( plugins_url('',  __FILE__ )  ) );
-	define("M_ROUTER_DATA_VERSION", '0.2.2');
+	define("M_ROUTER_DATA_VERSION", '0.2.3');
 	
 	function m_router_data_template_redirect() {
 		if(isset($_GET['mRouterData']) && $_GET['mRouterData'] === 'json') {
@@ -28,8 +28,10 @@
 			
 			$data['m_router'] = array('version' => M_ROUTER_DATA_VERSION);
 			
+			$queried_object = get_queried_object();
+			
 			if($debug) {
-				$data['_queried_object'] = get_queried_object();
+				$data['_queried_object'] = $queried_object;
 				$data['_query'] = $wp_query;
 			}
 			
@@ -40,9 +42,12 @@
 				
 				$current_post_data = array();
 				
+				$post = get_post();
 				$post_id = get_the_ID();
 				
-				$current_post_data["ID"] = $post_id;
+				$current_post_data["id"] = $post_id;
+				$current_post_data["type"] = $post->post_type;
+				$current_post_data["status"] = $post->post_status;
 				$current_post_data["permalink"] = get_permalink();
 				$current_post_data["title"] = get_the_title();
 				$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt());
@@ -65,6 +70,13 @@
 			
 			foreach($template_selection_parameters as $template_selection_parameter) {
 				$template_selection[$template_selection_parameter] = $wp_query->$template_selection_parameter;
+			}
+			
+			if(is_singular()) {
+				$template_selection['post_type'] = $queried_object->post_type;
+			}
+			else {
+				$template_selection['post_type'] = null;
 			}
 			
 			$data['templateSelection'] = $template_selection;

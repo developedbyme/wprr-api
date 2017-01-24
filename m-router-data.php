@@ -3,7 +3,7 @@
 	Plugin Name: mRouter data
 	Plugin URI: http://oddalice.se
 	Description: Providing data for the mRouter
-	Version: 0.2.3
+	Version: 0.2.4
 	Author: Odd alice
 	Author URI: http://oddalice.se
 	*/
@@ -13,7 +13,7 @@
 	define("M_ROUTER_DATA_MAIN_FILE", __FILE__);
 	define("M_ROUTER_DATA_DIR", untrailingslashit( dirname( __FILE__ )  ) );
 	define("M_ROUTER_DATA_URL", untrailingslashit( plugins_url('',  __FILE__ )  ) );
-	define("M_ROUTER_DATA_VERSION", '0.2.3');
+	define("M_ROUTER_DATA_VERSION", '0.2.4');
 	
 	function m_router_data_template_redirect() {
 		if(isset($_GET['mRouterData']) && $_GET['mRouterData'] === 'json') {
@@ -49,6 +49,8 @@
 				$current_post_data["type"] = $post->post_type;
 				$current_post_data["status"] = $post->post_status;
 				$current_post_data["permalink"] = get_permalink();
+				$current_post_data["publishedDate"] = $post->post_date;
+				$current_post_data["modifiedDate"] = $post->post_modified;
 				$current_post_data["title"] = get_the_title();
 				$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt());
 				$current_post_data["content"] = apply_filters('the_content', get_the_content());

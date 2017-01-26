@@ -2,6 +2,9 @@
 	namespace MRouterData;
 	
 	use \WP_Query;
+	use \WP_Term;
+	use \WP_Post;
+	use \WP_User;
 	
 	// \MRouterData\RedirectHooks
 	class RedirectHooks {
@@ -28,7 +31,7 @@
 			
 			if(isset($_GET['mRouterData']) && $_GET['mRouterData'] === 'json') {
 			
-				$debug = true;
+				$debug = false;
 			
 				global $wp_query;
 			
@@ -46,9 +49,30 @@
 					$data['data']['_queried_object'] = $queried_object;
 					$data['data']['_query'] = $wp_query;
 				}
-			
+				
+				if($queried_object instanceof \WP_Post) {
+					$data['data']['type'] = 'post';
+					$data['data']['queriedData'] = null;
+				}
+				else if($queried_object instanceof \WP_Term) {
+					$data['data']['type'] = 'term';
+					$data['data']['queriedData'] = $this->_encode_term($queried_object);
+				}
+				else if($queried_object instanceof \WP_User) {
+					$data['data']['type'] = 'user';
+					$data['data']['queriedData'] = $this->_encode_user($queried_object);
+				}
+				else if($queried_object === null) {
+					$data['data']['type'] = 'none';
+					$data['data']['queriedData'] = null;
+				}
+				else {
+					$data['data']['type'] = 'unknown';
+					$data['data']['queriedData'] = null;
+				}
+				
 				$posts = array();
-			
+				
 				while(have_posts()) {
 					the_post();
 					
@@ -63,12 +87,8 @@
 					$template_selection[$template_selection_parameter] = $wp_query->$template_selection_parameter;
 				}
 			
-				if(is_singular()) {
-					$template_selection['post_type'] = $queried_object->post_type;
-				}
-				else {
-					$template_selection['post_type'] = null;
-				}
+				$template_selection['post_type'] = (is_singular()) ? $queried_object->post_type : null;
+				$template_selection['taxonomy'] = ($queried_object instanceof \WP_Term) ? $queried_object->taxonomy : null;
 			
 				$data['data']['templateSelection'] = $template_selection;
 			
@@ -96,6 +116,11 @@
 			$current_post_data["title"] = get_the_title($post_id);
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt($post_id));
 			$current_post_data["content"] = apply_filters('the_content', get_the_content($post_id));
+			
+			$author_id = get_the_author_meta('ID');
+			$author = get_user_by('ID', $author_id);
+			$current_post_data["author"] = $this->_encode_user($author);
+			
 			$current_post_data["meta"] = get_post_meta($post_id);
 			
 			//METODO: add acf fields
@@ -125,6 +150,17 @@
 			$return_object['link'] = get_term_link($term);
 			$return_object['name'] = $term->name;
 			$return_object['description'] = $term->description;
+			
+			return $return_object;
+		}
+		
+		protected function _encode_user($user) {
+			
+			$return_object = array();
+			
+			$return_object['id'] = $user->ID;
+			$return_object['link'] = get_author_posts_url($user->ID);
+			$return_object['name'] = $user->display_name;
 			
 			return $return_object;
 		}

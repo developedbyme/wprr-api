@@ -19,6 +19,12 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.6.0
+* Added queried data to response
+* Added encoding of users
+* Added encoding of terms
+* Added base classes for react areas
+
 ### 0.5.1
 * Moved encoding of post to separate function
 

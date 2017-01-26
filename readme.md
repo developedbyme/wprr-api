@@ -19,6 +19,12 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.5.0
+* Added webpack for notices and react areas in admin
+
+### 0.4.0
+* Changed structure to use odd core
+
 ### 0.3.0
 * Changed format to have a main data field and a main metadata field
 

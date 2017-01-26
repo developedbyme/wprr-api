@@ -119,7 +119,7 @@
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt($post_id));
 			$current_post_data["content"] = apply_filters('the_content', get_the_content($post_id));
 			
-			$author_id = get_the_author_meta('ID', $post_id);
+			$author_id = $post->post_author;
 			$author = get_user_by('ID', $author_id);
 			$current_post_data["author"] = $this->_encode_user($author);
 			

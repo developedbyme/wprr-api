@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.6.2
+* Fixed problems with getting authors
+
 ### 0.6.1
 * Added additional checks for front page
 

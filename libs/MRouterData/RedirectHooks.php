@@ -97,15 +97,36 @@
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt($post_id));
 			$current_post_data["content"] = apply_filters('the_content', get_the_content($post_id));
 			$current_post_data["meta"] = get_post_meta($post_id);
+			
+			//METODO: add acf fields
 		
 			$taxonomies = array_keys(get_the_taxonomies($post_id));
 			$term_data_array = array();
 			foreach($taxonomies as $taxonomy) {
-				$term_data_array[$taxonomy] = get_the_terms($post_id, $taxonomy);
+				
+				$current_taxonomy_data = array();
+				$terms = get_the_terms($post_id, $taxonomy);
+				foreach($terms as $term) {
+					$current_taxonomy_data[] = $this->_encode_term($term);
+				}
+				
+				$term_data_array[$taxonomy] = $current_taxonomy_data;
 			}
 			$current_post_data["terms"] = $term_data_array;
 		
 			return $current_post_data;
+		}
+		
+		protected function _encode_term($term) {
+			
+			$return_object = array();
+			
+			$return_object['id'] = $term->term_id;
+			$return_object['link'] = get_term_link($term);
+			$return_object['name'] = $term->name;
+			$return_object['description'] = $term->description;
+			
+			return $return_object;
 		}
 		
 		public static function test_import() {

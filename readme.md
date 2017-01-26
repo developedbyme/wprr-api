@@ -19,6 +19,10 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.7.0
+* Added post thumbnails to output
+* Changed all link attributes to permalink
+
 ### 0.6.2
 * Fixed problems with getting authors
 

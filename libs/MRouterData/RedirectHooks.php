@@ -119,6 +119,35 @@
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt($post_id));
 			$current_post_data["content"] = apply_filters('the_content', get_the_content($post_id));
 			
+			$media_post_id = get_post_thumbnail_id($post_id);
+			if($media_post_id) {
+				$media_post = get_post($media_post_id);
+				$media_meta = get_post_meta($media_post_id, '_wp_attachment_metadata', true);
+				$sizes = $media_meta['sizes'];
+				
+				$image_data = array();
+				
+				$image_data['id'] = $media_post_id;
+				$image_data['title'] = get_the_title($media_post_id);
+				$image_data['permalink'] = get_permalink($media_post_id);
+				
+				
+				$image_size_data = array();
+				foreach($sizes as $size_name => $size_data) {
+					$image_url_and_size = wp_get_attachment_image_src($media_post_id, $size_name);
+					$image_size_data[$size_name] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
+				}
+				$image_url_and_size = wp_get_attachment_image_src($media_post_id, 'full');
+				$image_size_data['full'] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
+				
+				$image_data["sizes"] = $image_size_data;
+				
+				$current_post_data["image"] = $image_data;
+			}
+			else {
+				$current_post_data["image"] = null;
+			}
+			
 			$author_id = $post->post_author;
 			$author = get_user_by('ID', $author_id);
 			$current_post_data["author"] = $this->_encode_user($author);
@@ -149,9 +178,11 @@
 			$return_object = array();
 			
 			$return_object['id'] = $term->term_id;
-			$return_object['link'] = get_term_link($term);
+			$return_object['permalink'] = get_term_link($term);
 			$return_object['name'] = $term->name;
 			$return_object['description'] = $term->description;
+			$return_object['taxonomy'] = $term->taxonomy;
+			//METODO: add taxonomy name
 			
 			return $return_object;
 		}
@@ -165,7 +196,7 @@
 			$return_object = array();
 			
 			$return_object['id'] = $user->ID;
-			$return_object['link'] = get_author_posts_url($user->ID);
+			$return_object['permalink'] = get_author_posts_url($user->ID);
 			$return_object['name'] = $user->display_name;
 			
 			return $return_object;

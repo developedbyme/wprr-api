@@ -51,31 +51,8 @@
 			
 				while(have_posts()) {
 					the_post();
-				
-					$current_post_data = array();
-				
-					$post = get_post();
-					$post_id = get_the_ID();
-				
-					$current_post_data["id"] = $post_id;
-					$current_post_data["type"] = $post->post_type;
-					$current_post_data["status"] = $post->post_status;
-					$current_post_data["permalink"] = get_permalink();
-					$current_post_data["publishedDate"] = $post->post_date;
-					$current_post_data["modifiedDate"] = $post->post_modified;
-					$current_post_data["title"] = get_the_title();
-					$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt());
-					$current_post_data["content"] = apply_filters('the_content', get_the_content());
-					$current_post_data["meta"] = get_post_meta($post_id);
-				
-					$taxonomies = array_keys(get_the_taxonomies($post_id));
-					$term_data_array = array();
-					foreach($taxonomies as $taxonomy) {
-						$term_data_array[$taxonomy] = get_the_terms($post_id, $taxonomy);
-					}
-					$current_post_data["terms"] = $term_data_array;
-				
-					$posts[] = $current_post_data;
+					
+					$posts[] = $this->_encode_post(get_the_ID());
 				}
 			
 				$data['data']['posts'] = $posts;
@@ -101,6 +78,34 @@
 			
 				exit();
 			}
+		}
+		
+		protected function _encode_post($post) {
+			
+			$current_post_data = array();
+			
+			$post = get_post();
+			$post_id = $post->ID;
+		
+			$current_post_data["id"] = $post_id;
+			$current_post_data["type"] = $post->post_type;
+			$current_post_data["status"] = $post->post_status;
+			$current_post_data["permalink"] = get_permalink($post_id);
+			$current_post_data["publishedDate"] = $post->post_date;
+			$current_post_data["modifiedDate"] = $post->post_modified;
+			$current_post_data["title"] = get_the_title($post_id);
+			$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt($post_id));
+			$current_post_data["content"] = apply_filters('the_content', get_the_content($post_id));
+			$current_post_data["meta"] = get_post_meta($post_id);
+		
+			$taxonomies = array_keys(get_the_taxonomies($post_id));
+			$term_data_array = array();
+			foreach($taxonomies as $taxonomy) {
+				$term_data_array[$taxonomy] = get_the_terms($post_id, $taxonomy);
+			}
+			$current_post_data["terms"] = $term_data_array;
+		
+			return $current_post_data;
 		}
 		
 		public static function test_import() {

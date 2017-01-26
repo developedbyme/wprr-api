@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.5.1
+* Moved encoding of post to separate function
+
 ### 0.5.0
 * Added webpack for notices and react areas in admin
 

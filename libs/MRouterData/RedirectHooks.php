@@ -52,7 +52,7 @@
 				
 				if($queried_object instanceof \WP_Post) {
 					$data['data']['type'] = 'post';
-					$data['data']['queriedData'] = null;
+					$data['data']['queriedData'] = $this->_encode_post($queried_object);
 				}
 				else if($queried_object instanceof \WP_Term) {
 					$data['data']['type'] = 'term';
@@ -86,8 +86,10 @@
 				foreach($template_selection_parameters as $template_selection_parameter) {
 					$template_selection[$template_selection_parameter] = $wp_query->$template_selection_parameter;
 				}
+				
+				$template_selection['is_front_page'] = is_front_page();
 			
-				$template_selection['post_type'] = (is_singular()) ? $queried_object->post_type : null;
+				$template_selection['post_type'] = ($queried_object instanceof \WP_Post) ? $queried_object->post_type : null;
 				$template_selection['taxonomy'] = ($queried_object instanceof \WP_Term) ? $queried_object->taxonomy : null;
 			
 				$data['data']['templateSelection'] = $template_selection;
@@ -117,7 +119,7 @@
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt($post_id));
 			$current_post_data["content"] = apply_filters('the_content', get_the_content($post_id));
 			
-			$author_id = get_the_author_meta('ID');
+			$author_id = get_the_author_meta('ID', $post_id);
 			$author = get_user_by('ID', $author_id);
 			$current_post_data["author"] = $this->_encode_user($author);
 			
@@ -155,6 +157,10 @@
 		}
 		
 		protected function _encode_user($user) {
+			
+			if(!$user) {
+				return null;
+			}
 			
 			$return_object = array();
 			

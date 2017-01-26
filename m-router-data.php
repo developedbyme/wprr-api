@@ -3,7 +3,7 @@
 	Plugin Name: mRouter data
 	Plugin URI: http://oddalice.se
 	Description: Providing data for the mRouter
-	Version: 0.2.4
+	Version: 0.3.0
 	Author: Odd alice
 	Author URI: http://oddalice.se
 	*/
@@ -13,7 +13,7 @@
 	define("M_ROUTER_DATA_MAIN_FILE", __FILE__);
 	define("M_ROUTER_DATA_DIR", untrailingslashit( dirname( __FILE__ )  ) );
 	define("M_ROUTER_DATA_URL", untrailingslashit( plugins_url('',  __FILE__ )  ) );
-	define("M_ROUTER_DATA_VERSION", '0.2.4');
+	define("M_ROUTER_DATA_VERSION", '0.3.0');
 	
 	function m_router_data_template_redirect() {
 		if(isset($_GET['mRouterData']) && $_GET['mRouterData'] === 'json') {
@@ -25,14 +25,16 @@
 			$template_selection_parameters = array("is_single", "is_preview", "is_page", "is_archive", "is_date", "is_year", "is_month", "is_day", "is_time", "is_author", "is_category", "is_tag", "is_tax", "is_search", "is_feed", "is_comment_feed", "is_trackback", "is_home", "is_404", "is_embed", "is_paged", "is_admin", "is_attachment", "is_singular", "is_robots", "is_posts_page", "is_post_type_archive");
 			
 			$data = array();
+			$data['metadata'] = array();
+			$data['data'] = array();
 			
-			$data['m_router'] = array('version' => M_ROUTER_DATA_VERSION);
+			$data['metadata']['mRouter'] = array('version' => M_ROUTER_DATA_VERSION);
 			
 			$queried_object = get_queried_object();
 			
 			if($debug) {
-				$data['_queried_object'] = $queried_object;
-				$data['_query'] = $wp_query;
+				$data['data']['_queried_object'] = $queried_object;
+				$data['data']['_query'] = $wp_query;
 			}
 			
 			$posts = array();
@@ -66,7 +68,7 @@
 				$posts[] = $current_post_data;
 			}
 			
-			$data['posts'] = $posts;
+			$data['data']['posts'] = $posts;
 			
 			$template_selection = array();
 			
@@ -81,7 +83,7 @@
 				$template_selection['post_type'] = null;
 			}
 			
-			$data['templateSelection'] = $template_selection;
+			$data['data']['templateSelection'] = $template_selection;
 			
 			header('Content-Type: application/json');
 			header("Access-Control-Allow-Origin: *");

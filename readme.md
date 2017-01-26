@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.3.0
+* Changed format to have a main data field and a main metadata field
+
 ### 0.2.4
 * Added publish date
 

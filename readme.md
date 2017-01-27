@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.7.3
+* Added gravatar hash
+
 ### 0.7.2
 * Added wordpress version to meta data
 * Fixed content and excerpt for queriedData

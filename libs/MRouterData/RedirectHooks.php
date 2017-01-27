@@ -84,7 +84,7 @@
 				while(have_posts()) {
 					the_post();
 					
-					$posts[] = $this->_encode_post(get_the_ID());
+					$posts[] = $this->_encode_post(get_post());
 				}
 			
 				$data['data']['posts'] = $posts;
@@ -111,10 +111,11 @@
 		}
 		
 		protected function _encode_post($post) {
+			//echo('_encode_post');
+			//var_dump($post);
 			
 			$current_post_data = array();
 			
-			$post = get_post();
 			$post_id = $post->ID;
 		
 			$current_post_data["id"] = $post_id;

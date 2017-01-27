@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.7.4
+* Fixed problem with posts page
+
 ### 0.7.3
 * Added gravatar hash
 

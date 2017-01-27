@@ -12,7 +12,7 @@
 			
 			parent::__construct();
 			
-			$this->add_javascript('m-router-data-main', M_ROUTER_DATA_URL.'/assets/js/main.js');
+			//$this->add_javascript('m-router-data-main', M_ROUTER_DATA_URL.'/assets/js/main.js');
 		}
 		
 		protected function create_pages() {

@@ -24,7 +24,16 @@
 			
 		}
 		
-		
+		protected function _get_meta_data() {
+			$returnObject = array();
+			
+			$returnObject['mRouter'] = array('version' => M_ROUTER_DATA_VERSION);
+			
+			global $wp_version;
+			$returnObject['wordpress'] = array('version' => $wp_version);
+			
+			return $returnObject;
+		}
 		
 		public function hook_template_redirect() {
 			//echo("\MRouterData\RedirectHooks::hook_template_redirect<br />");
@@ -38,10 +47,9 @@
 				$template_selection_parameters = array("is_single", "is_preview", "is_page", "is_archive", "is_date", "is_year", "is_month", "is_day", "is_time", "is_author", "is_category", "is_tag", "is_tax", "is_search", "is_feed", "is_comment_feed", "is_trackback", "is_home", "is_404", "is_embed", "is_paged", "is_admin", "is_attachment", "is_singular", "is_robots", "is_posts_page", "is_post_type_archive");
 			
 				$data = array();
-				$data['metadata'] = array();
 				$data['data'] = array();
 			
-				$data['metadata']['mRouter'] = array('version' => M_ROUTER_DATA_VERSION);
+				$data['metadata'] = $this->_get_meta_data();
 			
 				$queried_object = get_queried_object();
 			
@@ -116,8 +124,8 @@
 			$current_post_data["publishedDate"] = $post->post_date;
 			$current_post_data["modifiedDate"] = $post->post_modified;
 			$current_post_data["title"] = get_the_title($post_id);
-			$current_post_data["excerpt"] = apply_filters('the_excerpt', get_the_excerpt($post_id));
-			$current_post_data["content"] = apply_filters('the_content', get_the_content($post_id));
+			$current_post_data["excerpt"] = apply_filters('the_excerpt', $post->post_excerpt);
+			$current_post_data["content"] = apply_filters('the_content', $post->post_content);
 			
 			$media_post_id = get_post_thumbnail_id($post_id);
 			if($media_post_id) {

@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.7.6
+* Added end point to get data by id
+
 ### 0.7.5
 * Added acf encoding
 * Refactored encoding to external class

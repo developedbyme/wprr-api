@@ -36,14 +36,9 @@
 		protected function create_rest_api_end_points() {
 			//echo("\MRouterData\Plugin::create_rest_api_end_points<br />");
 			
+			$api_namespace = 'm-router-data';
 			
-			
-			//$sync_user_end_point = new \MRouterData\RestApi\SyncUserEndPoint();
-			//$sync_user_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			//$sync_user_end_point->setup('sync/user', 'odd-site-transfer', 1, 'POST');
-			//METODO: security
-			//$this->_rest_api_end_points[] = $sync_user_end_point;	
-			
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostDataByIdEndPoint(), 'post/(?P<id>\d+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 		}
 		
 		

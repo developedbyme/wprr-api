@@ -15,7 +15,7 @@
 			//echo("\MRouterData\RedirectHooks::__construct<br />");
 
 			// ACF go thrught the output data
-			add_filter('acf/load_value', ( $value, $post_id, $field ) {
+			add_filter('acf/load_value', function( $value, $post_id, $field ) {
 				echo "<pre>";
 	    	var_dump($value);
 				echo "</pre>";

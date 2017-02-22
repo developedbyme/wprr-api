@@ -10,9 +10,13 @@
 	class RedirectHooks {
 
 		protected $settings = null;
+		
+		protected $encoder = null;
 
 		function __construct() {
 			//echo("\MRouterData\RedirectHooks::__construct<br />");
+			
+			$this->encoder = new \MRouterData\MRouterDataEncoder();
 
 			// ACF go thrught the output data
 			add_filter('acf/load_value', function( $value, $post_id, $field ) {
@@ -63,15 +67,15 @@
 
 				if($queried_object instanceof \WP_Post) {
 					$data['data']['type'] = 'post';
-					$data['data']['queriedData'] = $this->_encode_post($queried_object);
+					$data['data']['queriedData'] = $this->encoder->encode_post($queried_object);
 				}
 				else if($queried_object instanceof \WP_Term) {
 					$data['data']['type'] = 'term';
-					$data['data']['queriedData'] = $this->_encode_term($queried_object);
+					$data['data']['queriedData'] = $this->encoder->encode_term($queried_object);
 				}
 				else if($queried_object instanceof \WP_User) {
 					$data['data']['type'] = 'user';
-					$data['data']['queriedData'] = $this->_encode_user($queried_object);
+					$data['data']['queriedData'] = $this->encoder->encode_user($queried_object);
 				}
 				else if($queried_object === null) {
 					$data['data']['type'] = 'none';
@@ -87,7 +91,7 @@
 				while(have_posts()) {
 					the_post();
 
-					$posts[] = $this->_encode_post(get_post());
+					$posts[] = $this->encoder->encode_post(get_post());
 				}
 
 				$data['data']['posts'] = $posts;
@@ -162,7 +166,7 @@
 
 			$author_id = $post->post_author;
 			$author = get_user_by('ID', $author_id);
-			$current_post_data["author"] = $this->_encode_user($author);
+			$current_post_data["author"] = $this->encoder->encode_user($author);
 
 			$current_post_data["meta"] = get_post_meta($post_id);
 			$current_post_data["acf"] = get_field_objects($post_id);
@@ -174,7 +178,7 @@
 				$current_taxonomy_data = array();
 				$terms = get_the_terms($post_id, $taxonomy);
 				foreach($terms as $term) {
-					$current_taxonomy_data[] = $this->_encode_term($term);
+					$current_taxonomy_data[] = $this->encoder->encode_term($term);
 				}
 
 				$term_data_array[$taxonomy] = $current_taxonomy_data;

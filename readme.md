@@ -19,6 +19,10 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.7.5
+* Added acf encoding
+* Refactored encoding to external class
+
 ### 0.7.4
 * Fixed problem with posts page
 

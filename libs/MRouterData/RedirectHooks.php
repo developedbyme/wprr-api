@@ -14,7 +14,14 @@
 		function __construct() {
 			//echo("\MRouterData\RedirectHooks::__construct<br />");
 
+			// ACF go thrught the output data
+			add_filter('acf/load_value', ( $value, $post_id, $field ) {
+				echo "<pre>";
+	    	var_dump($value);
+				echo "</pre>";
 
+	    	return $value;
+			}, 10, 3);
 		}
 
 		public function register() {

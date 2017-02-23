@@ -26,6 +26,8 @@
 			$current_post_data["title"] = get_the_title($post_id);
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', $post->post_excerpt);
 			$current_post_data["content"] = apply_filters('the_content', $post->post_content);
+			
+			$current_post_data["parent"] = $this->encode_post_link($post->post_parent);
 
 			$media_post_id = get_post_thumbnail_id($post_id);
 			if($media_post_id) {
@@ -77,6 +79,21 @@
 			}
 			$current_post_data["terms"] = $term_data_array;
 
+			return $current_post_data;
+		}
+		
+		public function encode_post_link($post_id) {
+			//echo('encode_post_link');
+			//var_dump($post_id);
+			
+			if($post_id === 0 || get_post_status($post_id) !== "publish") {
+				return null;
+			}
+
+			$current_post_data["id"] = $post_id;
+			$current_post_data["permalink"] = get_permalink($post_id);
+			$current_post_data["title"] = get_the_title($post_id);
+			
 			return $current_post_data;
 		}
 

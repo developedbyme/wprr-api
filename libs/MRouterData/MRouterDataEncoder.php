@@ -99,6 +99,10 @@
 			$image_data['id'] = $media_post_id;
 			$image_data['title'] = get_the_title($media_post_id);
 			$image_data['permalink'] = get_permalink($media_post_id);
+			
+			$image_data['alt'] = get_post_meta($media_post_id, '_wp_attachment_image_alt', true);
+			$image_data['caption'] = $media_post->post_excerpt;
+			$image_data['description'] = $media_post->post_content;
 
 
 			$image_size_data = array();

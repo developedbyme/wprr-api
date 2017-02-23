@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.8.4
+* Added more data to images
+
 ### 0.8.3
 * Encoding acf repeater fields
 * Moved encoding of images

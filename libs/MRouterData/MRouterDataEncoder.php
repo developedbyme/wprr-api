@@ -45,27 +45,8 @@
 			$media_post_id = get_post_thumbnail_id($post_id);
 			if($media_post_id) {
 				$media_post = get_post($media_post_id);
-				$media_meta = get_post_meta($media_post_id, '_wp_attachment_metadata', true);
-				$sizes = $media_meta['sizes'];
 
-				$image_data = array();
-
-				$image_data['id'] = $media_post_id;
-				$image_data['title'] = get_the_title($media_post_id);
-				$image_data['permalink'] = get_permalink($media_post_id);
-
-
-				$image_size_data = array();
-				foreach($sizes as $size_name => $size_data) {
-					$image_url_and_size = wp_get_attachment_image_src($media_post_id, $size_name);
-					$image_size_data[$size_name] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
-				}
-				$image_url_and_size = wp_get_attachment_image_src($media_post_id, 'full');
-				$image_size_data['full'] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
-
-				$image_data["sizes"] = $image_size_data;
-
-				$current_post_data["image"] = $image_data;
+				$current_post_data["image"] = $this->encode_image($media_post);
 			}
 			else {
 				$current_post_data["image"] = null;
@@ -83,7 +64,7 @@
 				
 				$acf_object = array();
 				foreach($fields_object as $name => $field_object) {
-					$acf_object[$name] = $this->encode_acf_field($field_object);
+					$acf_object[$name] = $this->encode_acf_field($field_object, $post_id);
 				}
 				
 				$current_post_data["acf"] = $acf_object;
@@ -104,6 +85,33 @@
 			$current_post_data["terms"] = $term_data_array;
 
 			return $current_post_data;
+		}
+		
+		public function encode_image($media_post) {
+			//var_dump($media_post);
+			
+			$media_post_id = $media_post->ID;
+			$media_meta = get_post_meta($media_post_id, '_wp_attachment_metadata', true);
+			$sizes = $media_meta['sizes'];
+
+			$image_data = array();
+
+			$image_data['id'] = $media_post_id;
+			$image_data['title'] = get_the_title($media_post_id);
+			$image_data['permalink'] = get_permalink($media_post_id);
+
+
+			$image_size_data = array();
+			foreach($sizes as $size_name => $size_data) {
+				$image_url_and_size = wp_get_attachment_image_src($media_post_id, $size_name);
+				$image_size_data[$size_name] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
+			}
+			$image_url_and_size = wp_get_attachment_image_src($media_post_id, 'full');
+			$image_size_data['full'] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
+
+			$image_data["sizes"] = $image_size_data;
+
+			return $image_data;
 		}
 		
 		protected function _encode_acf_single_post_object_or_id($post_or_id) {
@@ -135,7 +143,37 @@
 			return $return_array;
 		}
 		
-		public function encode_acf_field($field) {
+		protected function _encode_acf_single_image_or_id($post_or_id) {
+			if($post_or_id instanceof \WP_Post) {
+				return $this->encode_image($post_or_id);
+			}
+			else {
+				return $this->encode_image(get_post($post_or_id));
+			}
+		}
+		
+		protected function _encode_acf_image($value) {
+			
+			if($value === false || $value === null) {
+				return null;
+			}
+			
+			$return_array = array();
+			
+			if(is_array($value)) {
+				
+				foreach($value as $post_or_id) {
+					$return_array[] = $this->_encode_acf_single_image_or_id($post_or_id);
+				}
+			}
+			else {
+				$return_array[] = $this->_encode_acf_single_image_or_id($value);
+			}
+			
+			return $return_array;
+		}
+		
+		public function encode_acf_field($field, $post_id, $override_value = null) {
 			//echo('encode_acf_field');
 			//var_dump($field);
 			
@@ -144,13 +182,41 @@
 			$type = $field['type'];
 			$return_object['type'] = $type;
 			
+			$field_value = $override_value ? $override_value : $field['value'];
+			
 			switch($type) {
-				//METODO: add repeater
-				case 'post_object':
-					$return_object['value'] = $this->_encode_acf_post_object($field['value']);
+				case 'repeater':
+					$rows_array = array();
+					$current_key = $field['key'];
+					if(have_rows($current_key, $post_id)) {
+						while(have_rows($current_key, $post_id)) {
+							
+							the_row();
+							$current_row = get_row();
+							
+							$row_result = array();
+							
+							foreach($current_row as $key => $value) {
+								$current_row_field = get_field_object($key, $post_id, false, true);
+								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $value);
+							}
+							
+							array_push($rows_array, $row_result);
+						}
+					}
+					
+					$return_object['value'] = $rows_array;
 					break;
+				case 'image':
+					$return_object['value'] = $this->_encode_acf_image($field_value);
+					break;
+				case 'post_object':
+				case 'relationship':
+					$return_object['value'] = $this->_encode_acf_post_object($field_value);
+					break;
+				case 'taxonomy': //METODO: implement this
 				default:
-					$return_object['value'] = $field['value'];
+					$return_object['value'] = $field_value;
 					break;
 			}
 			

@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.8.2
+* Added encoding of acf fields
+
 ### 0.8.1
 * Added children to posts
 * Fixed misspelled domains

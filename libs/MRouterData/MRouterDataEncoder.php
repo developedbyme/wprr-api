@@ -76,8 +76,19 @@
 			$current_post_data["author"] = $this->encode_user($author);
 
 			$current_post_data["meta"] = get_post_meta($post_id);
-			$current_post_data["acf"] = get_field_objects($post_id);
-
+			
+			$current_post_data["acf"] = null;
+			$fields_object = get_field_objects($post_id);
+			if($fields_object !== false) {
+				
+				$acf_object = array();
+				foreach($fields_object as $name => $field_object) {
+					$acf_object[$name] = $this->encode_acf_field($field_object);
+				}
+				
+				$current_post_data["acf"] = $acf_object;
+			}
+			
 			$taxonomies = array_keys(get_the_taxonomies($post_id));
 			$term_data_array = array();
 			foreach($taxonomies as $taxonomy) {
@@ -93,6 +104,57 @@
 			$current_post_data["terms"] = $term_data_array;
 
 			return $current_post_data;
+		}
+		
+		protected function _encode_acf_single_post_object_or_id($post_or_id) {
+			if($post_or_id instanceof \WP_Post) {
+				return $this->encode_post_link($post_or_id->ID);
+			}
+			else {
+				return $this->encode_post_link($post_or_id);
+			}
+		}
+		
+		protected function _encode_acf_post_object($value) {
+			if($value === false) {
+				return null;
+			}
+			
+			$return_array = array();
+			
+			if(is_array($value)) {
+				
+				foreach($value as $post_or_id) {
+					$return_array[] = $this->_encode_acf_single_post_object_or_id($post_or_id);
+				}
+			}
+			else {
+				$return_array[] = $this->_encode_acf_single_post_object_or_id($value);
+			}
+			
+			return $return_array;
+		}
+		
+		public function encode_acf_field($field) {
+			//echo('encode_acf_field');
+			//var_dump($field);
+			
+			$return_object = array();
+			
+			$type = $field['type'];
+			$return_object['type'] = $type;
+			
+			switch($type) {
+				//METODO: add repeater
+				case 'post_object':
+					$return_object['value'] = $this->_encode_acf_post_object($field['value']);
+					break;
+				default:
+					$return_object['value'] = $field['value'];
+					break;
+			}
+			
+			return $return_object;
 		}
 		
 		public function encode_post_link($post_id) {

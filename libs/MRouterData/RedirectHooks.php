@@ -17,11 +17,7 @@
 			//echo("\MRouterData\RedirectHooks::__construct<br />");
 			
 			$this->encoder = new \MRouterData\MRouterDataEncoder();
-
-			// ACF go thrught the output data
-			add_filter('acf/load_value', function( $value, $post_id, $field ) {
-	    	return $value;
-			}, 10, 3);
+			
 		}
 
 		public function register() {

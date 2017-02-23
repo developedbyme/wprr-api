@@ -28,6 +28,19 @@
 			$current_post_data["content"] = apply_filters('the_content', $post->post_content);
 			
 			$current_post_data["parent"] = $this->encode_post_link($post->post_parent);
+			
+			$children_ids = get_posts(array(
+				'post_type' => 'any',
+				'post_parent' => $post_id,
+				'posts_per_page' => -1,
+				'fields' => 'ids'
+			));
+			
+			$children = array();
+			foreach($children_ids as $child_id) {
+				$children[] = $this->encode_post_link($child_id);
+			}
+			$current_post_data["children"] = $children;
 
 			$media_post_id = get_post_thumbnail_id($post_id);
 			if($media_post_id) {

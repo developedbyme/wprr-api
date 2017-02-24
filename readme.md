@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.8.5
+* Removed notice when image sizes are missing
+
 ### 0.8.4
 * Added more data to images
 

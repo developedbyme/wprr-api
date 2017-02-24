@@ -19,8 +19,12 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.0
+* Added output buffer for php messages
+
 ### 0.8.5
 * Removed notice when image sizes are missing
+* Added endpoint for customizer data
 
 ### 0.8.4
 * Added more data to images

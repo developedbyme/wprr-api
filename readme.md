@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.4
+* Added image range endpoint
+
 ### 0.9.3
 * Added post range endpoint
 

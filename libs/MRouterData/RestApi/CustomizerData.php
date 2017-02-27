@@ -22,7 +22,6 @@
       $return_object['option'] = get_option( $option );
 
 			$encoder = new \MRouterData\MRouterDataEncoder();
-			$return_object["data"] = $encoder->encode_post($post);
 
 			return $this->output_success($return_object);
 		}

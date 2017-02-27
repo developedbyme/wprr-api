@@ -40,6 +40,7 @@
 
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostDataByIdEndPoint(), 'post/(?P<id>\d+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\CustomizerData(), 'customizer/(?P<options>[a-z0-9\,\[\]\-\_\,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostRangeEndPoint(), 'post-range/(?P<post_type>[a-z0-9\-\_]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 		}
 
 

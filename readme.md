@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.3
+* Added post range endpoint
+
 ### 0.9.2
 * External availability to encode request
 

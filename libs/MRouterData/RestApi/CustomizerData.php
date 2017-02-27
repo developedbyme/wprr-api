@@ -19,7 +19,7 @@
       $option = $data['option'];
 
       $return_object = array();
-      $return_object['option'] = get_option( $option );
+      $return_object = get_option( $option );
 
 			$encoder = new \MRouterData\MRouterDataEncoder();
 

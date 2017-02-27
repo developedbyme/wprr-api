@@ -42,68 +42,83 @@
 			//echo("\MRouterData\RedirectHooks::hook_template_redirect<br />");
 
 			if(isset($_GET['mRouterData']) && $_GET['mRouterData'] === 'json') {
+				
+				ob_start();
+				
+				try {
 
-				$debug = false;
+					$debug = false;
 
-				global $wp_query;
+					global $wp_query;
 
-				$template_selection_parameters = array("is_single", "is_preview", "is_page", "is_archive", "is_date", "is_year", "is_month", "is_day", "is_time", "is_author", "is_category", "is_tag", "is_tax", "is_search", "is_feed", "is_comment_feed", "is_trackback", "is_home", "is_404", "is_embed", "is_paged", "is_admin", "is_attachment", "is_singular", "is_robots", "is_posts_page", "is_post_type_archive");
+					$template_selection_parameters = array("is_single", "is_preview", "is_page", "is_archive", "is_date", "is_year", "is_month", "is_day", "is_time", "is_author", "is_category", "is_tag", "is_tax", "is_search", "is_feed", "is_comment_feed", "is_trackback", "is_home", "is_404", "is_embed", "is_paged", "is_admin", "is_attachment", "is_singular", "is_robots", "is_posts_page", "is_post_type_archive");
 
-				$data = array();
-				$data['data'] = array();
+					$data = array();
+					$data['data'] = array();
 
-				$data['metadata'] = $this->_get_meta_data();
+					$data['metadata'] = $this->_get_meta_data();
 
-				$queried_object = get_queried_object();
+					$queried_object = get_queried_object();
 
-				if($debug) {
-					$data['data']['_queried_object'] = $queried_object;
-					$data['data']['_query'] = $wp_query;
+					if($debug) {
+						$data['data']['_queried_object'] = $queried_object;
+						$data['data']['_query'] = $wp_query;
+					}
+
+					if($queried_object instanceof \WP_Post) {
+						$data['data']['type'] = 'post';
+						$data['data']['queriedData'] = $this->encoder->encode_post($queried_object);
+					}
+					else if($queried_object instanceof \WP_Term) {
+						$data['data']['type'] = 'term';
+						$data['data']['queriedData'] = $this->encoder->encode_term($queried_object);
+					}
+					else if($queried_object instanceof \WP_User) {
+						$data['data']['type'] = 'user';
+						$data['data']['queriedData'] = $this->encoder->encode_user($queried_object);
+					}
+					else if($queried_object === null) {
+						$data['data']['type'] = 'none';
+						$data['data']['queriedData'] = null;
+					}
+					else {
+						$data['data']['type'] = 'unknown';
+						$data['data']['queriedData'] = null;
+					}
+
+					$posts = array();
+
+					while(have_posts()) {
+						the_post();
+
+						$posts[] = $this->encoder->encode_post(get_post());
+					}
+
+					$data['data']['posts'] = $posts;
+
+					$template_selection = array();
+
+					foreach($template_selection_parameters as $template_selection_parameter) {
+						$template_selection[$template_selection_parameter] = $wp_query->$template_selection_parameter;
+					}
+
+					$template_selection['is_front_page'] = is_front_page();
+
+					$template_selection['post_type'] = ($queried_object instanceof \WP_Post) ? $queried_object->post_type : null;
+					$template_selection['taxonomy'] = ($queried_object instanceof \WP_Term) ? $queried_object->taxonomy : null;
+
+					$data['data']['templateSelection'] = $template_selection;
+				
 				}
-
-				if($queried_object instanceof \WP_Post) {
-					$data['data']['type'] = 'post';
-					$data['data']['queriedData'] = $this->encoder->encode_post($queried_object);
+				catch(Exception $error) {
+					var_dump($error);
+					$data['metadata']['phpError'] = $error;
 				}
-				else if($queried_object instanceof \WP_Term) {
-					$data['data']['type'] = 'term';
-					$data['data']['queriedData'] = $this->encoder->encode_term($queried_object);
-				}
-				else if($queried_object instanceof \WP_User) {
-					$data['data']['type'] = 'user';
-					$data['data']['queriedData'] = $this->encoder->encode_user($queried_object);
-				}
-				else if($queried_object === null) {
-					$data['data']['type'] = 'none';
-					$data['data']['queriedData'] = null;
-				}
-				else {
-					$data['data']['type'] = 'unknown';
-					$data['data']['queriedData'] = null;
-				}
-
-				$posts = array();
-
-				while(have_posts()) {
-					the_post();
-
-					$posts[] = $this->encoder->encode_post(get_post());
-				}
-
-				$data['data']['posts'] = $posts;
-
-				$template_selection = array();
-
-				foreach($template_selection_parameters as $template_selection_parameter) {
-					$template_selection[$template_selection_parameter] = $wp_query->$template_selection_parameter;
-				}
-
-				$template_selection['is_front_page'] = is_front_page();
-
-				$template_selection['post_type'] = ($queried_object instanceof \WP_Post) ? $queried_object->post_type : null;
-				$template_selection['taxonomy'] = ($queried_object instanceof \WP_Term) ? $queried_object->taxonomy : null;
-
-				$data['data']['templateSelection'] = $template_selection;
+				
+				$php_output = ob_get_contents();
+				ob_clean();
+				
+				$data['metadata']['phpOutput'] = $php_output;
 
 				header('Content-Type: application/json');
 				header("Access-Control-Allow-Origin: *");

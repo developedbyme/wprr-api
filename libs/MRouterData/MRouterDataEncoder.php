@@ -106,10 +106,13 @@
 
 
 			$image_size_data = array();
-			foreach($sizes as $size_name => $size_data) {
-				$image_url_and_size = wp_get_attachment_image_src($media_post_id, $size_name);
-				$image_size_data[$size_name] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
+			if(is_array($sizes)) {
+				foreach($sizes as $size_name => $size_data) {
+					$image_url_and_size = wp_get_attachment_image_src($media_post_id, $size_name);
+					$image_size_data[$size_name] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
+				}
 			}
+			
 			$image_url_and_size = wp_get_attachment_image_src($media_post_id, 'full');
 			$image_size_data['full'] = array('url' => $image_url_and_size[0], 'width' => $image_url_and_size[1], 'height' => $image_url_and_size[2]);
 

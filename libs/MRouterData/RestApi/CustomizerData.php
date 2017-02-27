@@ -16,10 +16,15 @@
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\CustomizerData::perform_call<br />");
 
-      $section = $data['section'];
+			$options = explode( ',', $data['options'] );
 
       $return_object = array();
-      $return_object = get_section( $section );
+
+			if ($options) :
+				foreach ( $options as $option ) :
+					$return_object[$option] = get_option( $option );
+				endforeach;
+			endif;
 
 			$encoder = new \MRouterData\MRouterDataEncoder();
 

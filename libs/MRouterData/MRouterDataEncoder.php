@@ -215,6 +215,7 @@
 					$return_object['value'] = $rows_array;
 					break;
 				case 'image':
+				case 'gallery':
 					$return_object['value'] = $this->_encode_acf_image($field_value);
 					break;
 				case 'post_object':

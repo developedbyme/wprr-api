@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.1
+* Encoding acf galleries
+
 ### 0.9.0
 * Added output buffer for php messages
 

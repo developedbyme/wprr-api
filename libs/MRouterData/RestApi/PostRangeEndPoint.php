@@ -25,10 +25,17 @@
 			);
 			if(isset($data['taxonomy'])) {
 				
+				if(isset($data['terms'])) {
+					$terms = explode(',', $data['terms']);
+				}
+				else {
+					$terms = array($data['term']);
+				}
+				
 				$tax_query = array(
 					'taxonomy' => $data['taxonomy'],
 					'field' => 'slug',
-					'terms' => array($data['term'])
+					'terms' => $terms
 				);
 				
 				$query_args['tax_query'] = array();

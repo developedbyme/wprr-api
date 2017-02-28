@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.6
+* Added possibility to select multiple terms for ranges
+
 ### 0.9.5
 * Added encoding of acf taxonomies
 

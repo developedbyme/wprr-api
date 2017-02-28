@@ -191,6 +191,36 @@
 			return $return_array;
 		}
 		
+		protected function _encode_acf_single_taxonomy_or_id($term_or_id, $taxonomy) {
+			if($term_or_id instanceof \WP_Term) {
+				return $this->encode_term($term_or_id);
+			}
+			else {
+				return $this->encode_term(get_term_by('id', $term_or_id, $taxonomy));
+			}
+		}
+		
+		protected function _encode_acf_taxonomy($value, $taxonomy) {
+			
+			if($value === false || $value === null) {
+				return null;
+			}
+			
+			$return_array = array();
+			
+			if(is_array($value)) {
+				
+				foreach($value as $id) {
+					$return_array[] = $this->_encode_acf_single_taxonomy_or_id($id, $taxonomy);
+				}
+			}
+			else {
+				$return_array[] = $this->_encode_acf_single_taxonomy_or_id($value, $taxonomy);
+			}
+			
+			return $return_array;
+		}
+		
 		public function encode_acf_field($field, $post_id, $override_value = null) {
 			//echo('encode_acf_field');
 			//var_dump($field);
@@ -234,6 +264,9 @@
 					$return_object['value'] = $this->_encode_acf_post_object($field_value);
 					break;
 				case 'taxonomy': //METODO: implement this
+					$taxonomy = $field['taxonomy'];
+					$return_object['value'] = $this->_encode_acf_taxonomy($field_value, $taxonomy);
+					break;
 				default:
 					$return_object['value'] = $field_value;
 					break;

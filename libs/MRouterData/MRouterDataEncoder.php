@@ -297,6 +297,7 @@
 			$return_object['id'] = $term->term_id;
 			$return_object['permalink'] = get_term_link($term);
 			$return_object['name'] = $term->name;
+			$return_object['slug'] = $term->slug;
 			$return_object['description'] = $term->description;
 			$return_object['taxonomy'] = $term->taxonomy;
 			//METODO: add taxonomy name

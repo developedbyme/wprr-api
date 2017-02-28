@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.7
+* Added slug to encoded terms
+
 ### 0.9.6
 * Added possibility to select multiple terms for ranges
 

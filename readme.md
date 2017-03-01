@@ -19,6 +19,10 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.9
+* Fixed images
+* Check if file exists
+
 ### 0.9.8
 * Encoding media files in acf
 

@@ -279,15 +279,27 @@
 					$return_object['value'] = $rows_array;
 					break;
 				case 'image':
+					if(is_array($field_value)) {
+						$return_object['value'] = $this->_encode_acf_image($field_value['id']);
+					}
+					else {
+						$return_object['value'] = $this->_encode_acf_image($field_value);
+					}
+					break;
 				case 'gallery':
 					$return_object['value'] = $this->_encode_acf_image($field_value);
 					break;
 				case 'file':
-					if(is_array($field_value)) {
-						$return_object['value'] = $this->encode_file(get_post($field_value['id']));
+					if($field_value) {
+						if(is_array($field_value)) {
+							$return_object['value'] = $this->encode_file(get_post($field_value['id']));
+						}
+						else {
+							$return_object['value'] = $this->encode_file(get_post($field_value));
+						}
 					}
 					else {
-						$return_object['value'] = $this->encode_file(get_post($field_value));
+						$return_object['value'] = null;
 					}
 					break;
 				case 'post_object':

@@ -310,6 +310,14 @@
 					$taxonomy = $field['taxonomy'];
 					$return_object['value'] = $this->_encode_acf_taxonomy($field_value, $taxonomy);
 					break;
+				case "oembed":
+					if($field_value) {
+						$return_object['value'] = array('url' => $field_value, 'oembed' => wp_oembed_get($field_value));
+					}
+					else {
+						$return_object['value'] = null;
+					}
+					break;
 				default:
 					$return_object['value'] = $field_value;
 					break;

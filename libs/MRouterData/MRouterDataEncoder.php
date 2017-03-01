@@ -132,6 +132,29 @@
 			return $image_data;
 		}
 		
+		public function encode_file($media_post) {
+			
+			$media_post_id = $media_post->ID;
+
+			$image_data = array();
+
+			$image_data['id'] = $media_post_id;
+			$image_data['title'] = get_the_title($media_post_id);
+			
+			$image_data['alt'] = get_post_meta($media_post_id, '_wp_attachment_image_alt', true);
+			$image_data['caption'] = $media_post->post_excerpt;
+			$image_data['description'] = $media_post->post_content;
+			
+			$image_data['url'] = wp_get_attachment_url($media_post_id);
+			
+			$preview_url = wp_get_attachment_thumb_url($media_post_id);
+			
+			$image_data['previewUrl'] = $preview_url ? $preview_url : null;
+			$image_data['mimeType'] = $media_post->post_mime_type;
+			
+			return $image_data;
+		}
+		
 		protected function _encode_acf_single_post_object_or_id($post_or_id) {
 			if($post_or_id instanceof \WP_Post) {
 				return $this->encode_post_link($post_or_id->ID);
@@ -258,6 +281,14 @@
 				case 'image':
 				case 'gallery':
 					$return_object['value'] = $this->_encode_acf_image($field_value);
+					break;
+				case 'file':
+					if(is_array($field_value)) {
+						$return_object['value'] = $this->encode_file(get_post($field_value['id']));
+					}
+					else {
+						$return_object['value'] = $this->encode_file(get_post($field_value));
+					}
 					break;
 				case 'post_object':
 				case 'relationship':

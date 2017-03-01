@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.8
+* Encoding media files in acf
+
 ### 0.9.7
 * Added slug to encoded terms
 

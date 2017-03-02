@@ -446,6 +446,16 @@
 				$template_selection['taxonomy'] = ($queried_object instanceof \WP_Term) ? $queried_object->taxonomy : null;
 
 				$data['data']['templateSelection'] = $template_selection;
+				
+				$query_data = array();
+				
+				$query_data['searchQuery'] = ($wp_query->is_search ? get_search_query() : null);
+				$query_data['numberOfPosts'] = intval($wp_query->found_posts);
+				$query_data['numberOfPaginationPages'] = intval($wp_query->max_num_pages);
+				$query_data['currentPaginationIndex'] = get_query_var('page', 1);
+				
+				
+				$data['data']['queryData'] = $query_data;
 
 			}
 			catch(Exception $error) {

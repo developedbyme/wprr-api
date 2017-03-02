@@ -120,8 +120,7 @@
 			$image_data['alt'] = get_post_meta($media_post_id, '_wp_attachment_image_alt', true);
 			$image_data['caption'] = $media_post->post_excerpt;
 			$image_data['description'] = $media_post->post_content;
-
-
+			
 			$image_size_data = array();
 			if(is_array($sizes)) {
 				foreach($sizes as $size_name => $size_data) {
@@ -358,6 +357,8 @@
 			$return_object['description'] = $term->description;
 			$return_object['taxonomy'] = $term->taxonomy;
 			//METODO: add taxonomy name
+			
+			$return_object["meta"] = get_term_meta($term->term_id);
 
 			return $return_object;
 		}

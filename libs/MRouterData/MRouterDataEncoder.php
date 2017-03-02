@@ -452,7 +452,14 @@
 				$query_data['searchQuery'] = ($wp_query->is_search ? get_search_query() : null);
 				$query_data['numberOfPosts'] = intval($wp_query->found_posts);
 				$query_data['numberOfPaginationPages'] = intval($wp_query->max_num_pages);
-				$query_data['currentPaginationIndex'] = get_query_var('page', 1);
+				
+				if($query_data['numberOfPaginationPages'] === 0) {
+					$query_data['currentPaginationIndex'] = 0;
+				}
+				else {
+					$query_data['currentPaginationIndex'] = max(1, get_query_var('paged', 1));
+				}
+				
 				
 				
 				$data['data']['queryData'] = $query_data;

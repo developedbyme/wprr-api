@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.10.1
+* Correct value for pagination
+
 ### 0.10.0
 * Added object for data beloning to the query
 

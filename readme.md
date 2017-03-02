@@ -19,6 +19,10 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.9.11
+* Added language description
+* Added meta to terms
+
 ### 0.9.10
 * Added encoding for oembed
 

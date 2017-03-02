@@ -24,12 +24,23 @@
 
 			$posts = get_posts($query_args);
 
+			foreach ($posts as $post_key => $post) {
+				$categories = get_the_category($post);
+				$post_type = get_post_type($post);
+
+				foreach ($categories as $category) {
+					if ($post_type === 'post' && $category->slug !== 'nyheter') {
+						unset($posts[$post_key]);
+					}
+				}
+			}
+
 			$post_links = array();
 			$encoder = new \MRouterData\MRouterDataEncoder();
 
 			foreach($posts as $post_id) {
 				$post_links[] = $encoder->encode_post_link($post_id);
-			};
+			}
 
 			return $this->output_success($post_links);
 		}

@@ -16,6 +16,14 @@
 
 			$post_type = $data['post_type'];
 			$post_cases = array();
+			
+			if(isset($data['language'])) {
+				global $sitepress;
+				
+				if(isset($sitepress)) {
+					$sitepress->switch_lang($data['language']);
+				}
+			}
 
 			// Get the prio items from frontpage ACF
 			$frontpage = get_option('page_on_front');

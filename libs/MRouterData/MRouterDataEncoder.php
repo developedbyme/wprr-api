@@ -321,6 +321,7 @@
 					
 					$end_time_repeater = microtime(true);
 					$this->_add_performance_data('encode_acf_field/repeater', $end_time_repeater-$start_time_repeater);
+					$this->_add_performance_data('encode_acf_field/repeater/'.$current_key, $end_time_repeater-$start_time_repeater);
 
 					$return_object['value'] = $rows_array;
 					break;

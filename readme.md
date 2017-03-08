@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.10.3
+* More performance on getting images
+
 ### 0.10.2
 * Correct order for children
 

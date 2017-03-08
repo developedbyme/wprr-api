@@ -40,6 +40,8 @@
 		public function encode_post($post) {
 			//echo('encode_post');
 			//var_dump($post);
+			
+			$start_time = microtime(true);
 
 			$current_post_data = array();
 
@@ -119,6 +121,9 @@
 				$term_data_array[$taxonomy] = $current_taxonomy_data;
 			}
 			$current_post_data["terms"] = $term_data_array;
+			
+			$end_time = microtime(true);
+			$this->_add_performance_data('encode_post', $end_time-$start_time);
 
 			return $current_post_data;
 		}
@@ -398,6 +403,8 @@
 			if(!$user) {
 				return null;
 			}
+			
+			$start_time = microtime(true);
 
 			$return_object = array();
 
@@ -406,11 +413,17 @@
 			$return_object['name'] = $user->display_name;
 
 			$return_object['gravatarHash'] = md5( strtolower( trim( $user->email ) ) );
+			
+			$end_time = microtime(true);
+			$this->_add_performance_data('encode_user', $end_time-$start_time);
 
 			return $return_object;
 		}
 
 		public function encode() {
+			
+			$start_time = microtime(true);
+			
 			ob_start();
 
 			try {
@@ -504,6 +517,9 @@
 			ob_clean();
 
 			$data['metadata']['phpOutput'] = $php_output;
+			
+			$end_time = microtime(true);
+			$this->_add_performance_data('encode', $end_time-$start_time);
 
 			return $data;
 		}

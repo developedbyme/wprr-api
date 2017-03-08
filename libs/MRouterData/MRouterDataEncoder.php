@@ -120,7 +120,8 @@
 			$start_time_acf_part = microtime(true);
 
 			$current_post_data["acf"] = null;
-			$fields_object = get_field_objects($post_id);
+			$fields_object = get_field_objects($post_id, false, false);
+			//var_dump(get_field_objects($post_id, false, false));
 			
 			$end_time_acf_part = microtime(true);
 			$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);

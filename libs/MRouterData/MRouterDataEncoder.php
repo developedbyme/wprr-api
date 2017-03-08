@@ -116,15 +116,26 @@
 			$this->_add_performance_data('encode_post/meta', $end_time_part-$start_time_part);
 			
 			$start_time_part = microtime(true);
+			
+			$start_time_acf_part = microtime(true);
 
 			$current_post_data["acf"] = null;
 			$fields_object = get_field_objects($post_id);
+			
+			$end_time_acf_part = microtime(true);
+			$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);
+			
 			if($fields_object !== false) {
-
+				
+				$start_time_acf_part = microtime(true);
+				
 				$acf_object = array();
 				foreach($fields_object as $name => $field_object) {
 					$acf_object[$name] = $this->encode_acf_field($field_object, $post_id);
 				}
+				
+				$end_time_acf_part = microtime(true);
+				$this->_add_performance_data('encode_post/acf/encode', $end_time_acf_part-$start_time_acf_part);
 
 				$current_post_data["acf"] = $acf_object;
 			}

@@ -299,6 +299,9 @@
 				case 'repeater':
 					$rows_array = array();
 					$current_key = $field['key'];
+					
+					$start_time_repeater = microtime(true);
+					
 					if(have_rows($current_key, $post_id)) {
 						while(have_rows($current_key, $post_id)) {
 
@@ -315,6 +318,9 @@
 							array_push($rows_array, $row_result);
 						}
 					}
+					
+					$end_time_repeater = microtime(true);
+					$this->_add_performance_data('encode_acf_field/repeater', $end_time_repeater-$start_time_repeater);
 
 					$return_object['value'] = $rows_array;
 					break;

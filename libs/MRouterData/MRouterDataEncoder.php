@@ -8,6 +8,23 @@
 
 	// \MRouterData\MRouterDataEncoder
 	class MRouterDataEncoder {
+		
+		protected $_performance = array();
+		
+		function __construct() {
+			
+		}
+		
+		protected function _add_performance_data($type, $value) {
+			if(!isset($this->_performance[$type])) {
+				$this->_performance[$type] = array();
+			}
+			$this->_performance[$type][] = $value;
+		}
+		
+		public function get_performance_data() {
+			return $this->_performance;
+		}
 
 		protected function _get_meta_data() {
 			$returnObject = array();
@@ -108,6 +125,8 @@
 
 		public function encode_image($media_post) {
 			//var_dump($media_post);
+			
+			$start_time = microtime(true);
 
 			$media_post_id = $media_post->ID;
 			$media_meta = get_post_meta($media_post_id, '_wp_attachment_metadata', true);
@@ -139,6 +158,9 @@
 			$image_size_data['full'] = array('url' => $img_url, 'width' => $media_meta['width'], 'height' => $media_meta['height']);
 
 			$image_data["sizes"] = $image_size_data;
+			
+			$end_time = microtime(true);
+			$this->_add_performance_data('encode_image', $end_time-$start_time);
 
 			return $image_data;
 		}
@@ -162,6 +184,8 @@
 
 			$image_data['previewUrl'] = $preview_url ? $preview_url : null;
 			$image_data['mimeType'] = $media_post->post_mime_type;
+			
+			
 
 			return $image_data;
 		}

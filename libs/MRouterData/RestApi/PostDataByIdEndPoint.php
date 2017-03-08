@@ -30,6 +30,7 @@
 			
 			$encoder = new \MRouterData\MRouterDataEncoder();
 			$return_object["data"] = $encoder->encode_post($post);
+			$return_object["performance"] = $encoder->get_performance_data();
 			
 			return $this->output_success($return_object);
 		}

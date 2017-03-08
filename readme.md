@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.10.2
+* Correct order for children
+
 ### 0.10.1
 * Correct value for pagination
 

@@ -44,6 +44,8 @@
 				'post_type' => 'any',
 				'post_parent' => $post_id,
 				'posts_per_page' => -1,
+				'orderby' => 'menu_order title',
+				'order' => 'ASC',
 				'fields' => 'ids'
 			));
 

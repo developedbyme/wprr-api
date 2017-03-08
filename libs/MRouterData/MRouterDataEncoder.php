@@ -46,6 +46,8 @@
 			$current_post_data = array();
 
 			$post_id = $post->ID;
+			
+			$start_time_part = microtime(true);
 
 			$current_post_data["id"] = $post_id;
 			$current_post_data["type"] = $post->post_type;
@@ -58,6 +60,11 @@
 			$current_post_data["content"] = apply_filters('the_content', $post->post_content);
 
 			$current_post_data["parent"] = $this->encode_post_link($post->post_parent);
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/basic_data', $end_time_part-$start_time_part);
+			
+			$start_time_part = microtime(true);
 
 			$children_ids = get_posts(array(
 				'post_type' => 'any',
@@ -73,6 +80,11 @@
 				$children[] = $this->encode_post_link($child_id);
 			}
 			$current_post_data["children"] = $children;
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/children', $end_time_part-$start_time_part);
+			
+			$start_time_part = microtime(true);
 
 			$media_post_id = get_post_thumbnail_id($post_id);
 			if($media_post_id) {
@@ -83,12 +95,27 @@
 			else {
 				$current_post_data["image"] = null;
 			}
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/image', $end_time_part-$start_time_part);
+			
+			$start_time_part = microtime(true);
 
 			$author_id = $post->post_author;
 			$author = get_user_by('ID', $author_id);
 			$current_post_data["author"] = $this->encode_user($author);
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/author', $end_time_part-$start_time_part);
+			
+			$start_time_part = microtime(true);
 
 			$current_post_data["meta"] = get_post_meta($post_id);
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/meta', $end_time_part-$start_time_part);
+			
+			$start_time_part = microtime(true);
 
 			$current_post_data["acf"] = null;
 			$fields_object = get_field_objects($post_id);
@@ -101,12 +128,22 @@
 
 				$current_post_data["acf"] = $acf_object;
 			}
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/acf', $end_time_part-$start_time_part);
+			
+			$start_time_part = microtime(true);
 
 			$current_post_data["languages"] = null;
 			if ( function_exists('icl_get_languages') ) {
         $current_post_data["languages"] = icl_get_languages( "skip_missing=0" );
 				$current_post_data["languages"]["ICL_LANGUAGE_CODE"] = ( ICL_LANGUAGE_CODE == "sv" ? "en" : "sv" );
 			}
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/languages', $end_time_part-$start_time_part);
+			
+			$start_time_part = microtime(true);
 
 			$taxonomies = array_keys(get_the_taxonomies($post_id));
 			$term_data_array = array();
@@ -121,6 +158,9 @@
 				$term_data_array[$taxonomy] = $current_taxonomy_data;
 			}
 			$current_post_data["terms"] = $term_data_array;
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/terms', $end_time_part-$start_time_part);
 			
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_post', $end_time-$start_time);

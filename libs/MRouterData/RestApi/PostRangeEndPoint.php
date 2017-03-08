@@ -42,6 +42,13 @@
 				$query_args['tax_query'][] = $tax_query;
 			}
 			
+			if(isset($data['order'])) {
+				$query_args['order'] = $data['order'];
+			}
+			if(isset($data['orderby'])) {
+				$query_args['orderby'] = $data['orderby'];
+			}
+			
 			$posts = get_posts($query_args);
 			
 			$post_links = array();

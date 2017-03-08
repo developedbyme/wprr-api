@@ -120,7 +120,7 @@
 			$start_time_acf_part = microtime(true);
 
 			$current_post_data["acf"] = null;
-			$fields_object = get_field_objects($post_id); //get_field_objects($post_id, false, false);
+			$fields_object = get_field_objects($post_id, false, false); //get_field_objects($post_id); //
 			
 			$end_time_acf_part = microtime(true);
 			$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);
@@ -344,7 +344,18 @@
 			$type = $field['type'];
 			$return_object['type'] = $type;
 
-			$field_value = $override_value ? $override_value : $field['value'];
+			$field_value = null;
+			if($override_value) {
+				$field_value = $override_value;
+			}
+			else {
+				
+				$field_value = $field['value'];
+				
+				$acf_field = acf_get_field( $field['key'] );
+				$field_value = acf_get_value( $post_id, $acf_field );
+				$field_value = acf_format_value( $field_value, $post_id, $field );
+			} 
 
 			switch($type) {
 				case 'repeater':

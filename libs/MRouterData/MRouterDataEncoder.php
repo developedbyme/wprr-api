@@ -352,7 +352,10 @@
 					break;
 				case "oembed":
 					if($field_value) {
+						$start_time_oembed = microtime(true);
 						$return_object['value'] = array('url' => $field_value, 'oembed' => wp_oembed_get($field_value));
+						$end_time_oembed = microtime(true);
+						$this->_add_performance_data('encode_acf_field/oembed', $end_time_oembed-$start_time_oembed);
 					}
 					else {
 						$return_object['value'] = null;
@@ -382,6 +385,8 @@
 		}
 
 		public function encode_term($term) {
+			
+			$start_time = microtime(true);
 
 			$return_object = array();
 
@@ -394,6 +399,9 @@
 			//METODO: add taxonomy name
 			
 			$return_object["meta"] = get_term_meta($term->term_id);
+			
+			$end_time = microtime(true);
+			$this->_add_performance_data('encode_term', $end_time-$start_time);
 
 			return $return_object;
 		}

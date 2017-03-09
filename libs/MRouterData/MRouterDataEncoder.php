@@ -467,7 +467,9 @@
 			$return_object['description'] = $term->description;
 			$return_object['taxonomy'] = $term->taxonomy;
 			$case_cat_tax_case_category_page = get_field('case_cat_tax_case_category_page', $queried_object);
-			$return_object["case_cat_tax_case_category_page"] = get_permalink($case_cat_tax_case_category_page[0]->ID);
+			if ($case_cat_tax_case_category_page) {
+				$return_object["case_cat_tax_case_category_page"] = get_permalink($case_cat_tax_case_category_page[0]->ID);
+			}
 			//METODO: add taxonomy name
 
 			$return_object["meta"] = get_term_meta($term->term_id);

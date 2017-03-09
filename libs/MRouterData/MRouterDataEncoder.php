@@ -358,7 +358,50 @@
 			} 
 
 			switch($type) {
+				case 'flexible_content':
+					//var_dump($field);
+					
+					$rows_array = array();
+					$current_key = $field['key'];
+					
+					$start_time_repeater = microtime(true);
+					
+					if(have_rows($current_key, $post_id)) {
+						while(have_rows($current_key, $post_id)) {
+
+							the_row();
+							$current_row = get_row();
+							
+							$selected_template = null;
+							
+
+							$row_result = array();
+
+							foreach($current_row as $key => $value) {
+								
+								if($key === 'acf_fc_layout') {
+									$selected_template = $value;
+								}
+								else {
+									$current_row_field = get_field_object($key, $post_id, false, true);
+									$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $value);
+								}
+							}
+							
+							$typed_object = array('type' => 'flexible_content_selection', 'selectedTemplate' => $selected_template, 'value' => $row_result);
+							array_push($rows_array, $typed_object);
+						}
+					}
+					
+					$end_time_repeater = microtime(true);
+					$this->_add_performance_data('encode_acf_field/flexible_content', $end_time_repeater-$start_time_repeater);
+					$this->_add_performance_data('encode_acf_field/flexible_content/'.$current_key, $end_time_repeater-$start_time_repeater);
+
+					$return_object['value'] = $rows_array;
+					break;
+					
 				case 'repeater':
+				
 					$rows_array = array();
 					$current_key = $field['key'];
 					
@@ -375,6 +418,7 @@
 							foreach($current_row as $key => $value) {
 								$current_row_field = get_field_object($key, $post_id, false, true);
 								$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $value);
+								
 							}
 
 							array_push($rows_array, $row_result);
@@ -413,9 +457,10 @@
 					break;
 				case 'post_object':
 				case 'relationship':
+				case 'page_link':
 					$return_object['value'] = $this->_encode_acf_post_object($field_value);
 					break;
-				case 'taxonomy': //METODO: implement this
+				case 'taxonomy':
 					$taxonomy = $field['taxonomy'];
 					$return_object['value'] = $this->_encode_acf_taxonomy($field_value, $taxonomy);
 					break;

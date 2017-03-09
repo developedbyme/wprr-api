@@ -8,20 +8,20 @@
 
 	// \MRouterData\MRouterDataEncoder
 	class MRouterDataEncoder {
-		
+
 		protected $_performance = array();
-		
+
 		function __construct() {
-			
+
 		}
-		
+
 		protected function _add_performance_data($type, $value) {
 			if(!isset($this->_performance[$type])) {
 				$this->_performance[$type] = array();
 			}
 			$this->_performance[$type][] = $value;
 		}
-		
+
 		public function get_performance_data() {
 			return $this->_performance;
 		}
@@ -40,13 +40,13 @@
 		public function encode_post($post) {
 			//echo('encode_post');
 			//var_dump($post);
-			
+
 			$start_time = microtime(true);
 
 			$current_post_data = array();
 
 			$post_id = $post->ID;
-			
+
 			$start_time_part = microtime(true);
 
 			$current_post_data["id"] = $post_id;
@@ -60,10 +60,10 @@
 			$current_post_data["content"] = apply_filters('the_content', $post->post_content);
 
 			$current_post_data["parent"] = $this->encode_post_link($post->post_parent);
-			
+
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/basic_data', $end_time_part-$start_time_part);
-			
+
 			$start_time_part = microtime(true);
 
 			$children_ids = get_posts(array(
@@ -80,10 +80,10 @@
 				$children[] = $this->encode_post_link($child_id);
 			}
 			$current_post_data["children"] = $children;
-			
+
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/children', $end_time_part-$start_time_part);
-			
+
 			$start_time_part = microtime(true);
 
 			$media_post_id = get_post_thumbnail_id($post_id);
@@ -95,54 +95,57 @@
 			else {
 				$current_post_data["image"] = null;
 			}
-			
+
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/image', $end_time_part-$start_time_part);
-			
+
 			$start_time_part = microtime(true);
 
 			$author_id = $post->post_author;
 			$author = get_user_by('ID', $author_id);
 			$current_post_data["author"] = $this->encode_user($author);
-			
+
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/author', $end_time_part-$start_time_part);
-			
+
 			$start_time_part = microtime(true);
 
 			$current_post_data["meta"] = get_post_meta($post_id);
-			
+
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/meta', $end_time_part-$start_time_part);
-			
+
 			$start_time_part = microtime(true);
-			
+
 			$start_time_acf_part = microtime(true);
 
 			$current_post_data["acf"] = null;
 			$fields_object = get_field_objects($post_id); //get_field_objects($post_id, false, false); //
-			
+
+			$queried_object = get_queried_object();
+			$current_post_data["case_cat_tax_case_category_page"] = get_field('case_cat_tax_case_category_page', $queried_object);
+
 			$end_time_acf_part = microtime(true);
 			$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);
-			
+
 			if($fields_object !== false) {
-				
+
 				$start_time_acf_part = microtime(true);
-				
+
 				$acf_object = array();
 				foreach($fields_object as $name => $field_object) {
 					$acf_object[$name] = $this->encode_acf_field($field_object, $post_id);
 				}
-				
+
 				$end_time_acf_part = microtime(true);
 				$this->_add_performance_data('encode_post/acf/encode', $end_time_acf_part-$start_time_acf_part);
 
 				$current_post_data["acf"] = $acf_object;
 			}
-			
+
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/acf', $end_time_part-$start_time_part);
-			
+
 			$start_time_part = microtime(true);
 
 			$current_post_data["languages"] = null;
@@ -150,10 +153,10 @@
         $current_post_data["languages"] = icl_get_languages( "skip_missing=0" );
 				$current_post_data["languages"]["ICL_LANGUAGE_CODE"] = ( ICL_LANGUAGE_CODE == "sv" ? "en" : "sv" );
 			}
-			
+
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/languages', $end_time_part-$start_time_part);
-			
+
 			$start_time_part = microtime(true);
 
 			$taxonomies = array_keys(get_the_taxonomies($post_id));
@@ -169,10 +172,10 @@
 				$term_data_array[$taxonomy] = $current_taxonomy_data;
 			}
 			$current_post_data["terms"] = $term_data_array;
-			
+
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/terms', $end_time_part-$start_time_part);
-			
+
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_post', $end_time-$start_time);
 
@@ -181,13 +184,13 @@
 
 		public function encode_image($media_post) {
 			//var_dump($media_post);
-			
+
 			$start_time = microtime(true);
 
 			$media_post_id = $media_post->ID;
 			$media_meta = get_post_meta($media_post_id, '_wp_attachment_metadata', true);
 			$sizes = $media_meta['sizes'];
-			
+
 			$img_url = wp_get_attachment_url($media_post_id);
 			$img_url_basename = wp_basename($img_url);
 
@@ -200,21 +203,21 @@
 			$image_data['alt'] = get_post_meta($media_post_id, '_wp_attachment_image_alt', true);
 			$image_data['caption'] = $media_post->post_excerpt;
 			$image_data['description'] = $media_post->post_content;
-			
+
 			$image_size_data = array();
 			if(is_array($sizes)) {
 				foreach($sizes as $size_name => $size_data) {
-					
+
 					$current_url = str_replace( $img_url_basename, $size_data['file'], $img_url );
-					
+
 					$image_size_data[$size_name] = array('url' => $current_url, 'width' => $size_data['width'], 'height' =>  $size_data['height']);
 				}
 			}
-			
+
 			$image_size_data['full'] = array('url' => $img_url, 'width' => $media_meta['width'], 'height' => $media_meta['height']);
 
 			$image_data["sizes"] = $image_size_data;
-			
+
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_image', $end_time-$start_time);
 
@@ -240,8 +243,8 @@
 
 			$image_data['previewUrl'] = $preview_url ? $preview_url : null;
 			$image_data['mimeType'] = $media_post->post_mime_type;
-			
-			
+
+
 
 			return $image_data;
 		}
@@ -349,21 +352,21 @@
 				$field_value = $override_value;
 			}
 			else {
-				
+
 				$field_value = $field['value'];
-				
+
 				//$acf_field = acf_get_field( $field['key'] );
 				//$field_value = acf_get_value( $post_id, $acf_field );
 				//$field_value = acf_format_value( $field_value, $post_id, $field );
-			} 
+			}
 
 			switch($type) {
 				case 'repeater':
 					$rows_array = array();
 					$current_key = $field['key'];
-					
+
 					$start_time_repeater = microtime(true);
-					
+
 					if(have_rows($current_key, $post_id)) {
 						while(have_rows($current_key, $post_id)) {
 
@@ -380,7 +383,7 @@
 							array_push($rows_array, $row_result);
 						}
 					}
-					
+
 					$end_time_repeater = microtime(true);
 					$this->_add_performance_data('encode_acf_field/repeater', $end_time_repeater-$start_time_repeater);
 					$this->_add_performance_data('encode_acf_field/repeater/'.$current_key, $end_time_repeater-$start_time_repeater);
@@ -454,7 +457,7 @@
 		}
 
 		public function encode_term($term) {
-			
+
 			$start_time = microtime(true);
 
 			$return_object = array();
@@ -466,9 +469,9 @@
 			$return_object['description'] = $term->description;
 			$return_object['taxonomy'] = $term->taxonomy;
 			//METODO: add taxonomy name
-			
+
 			$return_object["meta"] = get_term_meta($term->term_id);
-			
+
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_term', $end_time-$start_time);
 
@@ -480,7 +483,7 @@
 			if(!$user) {
 				return null;
 			}
-			
+
 			$start_time = microtime(true);
 
 			$return_object = array();
@@ -490,7 +493,7 @@
 			$return_object['name'] = $user->display_name;
 
 			$return_object['gravatarHash'] = md5( strtolower( trim( $user->email ) ) );
-			
+
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_user', $end_time-$start_time);
 
@@ -498,9 +501,9 @@
 		}
 
 		public function encode() {
-			
+
 			$start_time = microtime(true);
-			
+
 			ob_start();
 
 			try {
@@ -566,22 +569,22 @@
 				$template_selection['taxonomy'] = ($queried_object instanceof \WP_Term) ? $queried_object->taxonomy : null;
 
 				$data['data']['templateSelection'] = $template_selection;
-				
+
 				$query_data = array();
-				
+
 				$query_data['searchQuery'] = ($wp_query->is_search ? get_search_query() : null);
 				$query_data['numberOfPosts'] = intval($wp_query->found_posts);
 				$query_data['numberOfPaginationPages'] = intval($wp_query->max_num_pages);
-				
+
 				if($query_data['numberOfPaginationPages'] === 0) {
 					$query_data['currentPaginationIndex'] = 0;
 				}
 				else {
 					$query_data['currentPaginationIndex'] = max(1, get_query_var('paged', 1));
 				}
-				
-				
-				
+
+
+
 				$data['data']['queryData'] = $query_data;
 
 			}
@@ -594,7 +597,7 @@
 			ob_clean();
 
 			$data['metadata']['phpOutput'] = $php_output;
-			
+
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode', $end_time-$start_time);
 

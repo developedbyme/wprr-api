@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.10.6
+* Encoding flexible content
+
 ### 0.10.5
 * Added performance data
 

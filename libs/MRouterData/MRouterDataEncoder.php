@@ -120,7 +120,7 @@
 			$start_time_acf_part = microtime(true);
 
 			$current_post_data["acf"] = null;
-			$fields_object = get_field_objects($post_id); //get_field_objects($post_id, false, false); //
+			$fields_object = get_field_objects($post_id, false, false); //get_field_objects($post_id); //
 
 			$end_time_acf_part = microtime(true);
 			$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);
@@ -334,6 +334,23 @@
 
 			return $return_array;
 		}
+		
+		protected function _get_field_value($field, $post_id, $type, $override_value = null) {
+			$field_value = null;
+			if($override_value) {
+				$field_value = $override_value;
+			}
+			else {
+
+				//$field_value = $field['value'];
+
+				$acf_field = acf_get_field( $field['key'] );
+				$field_value = acf_get_value( $post_id, $acf_field );
+				$field_value = acf_format_value( $field_value, $post_id, $field );
+			}
+			
+			return $field_value;
+		}
 
 		public function encode_acf_field($field, $post_id, $override_value = null) {
 			//echo('encode_acf_field');
@@ -343,19 +360,6 @@
 
 			$type = $field['type'];
 			$return_object['type'] = $type;
-
-			$field_value = null;
-			if($override_value) {
-				$field_value = $override_value;
-			}
-			else {
-
-				$field_value = $field['value'];
-
-				//$acf_field = acf_get_field( $field['key'] );
-				//$field_value = acf_get_value( $post_id, $acf_field );
-				//$field_value = acf_format_value( $field_value, $post_id, $field );
-			}
 
 			switch($type) {
 				case 'flexible_content':
@@ -432,6 +436,7 @@
 					$return_object['value'] = $rows_array;
 					break;
 				case 'image':
+					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					if(is_array($field_value)) {
 						$return_object['value'] = $this->_encode_acf_image($field_value['id']);
 					}
@@ -440,9 +445,11 @@
 					}
 					break;
 				case 'gallery':
+					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					$return_object['value'] = $this->_encode_acf_image($field_value);
 					break;
 				case 'file':
+					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					if($field_value) {
 						if(is_array($field_value)) {
 							$return_object['value'] = $this->encode_file(get_post($field_value['id']));
@@ -456,17 +463,21 @@
 					}
 					break;
 				case 'page_link':
+					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					$return_object['value'] = $this->_encode_acf_single_post_object_or_id($field_value);
 					break;
 				case 'post_object':
 				case 'relationship':
+					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					$return_object['value'] = $this->_encode_acf_post_object($field_value);
 					break;
 				case 'taxonomy':
+					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					$taxonomy = $field['taxonomy'];
 					$return_object['value'] = $this->_encode_acf_taxonomy($field_value, $taxonomy);
 					break;
 				case "oembed":
+					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					if($field_value) {
 						$start_time_oembed = microtime(true);
 						$return_object['value'] = array('url' => $field_value, 'oembed' => wp_oembed_get($field_value));
@@ -478,6 +489,7 @@
 					}
 					break;
 				default:
+					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					$return_object['value'] = $field_value;
 					break;
 			}

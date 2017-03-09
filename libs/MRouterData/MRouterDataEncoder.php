@@ -455,9 +455,11 @@
 						$return_object['value'] = null;
 					}
 					break;
+				case 'page_link':
+					$return_object['value'] = $this->_encode_acf_single_post_object_or_id($field_value);
+					break;
 				case 'post_object':
 				case 'relationship':
-				case 'page_link':
 					$return_object['value'] = $this->_encode_acf_post_object($field_value);
 					break;
 				case 'taxonomy':

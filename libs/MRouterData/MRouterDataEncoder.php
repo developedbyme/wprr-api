@@ -122,9 +122,6 @@
 			$current_post_data["acf"] = null;
 			$fields_object = get_field_objects($post_id); //get_field_objects($post_id, false, false); //
 
-			$queried_object = get_queried_object();
-			$current_post_data["case_cat_tax_case_category_page"] = get_field('case_cat_tax_case_category_page', $queried_object);
-
 			$end_time_acf_part = microtime(true);
 			$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);
 
@@ -462,12 +459,14 @@
 
 			$return_object = array();
 
+			$queried_object = get_queried_object();
 			$return_object['id'] = $term->term_id;
 			$return_object['permalink'] = get_term_link($term);
 			$return_object['name'] = $term->name;
 			$return_object['slug'] = $term->slug;
 			$return_object['description'] = $term->description;
 			$return_object['taxonomy'] = $term->taxonomy;
+			$return_object["case_cat_tax_case_category_page"] = get_field('case_cat_tax_case_category_page', $queried_object);
 			//METODO: add taxonomy name
 
 			$return_object["meta"] = get_term_meta($term->term_id);

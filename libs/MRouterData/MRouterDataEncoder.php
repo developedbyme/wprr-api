@@ -92,6 +92,9 @@
 
 				$current_post_data["image"] = $this->encode_image($media_post);
 			}
+			else if($post->post_type === 'attachment') {
+				$current_post_data["image"] = $this->encode_image($post);
+			}
 			else {
 				$current_post_data["image"] = null;
 			}

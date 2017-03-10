@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.10.7
+* Adding image data to attachment
+
 ### 0.10.6
 * Encoding flexible content
 

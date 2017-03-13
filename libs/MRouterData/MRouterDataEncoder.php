@@ -349,7 +349,20 @@
 
 				$acf_field = acf_get_field( $field['key'] );
 				$field_value = acf_get_value( $post_id, $acf_field );
-				$field_value = acf_format_value( $field_value, $post_id, $field );
+				
+				if($type === 'page_link') {
+					if( empty($field_value) ) {
+						return null;
+					}
+					
+					//METODO: support multiple values
+					$field_value = intval($field_value);
+				}
+				else {
+					$field_value = acf_format_value( $field_value, $post_id, $field );
+				}
+				
+				
 			}
 			
 			return $field_value;

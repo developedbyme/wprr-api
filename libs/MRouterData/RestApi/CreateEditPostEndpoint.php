@@ -18,7 +18,7 @@
 
       $attributes = array(
         'ID' => sanitize_key($data['ID']),
-        'post_author' => 0,
+        'post_author' => sanitize_key($data['post_author']),
         'post_content' => sanitize_text_field($data['post_content']),
         'post_title' => sanitize_text_field($data['post_title']),
         'post_excerpt' => sanitize_text_field($data['post_excerpt']),

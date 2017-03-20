@@ -16,7 +16,7 @@
 
 			// TODO Add security. nouance.
 
-      $attributes = array(
+			$insert_post = wp_insert_post(array(
         'ID' => sanitize_key($data['ID']),
         'post_author' => sanitize_key($data['post_author']),
         'post_content' => sanitize_text_field($data['post_content']),
@@ -27,9 +27,7 @@
         'comment_status' => sanitize_text_field($data['comment_status']),
         'post_password' => sanitize_text_field($data['post_password']),
         'post_parent' => sanitize_key($data['post_parent'])
-      );
-
-			$insert_post = wp_insert_post($attributes);
+      ));
 
 			return $this->output_success($insert_post);
 		}

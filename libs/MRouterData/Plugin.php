@@ -47,7 +47,7 @@
 
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostCaseEndPoint(), 'post-case', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 
-			$this->create_rest_api_end_point(new \MRouterData\RestApi\SetMetadataEndpoint(), 'metadata/(?P<post_id>\d+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'), 'POST');
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\SetMetadataEndpoint(), 'metadata', $api_namespace, array('Access-Control-Allow-Origin' => '*'), 'POST');
 		}
 
 

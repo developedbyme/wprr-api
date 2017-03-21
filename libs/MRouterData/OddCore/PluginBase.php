@@ -189,7 +189,7 @@
 
 		protected function create_rest_api_end_point($new_end_point, $path, $namespace, $headers, $type = 'GET') {
 			$new_end_point->add_headers($headers);
-			$new_end_point->setup($path, $namespace, 2, $type);
+			$new_end_point->setup($path, $namespace, 1, $type);
 			$this->_rest_api_end_points[] = $new_end_point;
 
 			return $new_end_point;

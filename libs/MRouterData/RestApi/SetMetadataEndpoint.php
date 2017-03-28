@@ -23,6 +23,10 @@
 
 			$meta_data = update_post_meta($post_id, $meta_key, $meta_value, $prev_value);
 
+			if(!$meta_data) {
+				return $this->output_error("Metadata not edited/created");
+			}
+
 			return $this->output_success($meta_data);
 		}
 

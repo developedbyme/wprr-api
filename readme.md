@@ -19,6 +19,11 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.11.0
+* Added custom ranges
+* Changed domain
+* Added encode_post_link as an external function
+
 ### 0.10.8
 * Correct encoding of page links
 

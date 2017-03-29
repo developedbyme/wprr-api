@@ -6,4 +6,10 @@
 		
 		return $encoder->encode();
 	}
+	
+	function mrouter_encode_post_link($post_id) {
+		$encoder = new \MRouterData\MRouterDataEncoder();
+		
+		return $encoder->encode_post_link($post_id);
+	}
 ?>

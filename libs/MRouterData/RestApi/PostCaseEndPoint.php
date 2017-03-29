@@ -42,8 +42,7 @@
 			$query_args = array(
 				'post_type' => array('post', 'expohouse_case'),
 				'posts_per_page' => -1,
-				'fields' => 'ids',
-				'suppress_filters' => false
+				'fields' => 'ids'
 			);
 
 			$posts = get_posts($query_args);

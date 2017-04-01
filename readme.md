@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.11.1
+* Apply filters for wysiwyg in acf repeater
+
 ### 0.11.0
 * Added custom ranges
 * Changed domain

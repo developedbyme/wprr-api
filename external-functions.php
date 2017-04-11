@@ -12,4 +12,10 @@
 		
 		return $encoder->encode_post_link($post_id);
 	}
+	
+	function mrouter_encode_term($term) {
+		$encoder = new \MRouterData\MRouterDataEncoder();
+		
+		return $encoder->encode_term($term);
+	}
 ?>

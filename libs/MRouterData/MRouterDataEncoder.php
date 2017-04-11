@@ -345,6 +345,17 @@
 			$field_value = null;
 			if($override_value) {
 				$field_value = $override_value;
+				
+				if($type === 'wysiwyg' && !empty($field_value) ) {
+			
+					// apply filters
+					$field_value = apply_filters( 'acf_the_content', $field_value );
+		
+		
+					// follow the_content function in /wp-includes/post-template.php
+					$field_value = str_replace(']]>', ']]&gt;', $field_value);
+		
+				}
 			}
 			else {
 

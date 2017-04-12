@@ -189,7 +189,7 @@
 
 			$media_post_id = $media_post->ID;
 			$media_meta = get_post_meta($media_post_id, '_wp_attachment_metadata', true);
-			$sizes = $media_meta['sizes'];
+			
 
 			$img_url = wp_get_attachment_url($media_post_id);
 			$img_url_basename = wp_basename($img_url);
@@ -203,14 +203,17 @@
 			$image_data['alt'] = get_post_meta($media_post_id, '_wp_attachment_image_alt', true);
 			$image_data['caption'] = $media_post->post_excerpt;
 			$image_data['description'] = $media_post->post_content;
+			
+			if(isset($media_meta['sizes'])) {
+				$sizes = $media_meta['sizes'];
+				$image_size_data = array();
+				if(is_array($sizes)) {
+					foreach($sizes as $size_name => $size_data) {
 
-			$image_size_data = array();
-			if(is_array($sizes)) {
-				foreach($sizes as $size_name => $size_data) {
+						$current_url = str_replace( $img_url_basename, $size_data['file'], $img_url );
 
-					$current_url = str_replace( $img_url_basename, $size_data['file'], $img_url );
-
-					$image_size_data[$size_name] = array('url' => $current_url, 'width' => $size_data['width'], 'height' =>  $size_data['height']);
+						$image_size_data[$size_name] = array('url' => $current_url, 'width' => $size_data['width'], 'height' =>  $size_data['height']);
+					}
 				}
 			}
 

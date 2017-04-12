@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.11.5
+* Check for permissions on api endpoints
+
 ### 0.11.4
 * Added attachment upload
 * Added check for permissions

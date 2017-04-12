@@ -18,6 +18,13 @@
 			
 			$id = $data['id'];
 			
+			$has_permission_filter_name = M_ROUTER_DATA_DOMAIN.'/id_has_permission';
+			
+			$has_permission = apply_filters($has_permission_filter_name, true, $id);
+			if(!$has_permission) {
+				return $this->output_error('Access denied');
+			}
+			
 			$post = get_post($id);
 			
 			if(!isset($post)) {

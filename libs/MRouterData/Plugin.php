@@ -57,7 +57,36 @@
 
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostCaseEndPoint(), 'post-case', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 		}
-
+		
+		public function filter_id_check_for_has_permission($has_permission) {
+			//echo("\MRouterData\Plugin::filter_id_check_for_has_permission<br />");
+			
+			if(!$has_permission) {
+				return $has_permission;
+			}
+			
+			$has_permission_filter_name = M_ROUTER_DATA_DOMAIN.'/id_has_permission';
+			
+			if(is_singular()) {
+				if(have_posts()) {
+					the_post();
+					$post = get_post();
+					
+					$has_permission = apply_filters($has_permission_filter_name, $has_permission, $post->ID);
+				}
+				rewind_posts();
+			}
+			
+			return $has_permission;
+		}
+		
+		protected function create_filters() {
+			//echo("\MRouterData\Plugin::create_filters<br />");
+			
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'has_permission', array($this, 'filter_id_check_for_has_permission'), 10, 1);
+		}
+		
+		
 
 		public function hook_admin_enqueue_scripts() {
 			//echo("\MRouterData\Plugin::hook_admin_enqueue_scripts<br />");

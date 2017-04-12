@@ -18,4 +18,8 @@
 		
 		return $encoder->encode_term($term);
 	}
+	
+	function mrouter_disable_all_ranges($priority = 10) {
+		add_filter('m_router_data/range_has_permission', function($has_permission) {return false;}, $priority, 1);
+	}
 ?>

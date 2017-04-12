@@ -19,6 +19,10 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.11.4
+* Added attachment upload
+* Added check for permissions
+
 ### 0.11.3
 * External encoding of terms
 

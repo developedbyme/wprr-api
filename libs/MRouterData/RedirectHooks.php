@@ -32,6 +32,25 @@
 
 			if(isset($_GET['mRouterData']) && $_GET['mRouterData'] === 'json') {
 				
+				$permission_filter_name = M_ROUTER_DATA_DOMAIN.'/'.'has_permission'; 
+			
+				//if(has_filter($permission_filter_name)) {
+					
+					$has_permissions = apply_filters($permission_filter_name, true);
+					
+					if(!$has_permissions) {
+						header('HTTP/1.0 403 Forbidden');
+						header('Content-Type: application/json');
+						header("Access-Control-Allow-Origin: *");
+						
+						$data = array('status' => 'error', 'message' => 'Access denied');
+						
+						echo(json_encode($data));
+						
+						exit();
+					}
+					//}
+				
 				$data = $this->encoder->encode();
 				
 				header('Content-Type: application/json');

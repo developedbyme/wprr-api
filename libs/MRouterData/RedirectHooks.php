@@ -43,7 +43,7 @@
 						header('Content-Type: application/json');
 						header("Access-Control-Allow-Origin: *");
 						
-						$data = array('status' => 'error', 'message' => 'Access denied');
+						$data = array('code' => 'error', 'message' => 'Access denied');
 						
 						echo(json_encode($data));
 						

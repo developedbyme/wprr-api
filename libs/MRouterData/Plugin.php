@@ -54,6 +54,8 @@
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\ImageRangeEndPoint(), 'image-range/(?P<post_type>[a-z0-9\-\_]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\CustomRangeEndPoint(), 'custom-range/(?P<range_type>[a-z0-9\-\_]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\AcfOptionsEndPoint(), 'acf-options', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostCaseEndPoint(), 'post-case', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 		}

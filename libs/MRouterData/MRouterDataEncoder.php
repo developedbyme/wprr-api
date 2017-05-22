@@ -590,6 +590,22 @@
 
 			return $return_object;
 		}
+		
+		public function encode_acf_options() {
+			$fields_object = get_field_objects('option', false, false);
+			
+			if($fields_object !== false) {
+
+				$acf_object = array();
+				foreach($fields_object as $name => $field_object) {
+					$acf_object[$name] = $this->encode_acf_field($field_object, 'option');
+				}
+
+				return $acf_object;
+			}
+			
+			return null;
+		}
 
 		public function encode() {
 

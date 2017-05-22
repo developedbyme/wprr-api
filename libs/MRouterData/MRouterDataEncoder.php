@@ -46,6 +46,8 @@
 			$current_post_data = array();
 
 			$post_id = $post->ID;
+			
+			do_action('m_router_data/prepare_post_encoding', $post_id, $post);
 
 			$start_time_part = microtime(true);
 

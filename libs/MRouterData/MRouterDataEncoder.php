@@ -125,7 +125,7 @@
 			$start_time_acf_part = microtime(true);
 
 			$current_post_data["acf"] = null;
-			$fields_object = get_field_objects($post_id, false, false); //get_field_objects($post_id); //
+			$fields_object = get_field_objects($post_id, false, true); //get_field_objects($post_id); //
 
 			$end_time_acf_part = microtime(true);
 			$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);
@@ -360,23 +360,40 @@
 				}
 			}
 			else {
-
+				//METODO: this needs to be unified
 				//$field_value = $field['value'];
-
-				$acf_field = acf_get_field( $field['key'] );
-				$field_value = acf_get_value( $post_id, $acf_field );
 				
-				if($type === 'page_link') {
-					if( empty($field_value) ) {
-						return null;
+				if($field['value']) {
+					$field_value = $field['value'];
+					if($type === 'wysiwyg' && !empty($field_value) ) {
+			
+						// apply filters
+						$field_value = apply_filters( 'acf_the_content', $field_value );
+		
+		
+						// follow the_content function in /wp-includes/post-template.php
+						$field_value = str_replace(']]>', ']]&gt;', $field_value);
+		
 					}
-					
-					//METODO: support multiple values
-					$field_value = intval($field_value);
 				}
 				else {
-					$field_value = acf_format_value( $field_value, $post_id, $field );
+					$acf_field = acf_get_field( $field['key'] );
+					$field_value = acf_get_value( $post_id, $acf_field );
+				
+					if($type === 'page_link') {
+						if( empty($field_value) ) {
+							return null;
+						}
+					
+						//METODO: support multiple values
+						$field_value = intval($field_value);
+					}
+					else {
+						$field_value = acf_format_value( $field_value, $post_id, $field );
+					}
 				}
+
+				
 				
 				
 			}
@@ -496,7 +513,7 @@
 					break;
 				case 'page_link':
 					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
-					$return_object['value'] = $this->_encode_acf_single_post_object_or_id($field_value);
+					$return_object['value'] = $this->_encode_acf_post_object($field_value);
 					break;
 				case 'post_object':
 				case 'relationship':
@@ -594,7 +611,7 @@
 		}
 		
 		public function encode_acf_options() {
-			$fields_object = get_field_objects('option', false, false);
+			$fields_object = get_field_objects('option', false, true);
 			
 			if($fields_object !== false) {
 

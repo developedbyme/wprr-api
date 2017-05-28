@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.13.0
+* Added support for add-ons
+
 ### 0.12.0
 * Changed loading of acf values to support options
 

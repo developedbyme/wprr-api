@@ -147,6 +147,15 @@
 
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/acf', $end_time_part-$start_time_part);
+			
+			$start_time_part = microtime(true);
+			
+			$add_ons = apply_filters('m_router_data/encode_post_add_ons', array(), $post_id, $post, $this);
+			
+			$current_post_data["addOns"] = $add_ons;
+			
+			$end_time_part = microtime(true);
+			$this->_add_performance_data('encode_post/encode_post_add_ons', $end_time_part-$start_time_part);
 
 			$start_time_part = microtime(true);
 
@@ -222,6 +231,8 @@
 			$image_size_data['full'] = array('url' => $img_url, 'width' => $media_meta['width'], 'height' => $media_meta['height']);
 
 			$image_data["sizes"] = $image_size_data;
+			
+			$image_data = apply_filters('m_router_data/add_image_meta', $image_data, $media_post_id, $media_post);
 
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_image', $end_time-$start_time);

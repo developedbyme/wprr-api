@@ -61,6 +61,7 @@
 			}
 			
 			$url = strtok($_SERVER["REQUEST_URI"], '?');
+			
 			if(( strpos($url, '/id-redirect/') === 0 ) ) {
 				
 				$id = intval($_GET['id']);
@@ -73,10 +74,11 @@
 				}
 		
 			}
-			else if(( strpos($url, '/id-image-redirect/') === 0 ) ) {
-		
+			else if(( strpos($url, '/id-post-image-redirect/') === 0 ) ) {
 				$id = intval($_GET['id']);
 				$post = get_post($id);
+				
+				$size = isset($_GET['size']) ? $_GET['size'] : 'thumbnail';
 		
 				if($post) {
 			
@@ -85,7 +87,7 @@
 					$thumbnail_source = null;
 					$thumbnail_size = null;
 					if($thumbnail_id) {
-						$thumbnail_data = wp_get_attachment_image_src($thumbnail_id, 'thumbnail');
+						$thumbnail_data = wp_get_attachment_image_src($thumbnail_id, $size);
 						$thumbnail_source = $thumbnail_data[0];
 				
 						wp_redirect($thumbnail_source);
@@ -97,7 +99,22 @@
 						//exit();
 					}
 				}
+			}
+			else if(( strpos($url, '/id-image-redirect/') === 0 ) ) {
+				$id = intval($_GET['id']);
+				$post = get_post($id);
+				
+				$size = isset($_GET['size']) ? $_GET['size'] : 'thumbnail';
 		
+				if($post) {
+			
+					$thumbnail_data = wp_get_attachment_image_src($id, $size);
+					$thumbnail_source = $thumbnail_data[0];
+			
+					wp_redirect($thumbnail_source);
+	
+					exit();
+				}
 			}
 		}
 		

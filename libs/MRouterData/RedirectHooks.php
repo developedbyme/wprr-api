@@ -59,6 +59,46 @@
 
 				exit();
 			}
+			
+			$url = strtok($_SERVER["REQUEST_URI"], '?');
+			if(( strpos($url, '/id-redirect/') === 0 ) ) {
+				
+				$id = intval($_GET['id']);
+				$post = get_post($id);
+		
+				if($post) {
+					wp_redirect(get_permalink($id));
+		
+					exit();
+				}
+		
+			}
+			else if(( strpos($url, '/id-image-redirect/') === 0 ) ) {
+		
+				$id = intval($_GET['id']);
+				$post = get_post($id);
+		
+				if($post) {
+			
+					$thumbnail_id = get_post_thumbnail_id($id);
+			
+					$thumbnail_source = null;
+					$thumbnail_size = null;
+					if($thumbnail_id) {
+						$thumbnail_data = wp_get_attachment_image_src($thumbnail_id, 'thumbnail');
+						$thumbnail_source = $thumbnail_data[0];
+				
+						wp_redirect($thumbnail_source);
+		
+						exit();
+					}
+					else {
+						//METODO
+						//exit();
+					}
+				}
+		
+			}
 		}
 		
 		public static function test_import() {

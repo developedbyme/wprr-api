@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.13.1
+* Added support for id redirect
+
 ### 0.13.0
 * Added support for add-ons
 

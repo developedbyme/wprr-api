@@ -22,7 +22,13 @@
 				if(isset($sitepress)) {
 					$sitepress->switch_lang($data['language']);
 				}
+				
+				if(function_exists('acf_update_setting')) {
+					acf_update_setting('current_language', $data['language']);
+				}
 			}
+			
+			$fields_object = get_field_objects('option', false, true);
 			
 			$encoder = new \MRouterData\MRouterDataEncoder();
 			

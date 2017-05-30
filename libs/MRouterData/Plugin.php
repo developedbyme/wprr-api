@@ -46,6 +46,7 @@
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\UploadAttachmentEndPoint(), 'attachment', $api_namespace, array('Access-Control-Allow-Origin' => '*'), 'POST');
 			
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostDataByIdEndPoint(), 'post/(?P<id>\d+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\CommentsEndPoint(), 'post/(?P<id>\d+)/comments', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 
 			//$this->create_rest_api_end_point(new \MRouterData\RestApi\SetMetadataEndpoint(), 'metadata', $api_namespace, array('Access-Control-Allow-Origin' => '*'), 'POST');
 

@@ -62,6 +62,12 @@
 			$current_post_data["content"] = apply_filters('the_content', $post->post_content);
 
 			$current_post_data["parent"] = $this->encode_post_link($post->post_parent);
+			
+			$comments_arguments = array(
+				'post_id' => $post_id,
+				'count' => true
+			);
+			$current_post_data["numberOfComments"] = get_comments($comments_arguments);
 
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/basic_data', $end_time_part-$start_time_part);
@@ -617,6 +623,33 @@
 
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_user', $end_time-$start_time);
+
+			return $return_object;
+		}
+		
+		public function encode_comment($comment) {
+			$start_time = microtime(true);
+			
+			$return_object = array();
+			
+			$return_object['id'] = $comment->comment_ID;
+			$return_object['name'] = $comment->comment_author;
+			$return_object['url'] = $comment->comment_author_url;
+			$return_object['gravatarHash'] = md5( strtolower( trim( $comment->comment_author_email ) ) );
+			$return_object['content'] = $comment->comment_content;
+			$return_object["date"] = $comment->comment_date;
+			
+			$encoded_children = array();
+			$children = $comment->get_children(array('status' => 'approve'));
+			
+			foreach($children as $child) {
+				$encoded_children[] = $this->encode_comment($child);
+			}
+			
+			$return_object['children'] = $encoded_children;
+			
+			$end_time = microtime(true);
+			$this->_add_performance_data('encode_comment', $end_time-$start_time);
 
 			return $return_object;
 		}

@@ -632,12 +632,22 @@
 			
 			$return_object = array();
 			
+			//var_dump($comment);
+			
 			$return_object['id'] = $comment->comment_ID;
 			$return_object['name'] = $comment->comment_author;
 			$return_object['url'] = $comment->comment_author_url;
 			$return_object['gravatarHash'] = md5( strtolower( trim( $comment->comment_author_email ) ) );
 			$return_object['content'] = $comment->comment_content;
-			$return_object["date"] = $comment->comment_date;
+			$return_object['date'] = $comment->comment_date;
+			
+			if((int)$comment->user_id > 0) {
+				$author = get_user_by('ID', $comment->user_id);
+				$return_object["author"] = $this->encode_user($author);
+			}
+			else {
+				$return_object["author"] = null;
+			}
 			
 			$encoded_children = array();
 			$children = $comment->get_children(array('status' => 'approve'));

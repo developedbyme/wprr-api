@@ -16,6 +16,14 @@
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\AcfOptionsEndPoint::perform_call<br />");
 			
+			if(isset($data['language'])) {
+				global $sitepress;
+	
+				if(isset($sitepress)) {
+					$sitepress->switch_lang($data['language']);
+				}
+			}
+			
 			$encoder = new \MRouterData\MRouterDataEncoder();
 			
 			$data = $encoder->encode_acf_options();

@@ -595,9 +595,10 @@
 			if ($case_cat_tax_case_category_page) {
 				$return_object["case_cat_tax_case_category_page"] = get_permalink($case_cat_tax_case_category_page[0]->ID);
 			}
-			//METODO: add taxonomy name
 
 			$return_object["meta"] = get_term_meta($term->term_id);
+			
+			$return_object = apply_filters('m_router_data/encode_term', $return_object, $term->term_id, $term, $this);
 
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_term', $end_time-$start_time);

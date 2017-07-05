@@ -71,6 +71,12 @@
 		return $encoder->encode_post_link($post_id);
 	}
 	
+	function mrouter_encode_post($post) {
+		$encoder = new \MRouterData\MRouterDataEncoder();
+		
+		return $encoder->encode_post($post);
+	}
+	
 	function mrouter_encode_term($term) {
 		$encoder = new \MRouterData\MRouterDataEncoder();
 		

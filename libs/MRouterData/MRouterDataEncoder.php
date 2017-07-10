@@ -276,6 +276,7 @@
 				return $this->encode_post_link($post_or_id->ID);
 			}
 			else {
+				
 				return $this->encode_post_link($post_or_id);
 			}
 		}
@@ -287,7 +288,10 @@
 
 			$return_array = array();
 
-			if(is_array($value)) {
+			if($value === null) {
+				//MENOTE: do nothing
+			}
+			else if(is_array($value)) {
 
 				foreach($value as $post_or_id) {
 					$return_array[] = $this->_encode_acf_single_post_object_or_id($post_or_id);

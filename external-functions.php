@@ -83,6 +83,24 @@
 		return $encoder->encode_term($term);
 	}
 	
+	function mrouter_encode_all_taxonomies() {
+		
+		$return_object = array();
+		$encoder = new \MRouterData\MRouterDataEncoder();
+		
+		$taxonomies = get_taxonomies(); 
+		foreach($taxonomies as $taxonomy) {
+			$encoded_terms = array();
+			$terms = get_terms(array('taxonomy' => $taxonomy, 'hide_empty' => false));
+			foreach($terms as $term) {
+				$encoded_terms[] = $encoder->encode_term($term);
+			}
+			$return_object[$taxonomy] = $encoded_terms;
+		}
+		
+		return $return_object;
+	}
+	
 	function mrouter_disable_all_ranges($filter_priority = 10) {
 		add_filter('m_router_data/range_has_permission', function($has_permission) {return false;}, $filter_priority, 1);
 	}

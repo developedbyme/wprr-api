@@ -595,6 +595,7 @@
 			$return_object['slug'] = $term->slug;
 			$return_object['description'] = $term->description;
 			$return_object['taxonomy'] = $term->taxonomy;
+			$return_object['parentId'] = $term->parent;
 			$case_cat_tax_case_category_page = get_field('case_cat_tax_case_category_page', $queried_object);
 			if ($case_cat_tax_case_category_page) {
 				$return_object["case_cat_tax_case_category_page"] = get_permalink($case_cat_tax_case_category_page[0]->ID);

@@ -33,8 +33,11 @@
 			$paths = $data['paths'];
 			$permalink = $data['permalink'];
 			$seo_render = $data['seoRender'];
-
+			
+			//METODO: check diffs
 			$meta_data = update_post_meta($post_id, 'mrouter_initital_load', $paths);
+			var_dump($meta_data);
+			//METODO: clear cache
 			
 			$upload_dir = wp_upload_dir(null, false);
 			
@@ -46,15 +49,6 @@
 				update_post_meta($post_id, 'mrouter_has_seo_render', 1);
 			} 
 			
-			
-			//METODO: check diffs
-
-			if(!$meta_data) {
-				return $this->output_error('Metadata not edited/created');
-			}
-			
-			//METODO: clear cache
-
 			return $this->output_success($meta_data);
 		}
 

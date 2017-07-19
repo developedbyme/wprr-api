@@ -128,31 +128,34 @@
 
 			$start_time_part = microtime(true);
 
-			$start_time_acf_part = microtime(true);
-
-			$current_post_data["acf"] = null;
-			$fields_object = get_field_objects($post_id, false, true); //get_field_objects($post_id); //
-
-			$end_time_acf_part = microtime(true);
-			$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);
-
-			if($fields_object !== false) {
-
+			if(function_exists('get_field_objects')) {
 				$start_time_acf_part = microtime(true);
 
-				$acf_object = array();
-				foreach($fields_object as $name => $field_object) {
-					$acf_object[$name] = $this->encode_acf_field($field_object, $post_id);
-				}
+				$current_post_data["acf"] = null;
+				$fields_object = get_field_objects($post_id, false, true); //get_field_objects($post_id); //
 
 				$end_time_acf_part = microtime(true);
-				$this->_add_performance_data('encode_post/acf/encode', $end_time_acf_part-$start_time_acf_part);
+				$this->_add_performance_data('encode_post/acf/get_field_objects', $end_time_acf_part-$start_time_acf_part);
 
-				$current_post_data["acf"] = $acf_object;
+				if($fields_object !== false) {
+
+					$start_time_acf_part = microtime(true);
+
+					$acf_object = array();
+					foreach($fields_object as $name => $field_object) {
+						$acf_object[$name] = $this->encode_acf_field($field_object, $post_id);
+					}
+
+					$end_time_acf_part = microtime(true);
+					$this->_add_performance_data('encode_post/acf/encode', $end_time_acf_part-$start_time_acf_part);
+
+					$current_post_data["acf"] = $acf_object;
+				}
+
+				$end_time_part = microtime(true);
+				$this->_add_performance_data('encode_post/acf', $end_time_part-$start_time_part);
 			}
-
-			$end_time_part = microtime(true);
-			$this->_add_performance_data('encode_post/acf', $end_time_part-$start_time_part);
+			
 			
 			$start_time_part = microtime(true);
 			
@@ -596,10 +599,6 @@
 			$return_object['description'] = $term->description;
 			$return_object['taxonomy'] = $term->taxonomy;
 			$return_object['parentId'] = $term->parent;
-			$case_cat_tax_case_category_page = get_field('case_cat_tax_case_category_page', $queried_object);
-			if ($case_cat_tax_case_category_page) {
-				$return_object["case_cat_tax_case_category_page"] = get_permalink($case_cat_tax_case_category_page[0]->ID);
-			}
 
 			$return_object["meta"] = get_term_meta($term->term_id);
 			

@@ -62,7 +62,6 @@
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\AcfOptionsEndPoint(), 'acf-options', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\GetMenuEndPoint(), 'menu/(?P<location>[a-z0-9\-\_]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 
-			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostCaseEndPoint(), 'post-case', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 		}
 		
 		public function filter_id_check_for_has_permission($has_permission) {

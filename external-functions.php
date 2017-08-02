@@ -128,4 +128,35 @@
 			return true;
 		}, $filter_priority, 2);
 	}
+	
+	function mrouter_custom_range_query_default_types($query_args, $data) {
+		$query_args['post_type'] = apply_filters('m_router_data/custom_range_default_types', array('post', 'page'), $data);
+		
+		return $query_args;
+	}
+	
+	function mrouter_custom_range_query_taxonomy($query_args, $data) {
+		
+		if(isset($data['taxonomy'])) {
+
+			if(isset($data['terms'])) {
+				$terms = explode(',', $data['terms']);
+			}
+			else {
+				$terms = array($data['term']);
+			}
+
+			$tax_query = array(
+				'taxonomy' => $data['taxonomy'],
+				'field' => 'slug',
+				'terms' => $terms
+			);
+
+			$query_args['tax_query'] = array();
+			$query_args['tax_query'][] = $tax_query;
+		}
+
+		return $query_args;
+		
+	}
 ?>

@@ -26,9 +26,6 @@
 			if(!has_filter($query_filter_name)) {
 				return $this->output_error('No range for type '.$range_type);
 			}
-			if(!has_filter($encode_filter_name)) {
-				return $this->output_error('No encoding for range '.$range_type);
-			}
 
 			$has_permission = apply_filters($has_permission_filter_name, true, $data);
 			if(!$has_permission) {
@@ -56,7 +53,7 @@
 			$post_links = array();
 
 			foreach($posts as $post_id) {
-				$post_links[] = apply_filters($encode_filter_name, $post_id);
+				$post_links[] = apply_filters($encode_filter_name, mrouter_encode_post_link($post_id), $post_id);
 			};
 
 			return $this->output_success($post_links);

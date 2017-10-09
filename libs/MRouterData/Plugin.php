@@ -61,6 +61,9 @@
 			
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\AcfOptionsEndPoint(), 'acf-options', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\GetMenuEndPoint(), 'menu/(?P<location>[a-z0-9\-\_]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\GetTermsEndPoint(), 'taxonomy/(?P<taxonomy>[a-z0-9\-\_]+)/terms', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			
 
 		}
 		

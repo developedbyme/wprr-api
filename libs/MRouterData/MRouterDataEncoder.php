@@ -609,6 +609,28 @@
 
 			return $return_object;
 		}
+		
+		public function encode_term_link($term) {
+
+			$start_time = microtime(true);
+
+			$return_object = array();
+
+			$queried_object = get_queried_object();
+			$return_object['id'] = $term->term_id;
+			$return_object['permalink'] = get_term_link($term);
+			$return_object['name'] = $term->name;
+			$return_object['slug'] = $term->slug;
+			$return_object['taxonomy'] = $term->taxonomy;
+			$return_object['parentId'] = $term->parent;
+			
+			$return_object = apply_filters('m_router_data/encode_term_link', $return_object, $term->term_id, $term, $this);
+
+			$end_time = microtime(true);
+			$this->_add_performance_data('encode_term_link', $end_time-$start_time);
+
+			return $return_object;
+		}
 
 		public function encode_user($user) {
 

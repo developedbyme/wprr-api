@@ -121,7 +121,7 @@
 
 			$start_time_part = microtime(true);
 
-			$current_post_data["meta"] = get_post_meta($post_id);
+			$current_post_data["meta"] = apply_filters('m_router_data/filter_post_meta', get_post_meta($post_id), $post_id);
 
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/meta', $end_time_part-$start_time_part);

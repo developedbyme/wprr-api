@@ -204,6 +204,10 @@
 
 		public function encode_image($media_post) {
 			//var_dump($media_post);
+			
+			if(!($media_post instanceof \WP_Post)) {
+				return null;
+			}
 
 			$start_time = microtime(true);
 

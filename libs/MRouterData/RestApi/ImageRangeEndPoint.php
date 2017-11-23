@@ -47,6 +47,10 @@
 					'terms' => $terms
 				);
 				
+				if(isset($data['includeTermChildren'])) {
+					$tax_query['include_children'] = ($data['includeTermChildren'] == '1') ? true : false;
+				}
+				
 				$query_args['tax_query'] = array();
 				$query_args['tax_query'][] = $tax_query;
 			}

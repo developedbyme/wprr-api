@@ -19,12 +19,16 @@
 			$post_type = $data['post_type'];
 			
 			$general_has_permission_filter_name = M_ROUTER_DATA_DOMAIN.'/range_has_permission';
-			$specific_has_permission_filter_name = M_ROUTER_DATA_DOMAIN.'/range_has_permission_'.$post_type;
+			$specific_has_permission_filter_name = M_ROUTER_DATA_DOMAIN.'/range_has_permission_'.$post_type; //METODO: solve for multiple post types
 			
 			$has_permission = apply_filters($general_has_permission_filter_name, true, $data);
 			$has_permission = apply_filters($specific_has_permission_filter_name, $has_permission, $data);	
 			if(!$has_permission) {
 				return $this->output_error('Access denied');
+			}
+			
+			if($post_type !== 'any') {
+				$post_type = explode(',', $post_type);
 			}
 			
 			$query_args = array(

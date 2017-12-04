@@ -53,7 +53,7 @@
 			$post_links = array();
 
 			foreach($posts as $post_id) {
-				$post_links[] = apply_filters($encode_filter_name, mrouter_encode_post_link($post_id), $post_id);
+				$post_links[] = apply_filters($encode_filter_name, mrouter_encode_post_link($post_id), $post_id, $data);
 			};
 
 			return $this->output_success($post_links);

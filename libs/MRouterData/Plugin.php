@@ -63,8 +63,19 @@
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\GetMenuEndPoint(), 'menu/(?P<location>[a-z0-9\-\_]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\GetTermsEndPoint(), 'taxonomy/(?P<taxonomy>[a-z0-9\-\_]+)/terms', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\GetTaxonomiesEndPoint(), 'taxonomies', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
-
+			$current_end_point = new \MRouterData\RestApi\AddTermToPostEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('post/(?P<post_id>\d+)/(?P<taxonomy>[a-z0-9\-\_]+)/terms/add', $api_namespace, 1, 'POST');
+			$current_end_point->set_requiered_capability('edit_others_posts');
+			$this->_rest_api_end_points[] = $current_end_point;
+			
+			$current_end_point = new \MRouterData\RestApi\RemoveTermFromPostEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('post/(?P<post_id>\d+)/(?P<taxonomy>[a-z0-9\-\_]+)/terms/remove', $api_namespace, 1, 'POST');
+			$current_end_point->set_requiered_capability('edit_others_posts');
+			$this->_rest_api_end_points[] = $current_end_point;
 		}
 		
 		public function filter_id_check_for_has_permission($has_permission) {

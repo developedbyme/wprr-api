@@ -4,7 +4,7 @@
 	use \WP_Query;
 	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\RestApi\GetTermsEndPoint
+	// \MRouterData\RestApi\GetTaxonomiesEndPoint
 	class GetTermsEndPoint extends EndPoint {
 		
 		function __construct() {

@@ -59,6 +59,23 @@
 		}
 	}
 	
+	function mrouter_get_render_settings($path) {
+		$settings = array();
+		
+		//METODO: check if render is needed
+		
+		$settings['path'] = $path;
+		
+		$salt = apply_filters('m_router_data/salt', 'wvIUIAULTxKicDpbkzyPpVi5wskSe6Yxy0Uq4wCqbAui1wVKAKmsVhN7JOhGbFQohVs9pnpQoS1dWGkL');
+		$render_key_salt = apply_filters('m_router_data/render_key_salt', 'DsHWtvGPGje5kjDetOVWd2CkflKWztdDRAMA7FN4b9tbqkXfozxH0ET7dbB92wRdNZOVBuVUZQWiRiqP');
+		
+		//METODO: injected key '9I9WQgoWHpVm47Z0wVgeKcmswwyinNHwKIfKH3mI1WLRwt9PPAZE25ylqkiTG1Xsyjx5dWUmn0W7qu2S'
+		
+		$settings['key'] = md5($path.$render_key_salt);
+		
+		return $settings;
+	}
+	
 	function mrouter_encode() {
 		$encoder = new \MRouterData\MRouterDataEncoder();
 		

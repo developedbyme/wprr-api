@@ -45,13 +45,22 @@
 		return $initial_mrouter_data;
 	}
 	
-	function mrouter_output_rendered_content() {
-		$permalink = get_permalink();
+	function mrouter_output_rendered_content($path) {
 		
 		$upload_dir = wp_upload_dir(null, false);
 		
 		$salt = apply_filters('m_router_data/salt', 'wvIUIAULTxKicDpbkzyPpVi5wskSe6Yxy0Uq4wCqbAui1wVKAKmsVhN7JOhGbFQohVs9pnpQoS1dWGkL');
+		$render_key_salt = apply_filters('m_router_data/render_key_salt', 'DsHWtvGPGje5kjDetOVWd2CkflKWztdDRAMA7FN4b9tbqkXfozxH0ET7dbB92wRdNZOVBuVUZQWiRiqP');
 		
+		$generated_key = md5($path.$render_key_salt);
+		$rendered_path = $upload_dir['basedir'].'/mrouter-seo-renders/'.md5($generated_key.$salt).'.html';
+		if(file_exists($rendered_path)) {
+			readfile($rendered_path);
+			return;
+		}
+		
+		//METODO: remove this when everything has transitioned
+		$permalink = get_permalink();
 		$rendered_path = $upload_dir['basedir'].'/mrouter-seo-renders/'.md5($permalink.$salt).'.html';
 		
 		if(file_exists($rendered_path)) {

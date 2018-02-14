@@ -120,8 +120,14 @@
 			$this->_add_performance_data('encode_post/author', $end_time_part-$start_time_part);
 
 			$start_time_part = microtime(true);
+			
+			$encoded_meta_data = array();
+			$meta_data = get_post_meta($post_id);
+			foreach($meta_data as $key => $value) {
+				$encoded_meta_data[$key] = get_post_meta($post_id, $key, false);
+			}
 
-			$current_post_data["meta"] = apply_filters('m_router_data/filter_post_meta', get_post_meta($post_id), $post_id);
+			$current_post_data["meta"] = apply_filters('m_router_data/filter_post_meta', $encoded_meta_data, $post_id);
 
 			$end_time_part = microtime(true);
 			$this->_add_performance_data('encode_post/meta', $end_time_part-$start_time_part);

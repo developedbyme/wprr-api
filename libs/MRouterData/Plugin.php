@@ -104,6 +104,9 @@
 		}
 		
 		public function filter_paths($paths) {
+			
+			$paths['current'] = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$paths['home'] = get_home_url();
 			$paths['site'] = get_site_url();
 			$paths['theme'] = get_stylesheet_directory_uri();
 			$paths['rest'] = rest_url();
@@ -167,7 +170,7 @@
 			
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'has_permission', array($this, 'filter_id_check_for_has_permission'), 10, 1);
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_image_sizes', array($this, 'filter_image_sizes'), 10, 1);
-			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_paths', array($this, 'filter_image_sizes'), 10, 1);
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_paths', array($this, 'filter_paths'), 10, 1);
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data', array($this, 'filter_user_data'), 10, 3);
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', array($this, 'filter_user_data_if_logged_in'), 10, 1);
 		}

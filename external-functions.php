@@ -186,8 +186,6 @@
 		
 	}
 	
-	
-	
 	function wprr_get_configuration_data() {
 		$return_array = array();
 		
@@ -197,5 +195,25 @@
 		$return_array['userData'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', null);
 		
 		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
+	}
+	
+	function wprr_output_module_with_custom_data($name, $data) {
+		
+		$element_id = 'wprr-'.sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+		
+		?>
+		<div id="<?php echo($element_id); ?>"></div>
+		<script>
+			window.wprr.insertModule(
+				"<?php echo($name); ?>",
+				document.querySelector("#<?php echo($element_id); ?>"),
+				<?php echo(json_encode($data)); ?>
+			);
+		</script>
+		<?php
+	}
+	
+	function wprr_output_module($name) {
+		wprr_output_module_with_custom_data($name, wprr_get_configuration_data());
 	}
 ?>

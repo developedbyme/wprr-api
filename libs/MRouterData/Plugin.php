@@ -45,6 +45,8 @@
 			//METODO: add security
 			//$this->create_rest_api_end_point(new \MRouterData\RestApi\UploadAttachmentEndPoint(), 'attachment', $api_namespace, array('Access-Control-Allow-Origin' => '*'), 'POST');
 			
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\GetSiteDataEndPoint(), 'site-data', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\PostDataByIdEndPoint(), 'post/(?P<id>\d+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
 			$this->create_rest_api_end_point(new \MRouterData\RestApi\CommentsEndPoint(), 'post/(?P<id>\d+)/comments', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
@@ -101,10 +103,73 @@
 			return $has_permission;
 		}
 		
+		public function filter_paths($paths) {
+			$paths['site'] = get_site_url();
+			$paths['theme'] = get_stylesheet_directory_uri();
+			$paths['rest'] = rest_url();
+			
+			return $paths;
+		}
+		
+		public function filter_image_sizes($image_sizes) {
+			
+			global $_wp_additional_image_sizes;
+			
+			foreach(get_intermediate_image_sizes() as $current_size) {
+				
+				if(in_array($current_size, array('thumbnail', 'medium', 'medium_large', 'large'))) {
+					$image_sizes[$current_size]['width'] = get_option( "{$current_size}_size_w");
+					$image_sizes[$current_size]['height'] = get_option( "{$current_size}_size_h");
+					$image_sizes[$current_size]['crop'] = (bool) get_option( "{$current_size}_crop");
+				}
+				else if(isset($_wp_additional_image_sizes[$current_size])) {
+					$image_sizes[$current_size] = array(
+						'width' => $_wp_additional_image_sizes[$current_size]['width'],
+						'height' => $_wp_additional_image_sizes[$current_size]['height'],
+						'crop' => $_wp_additional_image_sizes[$current_size]['crop'],
+					);
+				}
+			}
+			$image_sizes['full'] = array(
+				'width' => 0,
+				'height' => 0,
+				'crop' => false,
+			);
+			
+			
+			return $image_sizes;
+		}
+		
+		public function filter_user_data_if_logged_in($null_value) {
+			if(is_user_logged_in()) {
+				
+				$current_user = wp_get_current_user();
+				
+				return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data', array(), $current_user->ID, $current_user);
+			}
+			
+			return $null_value;
+		}
+		
+		public function filter_user_data($user_data, $user_id, $user) {
+			
+			$encoder = new \MRouterData\MRouterDataEncoder();
+			
+			$user_data['data'] = $encoder->encode_user($user);
+			$user_data['roles'] = $user->roles;
+			$user_data['restNonce'] = wp_create_nonce('wp_rest');
+			
+			return $user_data;
+		}
+		
 		protected function create_filters() {
 			//echo("\MRouterData\Plugin::create_filters<br />");
 			
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'has_permission', array($this, 'filter_id_check_for_has_permission'), 10, 1);
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_image_sizes', array($this, 'filter_image_sizes'), 10, 1);
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_paths', array($this, 'filter_image_sizes'), 10, 1);
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data', array($this, 'filter_user_data'), 10, 3);
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', array($this, 'filter_user_data_if_logged_in'), 10, 1);
 		}
 		
 		

@@ -94,6 +94,12 @@
 		return $encoder->encode_post($post);
 	}
 	
+	function mrouter_encode_image($post) {
+		$encoder = new \MRouterData\MRouterDataEncoder();
+		
+		return $encoder->encode_image($post);
+	}
+	
 	function mrouter_encode_term($term) {
 		$encoder = new \MRouterData\MRouterDataEncoder();
 		

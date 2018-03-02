@@ -792,6 +792,10 @@
 				$query_data['searchQuery'] = ($wp_query->is_search ? get_search_query() : null);
 				$query_data['numberOfPosts'] = intval($wp_query->found_posts);
 				$query_data['numberOfPaginationPages'] = intval($wp_query->max_num_pages);
+				
+				if(defined('ICL_LANGUAGE_CODE')) {
+					$query_data['language'] = ICL_LANGUAGE_CODE;
+				}
 
 				if($query_data['numberOfPaginationPages'] === 0) {
 					$query_data['currentPaginationIndex'] = 0;

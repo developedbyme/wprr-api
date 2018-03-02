@@ -45,13 +45,22 @@
 		return $initial_mrouter_data;
 	}
 	
-	function mrouter_output_rendered_content() {
-		$permalink = get_permalink();
+	function mrouter_output_rendered_content($path) {
 		
 		$upload_dir = wp_upload_dir(null, false);
 		
 		$salt = apply_filters('m_router_data/salt', 'wvIUIAULTxKicDpbkzyPpVi5wskSe6Yxy0Uq4wCqbAui1wVKAKmsVhN7JOhGbFQohVs9pnpQoS1dWGkL');
+		$render_key_salt = apply_filters('m_router_data/render_key_salt', 'DsHWtvGPGje5kjDetOVWd2CkflKWztdDRAMA7FN4b9tbqkXfozxH0ET7dbB92wRdNZOVBuVUZQWiRiqP');
 		
+		$generated_key = md5($path.$render_key_salt);
+		$rendered_path = $upload_dir['basedir'].'/mrouter-seo-renders/'.md5($generated_key.$salt).'.html';
+		if(file_exists($rendered_path)) {
+			readfile($rendered_path);
+			return;
+		}
+		
+		//METODO: remove this when everything has transitioned
+		$permalink = get_permalink();
 		$rendered_path = $upload_dir['basedir'].'/mrouter-seo-renders/'.md5($permalink.$salt).'.html';
 		
 		if(file_exists($rendered_path)) {
@@ -181,5 +190,36 @@
 
 		return $query_args;
 		
+	}
+	
+	function wprr_get_configuration_data() {
+		$return_array = array();
+		
+		$return_array['paths'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_paths', array());
+		$return_array['initialMRouterData'] = get_initial_mrouter_data();
+		$return_array['imageSizes'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_image_sizes', array());
+		$return_array['userData'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', null);
+		
+		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
+	}
+	
+	function wprr_output_module_with_custom_data($name, $data) {
+		
+		$element_id = 'wprr-'.sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
+		
+		?>
+		<div id="<?php echo($element_id); ?>"></div>
+		<script>
+			window.wprr.insertModule(
+				"<?php echo($name); ?>",
+				document.querySelector("#<?php echo($element_id); ?>"),
+				<?php echo(json_encode($data)); ?>
+			);
+		</script>
+		<?php
+	}
+	
+	function wprr_output_module($name) {
+		wprr_output_module_with_custom_data($name, wprr_get_configuration_data());
 	}
 ?>

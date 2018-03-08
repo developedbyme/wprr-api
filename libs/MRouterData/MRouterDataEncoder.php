@@ -518,6 +518,22 @@
 
 					$return_object['value'] = $rows_array;
 					break;
+				case 'group':
+					$row_result = array();
+					$current_key = $field['key'];
+
+					if(have_rows($current_key, $post_id)) {
+						the_row();
+						$current_row = get_row();
+						
+						foreach($current_row as $key => $value) {
+							$current_row_field = get_field_object($key, $post_id, false, true);
+							$row_result[$current_row_field['name']] = $this->encode_acf_field($current_row_field, $post_id, $value);
+						}
+					}
+
+					$return_object['value'] = $row_result;
+					break;
 				case 'image':
 					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					if(is_array($field_value)) {

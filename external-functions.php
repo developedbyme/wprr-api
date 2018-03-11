@@ -68,6 +68,29 @@
 		}
 	}
 	
+	function wprr_get_rendered_content($path) {
+		$upload_dir = wp_upload_dir(null, false);
+		
+		$salt = apply_filters('m_router_data/salt', 'wvIUIAULTxKicDpbkzyPpVi5wskSe6Yxy0Uq4wCqbAui1wVKAKmsVhN7JOhGbFQohVs9pnpQoS1dWGkL');
+		$render_key_salt = apply_filters('m_router_data/render_key_salt', 'DsHWtvGPGje5kjDetOVWd2CkflKWztdDRAMA7FN4b9tbqkXfozxH0ET7dbB92wRdNZOVBuVUZQWiRiqP');
+		
+		$generated_key = md5($path.$render_key_salt);
+		$rendered_path = $upload_dir['basedir'].'/mrouter-seo-renders/'.md5($generated_key.$salt).'.html';
+		if(file_exists($rendered_path)) {
+			return file_get_contents($rendered_path);
+		}
+		
+		//METODO: remove this when everything has transitioned
+		$permalink = get_permalink();
+		$rendered_path = $upload_dir['basedir'].'/mrouter-seo-renders/'.md5($permalink.$salt).'.html';
+		
+		if(file_exists($rendered_path)) {
+			return file_get_contents($rendered_path);
+		}
+		
+		return null;
+	}
+	
 	function mrouter_get_render_settings($path) {
 		$settings = array();
 		
@@ -209,12 +232,14 @@
 		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
 	}
 	
-	function wprr_output_module_with_custom_data($name, $data) {
+	function wprr_output_module_with_custom_data($name, $data, $seo_content = null) {
 		
 		$element_id = 'wprr-'.sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 		
 		?>
-		<div id="<?php echo($element_id); ?>"></div>
+		<div id="<?php echo($element_id); ?>">
+			<?php echo($seo_content); ?>
+		</div>
 		<script>
 			window.wprr.insertModule(
 				"<?php echo($name); ?>",
@@ -227,5 +252,9 @@
 	
 	function wprr_output_module($name) {
 		wprr_output_module_with_custom_data($name, wprr_get_configuration_data());
+	}
+	
+	function wprr_output_module_with_seo_content($name, $seo_path) {
+		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path));
 	}
 ?>

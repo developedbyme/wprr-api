@@ -229,6 +229,18 @@
 		$return_array['imageSizes'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_image_sizes', array());
 		$return_array['userData'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', null);
 		
+		$render_id = -1;
+		if(is_singular()) {
+			$render_id = get_the_id();
+		}
+			
+		$render_path = $_SERVER["REQUEST_URI"];
+
+		$mrouter_render_settings = mrouter_get_render_settings($render_path);
+		
+		$return_array['renderId'] = $render_id;
+		$return_array['render'] = $mrouter_render_settings;
+		
 		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
 	}
 	

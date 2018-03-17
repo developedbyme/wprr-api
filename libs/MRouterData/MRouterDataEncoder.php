@@ -176,7 +176,7 @@
 
 			$current_post_data["languages"] = null;
 			if ( function_exists('icl_get_languages') ) {
-        $current_post_data["languages"] = icl_get_languages( "skip_missing=0" );
+				$current_post_data["languages"] = icl_get_languages( "skip_missing=0" );
 				$current_post_data["languages"]["ICL_LANGUAGE_CODE"] = ( ICL_LANGUAGE_CODE == "sv" ? "en" : "sv" );
 			}
 
@@ -672,6 +672,31 @@
 			$return_object['permalink'] = get_author_posts_url($user->ID);
 			$return_object['name'] = $user->display_name;
 
+			$return_object['gravatarHash'] = md5( strtolower( trim( $user->email ) ) );
+
+			$end_time = microtime(true);
+			$this->_add_performance_data('encode_user', $end_time-$start_time);
+
+			return $return_object;
+		}
+		
+		public function encode_user_with_private_data($user) {
+
+			if(!$user) {
+				return null;
+			}
+
+			$start_time = microtime(true);
+
+			$return_object = array();
+
+			$return_object['id'] = $user->ID;
+			$return_object['permalink'] = get_author_posts_url($user->ID);
+			$return_object['firstName'] = $user->first_name;
+			$return_object['lastName'] = $user->last_name;
+			$return_object['name'] = $user->display_name;
+			$return_object['email'] = $user->user_email;
+			
 			$return_object['gravatarHash'] = md5( strtolower( trim( $user->email ) ) );
 
 			$end_time = microtime(true);

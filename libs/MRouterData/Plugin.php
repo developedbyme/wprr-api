@@ -105,11 +105,17 @@
 		
 		public function filter_paths($paths) {
 			
-			$paths['current'] = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+			$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+			
+			$paths['current'] = $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 			$paths['home'] = get_home_url();
 			$paths['site'] = get_site_url();
 			$paths['theme'] = get_stylesheet_directory_uri();
 			$paths['rest'] = rest_url();
+			
+			$paths['login'] = wp_login_url();
+			$paths['logout'] = wp_logout_url();
+			$paths['lostPassword'] = wp_lostpassword_url();
 			
 			return $paths;
 		}
@@ -158,7 +164,7 @@
 			
 			$encoder = new \MRouterData\MRouterDataEncoder();
 			
-			$user_data['data'] = $encoder->encode_user($user);
+			$user_data['data'] = $encoder->encode_user_with_private_data($user);
 			$user_data['roles'] = $user->roles;
 			$user_data['restNonce'] = wp_create_nonce('wp_rest');
 			

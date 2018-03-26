@@ -27,6 +27,8 @@
 				return $this->output_error('Access denied');
 			}
 			
+			do_action(M_ROUTER_DATA_DOMAIN.'/prepare_api_request', $data);
+			
 			$query_args = array(
 				'post_type' => $post_type,
 				'posts_per_page' => -1,

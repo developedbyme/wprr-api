@@ -16,17 +16,8 @@
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\AcfOptionsEndPoint::perform_call<br />");
 			
-			if(isset($data['language'])) {
-				global $sitepress;
-	
-				if(isset($sitepress)) {
-					$sitepress->switch_lang($data['language']);
-				}
-				
-				if(function_exists('acf_update_setting')) {
-					acf_update_setting('current_language', $data['language']);
-				}
-			}
+			
+			do_action(M_ROUTER_DATA_DOMAIN.'/prepare_api_request', $data);
 			
 			$fields_object = get_field_objects('option', false, true);
 			

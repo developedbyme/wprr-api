@@ -17,14 +17,8 @@
 			//echo("\OddCore\RestApi\GetTaxonomiesEndPoint::perform_call<br />");
 			
 			$return_array = array();
-  
-			if(isset($data['language'])) {
-				global $sitepress;
-	
-				if(isset($sitepress)) {
-					$sitepress->switch_lang($data['language']);
-				}
-			}
+			
+			do_action(M_ROUTER_DATA_DOMAIN.'/prepare_api_request', $data);
 			
 			$taxonomies = get_taxonomies();
 			

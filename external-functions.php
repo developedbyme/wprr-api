@@ -233,13 +233,17 @@
 		if(is_singular()) {
 			$render_id = get_the_id();
 		}
-			
-		$render_path = $_SERVER["REQUEST_URI"];
-
-		$mrouter_render_settings = mrouter_get_render_settings($render_path);
 		
 		$return_array['renderId'] = $render_id;
-		$return_array['render'] = $mrouter_render_settings;
+		
+		if($return_array['userData'] === null) {
+			$render_path = $_SERVER["REQUEST_URI"];
+			$mrouter_render_settings = mrouter_get_render_settings($render_path);
+			$return_array['render'] = $mrouter_render_settings;
+		}
+		else {
+			$return_array['render'] = null;
+		}
 		
 		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
 	}

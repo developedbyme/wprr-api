@@ -21,7 +21,7 @@
 
 			$has_permission_filter_name = M_ROUTER_DATA_DOMAIN.'/custom_item_has_permission_'.$item_type;
 			$query_filter_name = M_ROUTER_DATA_DOMAIN.'/custom_item_get_'.$item_type;
-			$encode_filter_name = M_ROUTER_DATA_DOMAIN.'/custom_range_encode_'.$item_type;
+			$encode_filter_name = M_ROUTER_DATA_DOMAIN.'/custom_item_encode_'.$item_type;
 
 
 			if(!has_filter($query_filter_name)) {
@@ -36,6 +36,9 @@
 			do_action(M_ROUTER_DATA_DOMAIN.'/prepare_api_request', $data);
 			
 			$item = apply_filters($query_filter_name, null, $id, $data);
+			if(!$item) {
+				return $this->output_success(null);
+			}
 			
 			$encoded_item = apply_filters($encode_filter_name, array(), $item, $data);
 

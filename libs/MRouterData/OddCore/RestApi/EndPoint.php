@@ -98,6 +98,10 @@
 			);
 		}
 		
+		public function get_path() {
+			return $this->_namespace.'/v'.$this->_version.'/'.$this->_path;
+		}
+		
 		public static function test_import() {
 			echo("Imported \OddCore\RestApi\EndPoint<br />");
 		}

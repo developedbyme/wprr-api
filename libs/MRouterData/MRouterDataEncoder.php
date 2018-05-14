@@ -605,6 +605,70 @@
 
 			return $return_object;
 		}
+		
+		protected function get_acf_field_object_by_key($key, $field_objects) {
+			foreach($field_objects as $field_object) {
+				if($field_object['key'] === $key) {
+					return $field_object;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function encode_acf_value($unencoded_value, $field_object, $post_id) {
+			switch($field_object['type']) {
+				case 'true_false':
+					return ($unencoded_value === '1');
+				case 'repeater':
+					$return_array = array();
+					foreach($unencoded_value as $row) {
+						$row_object = array();
+						foreach($row as $field_key => $value) {
+							$current_field_object = $this->get_acf_field_object_by_key($field_key, $field_object['sub_fields']);
+							$current_name = $current_field_object['name'];
+							$row_object[$current_name] = $this->encode_acf_value($value, $current_field_object, $post_id);
+						}
+						$return_array[] = $row_object;
+					}
+					return $return_array;
+				case 'taxonomy':
+					$taxonomy = $field_object['taxonomy'];
+					if(is_array($unencoded_value)) {
+						$return_array = array();
+						foreach($unencoded_value as $current_id) {
+							$current_term = get_term_by('id', $current_id, $taxonomy);
+							$return_array[] = $this->encode_term($current_term);
+						}
+						
+						return $return_array;
+					}
+					else {
+						$current_term = get_term_by('id', $unencoded_value, $taxonomy);
+						return array($this->encode_term($current_term));
+					}
+				case 'wysiwyg':
+					return apply_filters('the_content', $unencoded_value);
+				case 'user':
+					$user = get_user_by('id', $unencoded_value);
+					if($user) {
+						return $this->encode_user($user);
+					}
+					else {
+						return null;
+					}
+				case 'number':
+					return (float)$unencoded_value;
+				case 'text':
+				case 'time_picker':
+				case 'date_picker':
+					return $unencoded_value;
+			}
+			
+			//var_dump($unencoded_value, $field_object);
+			
+			return $unencoded_value;
+		}
 
 		public function encode_post_link($post_id) {
 			//echo('encode_post_link');

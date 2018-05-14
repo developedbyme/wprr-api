@@ -173,6 +173,31 @@
 			return $user_data;
 		}
 		
+		public function filter_acf_post_meta($meta_data, $post_id) {
+			
+			//METODO: move this to other function
+			unset($meta_data['_last_edit']);
+			unset($meta_data['_edit_lock']);
+			
+			$encoder = new \MRouterData\MRouterDataEncoder();
+			
+			if(function_exists('get_field_objects')) {
+				$fields_object = get_field_objects($post_id, false, true);
+				
+				if($fields_object !== false) {
+					foreach($fields_object as $name => $field_object) {
+						$unencoded_value = $field_object['value'];
+						$encoded_value = $encoder->encode_acf_value($unencoded_value, $field_object, $post_id);
+						
+						$meta_data[$name] = $encoded_value;
+						unset($meta_data['_'.$name]);
+					}
+				}
+			}
+			
+			return $meta_data;
+		}
+		
 		protected function create_filters() {
 			//echo("\MRouterData\Plugin::create_filters<br />");
 			
@@ -183,6 +208,8 @@
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', array($this, 'filter_user_data_if_logged_in'), 10, 1);
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
+			
+			add_action(M_ROUTER_DATA_DOMAIN.'/'.'filter_post_meta', array($this, 'filter_acf_post_meta'), 10, 2);
 		}
 		
 		public function hook_prepare_api_request($data) {

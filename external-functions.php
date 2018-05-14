@@ -138,6 +138,12 @@
 		return $encoder->encode_acf_field($field_object, $post_id);
 	}
 	
+	function mrouter_encode_post_acf_field($field_name, $post_id) {
+		$encoder = new \MRouterData\MRouterDataEncoder();
+		
+		return $encoder->encode_post_acf_field($field_name, $post_id);
+	}
+	
 	function mrouter_encode_term($term) {
 		$encoder = new \MRouterData\MRouterDataEncoder();
 		

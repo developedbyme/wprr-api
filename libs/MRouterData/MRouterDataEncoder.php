@@ -665,9 +665,15 @@
 					return $unencoded_value;
 			}
 			
+			//METODO: add more fields
+			
 			//var_dump($unencoded_value, $field_object);
 			
 			return $unencoded_value;
+		}
+		public function encode_post_acf_field($field_name, $post_id) {
+			$field_object = get_field_object($field_name, $post_id, false);
+			return $this->encode_acf_value($field_object['value'], $field_object, $post_id);
 		}
 
 		public function encode_post_link($post_id) {

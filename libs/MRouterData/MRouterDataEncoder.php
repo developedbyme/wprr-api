@@ -622,14 +622,16 @@
 					return ($unencoded_value === '1');
 				case 'repeater':
 					$return_array = array();
-					foreach($unencoded_value as $row) {
-						$row_object = array();
-						foreach($row as $field_key => $value) {
-							$current_field_object = $this->get_acf_field_object_by_key($field_key, $field_object['sub_fields']);
-							$current_name = $current_field_object['name'];
-							$row_object[$current_name] = $this->encode_acf_value($value, $current_field_object, $post_id);
+					if(is_array($unencoded_value)) {
+						foreach($unencoded_value as $row) {
+							$row_object = array();
+							foreach($row as $field_key => $value) {
+								$current_field_object = $this->get_acf_field_object_by_key($field_key, $field_object['sub_fields']);
+								$current_name = $current_field_object['name'];
+								$row_object[$current_name] = $this->encode_acf_value($value, $current_field_object, $post_id);
+							}
+							$return_array[] = $row_object;
 						}
-						$return_array[] = $row_object;
 					}
 					return $return_array;
 				case 'taxonomy':

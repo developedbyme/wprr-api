@@ -173,6 +173,17 @@
 			return $user_data;
 		}
 		
+		public function filter_admin_data($admin_data) {
+			
+			if(function_exists('get_current_screen')) {
+				$screen = get_current_screen();
+				
+				$admin_data['screen'] = $screen;
+			}
+			
+			return $admin_data;
+		}
+		
 		public function filter_acf_post_meta($meta_data, $post_id) {
 			
 			//METODO: move this to other function
@@ -206,6 +217,7 @@
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_paths', array($this, 'filter_paths'), 10, 1);
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data', array($this, 'filter_user_data'), 10, 3);
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', array($this, 'filter_user_data_if_logged_in'), 10, 1);
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_admin_data', array($this, 'filter_admin_data'), 10, 3);
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
 			

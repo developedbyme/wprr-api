@@ -236,6 +236,10 @@
 		$return_array['userData'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', null);
 		$return_array['settings'] = array();
 		
+		if(is_admin()) {
+			$return_array['admin'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_admin_data', array());
+		}
+		
 		$render_id = -1;
 		if(is_singular()) {
 			$render_id = get_the_id();

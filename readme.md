@@ -19,6 +19,9 @@ Add the query ?mRouterData=json to any url to get output as json.
 
 ## Changelog
 
+### 0.16.0
+* New endpoint for range
+
 ### 0.15.0
 * Acf encoding of meta
 

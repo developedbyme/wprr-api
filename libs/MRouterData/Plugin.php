@@ -81,6 +81,11 @@
 			$current_end_point->setup('post/(?P<post_id>\d+)/(?P<taxonomy>[a-z0-9\-\_]+)/terms/remove', $api_namespace, 1, 'POST');
 			$current_end_point->set_requiered_capability('edit_others_posts');
 			$this->_rest_api_end_points[] = $current_end_point;
+			
+			
+			$api_namespace = 'wprr';
+			
+			$this->create_rest_api_end_point(new \MRouterData\RestApi\RangeEndpoint(), 'range/(?P<post_types>[a-z0-9\-\_,]+)/(?P<selections>[a-z0-9\-\_,]+)/(?P<encodings>[a-z0-9\-\_,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 		}
 		
 		public function filter_id_check_for_has_permission($has_permission) {

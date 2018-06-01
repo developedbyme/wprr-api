@@ -231,7 +231,7 @@
 		$return_array = array();
 		
 		$return_array['paths'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_paths', array());
-		$return_array['initialWprr'] = get_initial_mrouter_data();
+		$return_array['initialMRouterData'] = get_initial_mrouter_data();
 		$return_array['imageSizes'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_image_sizes', array());
 		$return_array['userData'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', null);
 		$return_array['settings'] = array();

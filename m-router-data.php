@@ -10,7 +10,7 @@
 	
 	define("WPRR_DOMAIN", "wprr");
 	define("M_ROUTER_DATA_DOMAIN", "m_router_data");
-	define("WPRR_TEXTDOMAIN", "m-router-data");
+	define("WPRR_TEXTDOMAIN", "wprr");
 	define("WPRR_MAIN_FILE", __FILE__);
 	define("WPRR_DIR", untrailingslashit(dirname(__FILE__)));
 	define("WPRR_URL", untrailingslashit(plugins_url('',__FILE__)));

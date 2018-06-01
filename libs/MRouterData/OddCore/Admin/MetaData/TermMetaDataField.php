@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\MetaData;
+	namespace Wprr\OddCore\Admin\MetaData;
 	
-	// \MRouterData\OddCore\Admin\MetaData\TermMetaDataField
+	// \Wprr\OddCore\Admin\MetaData\TermMetaDataField
 	class TermMetaDataField {
 		
 		protected $_type = 'ingredient';

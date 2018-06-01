@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\Taxonomies;
+	namespace Wprr\OddCore\Admin\Taxonomies;
 	
-	// \MRouterData\OddCore\Admin\Taxonomies\CustomTaxonomy
+	// \Wprr\OddCore\Admin\Taxonomies\CustomTaxonomy
 	class CustomTaxonomy {
 		
 		protected $_system_name = null;
@@ -73,19 +73,19 @@
 			//METODO: fix parent_item_colon
 			
 			$this->_labels = array(
-				'name' => __( ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'singular_name' => __( ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'add_new' => __( 'Add New', M_ROUTER_DATA_TEXTDOMAIN ),
-				'add_new_item' => __( 'Add New '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'edit_item' => __( 'Edit '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'new_item' => __( 'New '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'all_items' => __( 'All '.ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'view_item' => __( 'View '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'search_items' => __( 'Search '.ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'not_found' => __( 'No '.$name.' found', M_ROUTER_DATA_TEXTDOMAIN ),
-				'not_found_in_trash' => __( 'No '.$name.' found in trash', M_ROUTER_DATA_TEXTDOMAIN ),
+				'name' => __( ucfirst($multiple_name), WPRR_TEXTDOMAIN ),
+				'singular_name' => __( ucfirst($name), WPRR_TEXTDOMAIN ),
+				'add_new' => __( 'Add New', WPRR_TEXTDOMAIN ),
+				'add_new_item' => __( 'Add New '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'edit_item' => __( 'Edit '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'new_item' => __( 'New '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'all_items' => __( 'All '.ucfirst($multiple_name), WPRR_TEXTDOMAIN ),
+				'view_item' => __( 'View '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'search_items' => __( 'Search '.ucfirst($multiple_name), WPRR_TEXTDOMAIN ),
+				'not_found' => __( 'No '.$name.' found', WPRR_TEXTDOMAIN ),
+				'not_found_in_trash' => __( 'No '.$name.' found in trash', WPRR_TEXTDOMAIN ),
 				'parent_item_colon' => '',
-				'menu_name' => __( ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN )
+				'menu_name' => __( ucfirst($multiple_name), WPRR_TEXTDOMAIN )
 			);
 		}
 		

@@ -1,5 +1,5 @@
 <?php
-	namespace MRouterData\OddCore\AjaxApi;
+	namespace Wprr\OddCore\AjaxApi;
 	
 	use \WP_Query;
 	

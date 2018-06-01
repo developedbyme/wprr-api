@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 	
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\RestApi\PostDataByIdEndPoint
+	// \Wprr\RestApi\PostDataByIdEndPoint
 	class PostDataByIdEndPoint extends EndPoint {
 		
 		function __construct() {
@@ -37,7 +37,7 @@
 			
 			$return_object["url"] = get_permalink($post);
 			
-			$encoder = new \MRouterData\MRouterDataEncoder();
+			$encoder = new \Wprr\WprrEncoder();
 			$return_object["data"] = $encoder->encode_post($post);
 			$return_object["performance"] = $encoder->get_performance_data();
 			

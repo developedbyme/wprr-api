@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore;
+	namespace Wprr\OddCore;
 
-	// \MRouterData\OddCore\PluginBase
+	// \Wprr\OddCore\PluginBase
 	class PluginBase {
 
 		protected $_pages = null;
@@ -18,13 +18,13 @@
 		public $css_files = array(); //METODO
 
 		function __construct() {
-			//echo("\MRouterData\OddCore\PluginBase::__construct<br />");
+			//echo("\Wprr\OddCore\PluginBase::__construct<br />");
 
 			$this->register_hooks();
 		}
 
 		protected function register_lists() {
-			//echo("\MRouterData\OddCore\PluginBase::register_lists<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_lists<br />");
 
 			$this->_lists = array();
 
@@ -36,13 +36,13 @@
 		}
 
 		protected function create_pages() {
-			echo("\MRouterData\OddCore\PluginBase::create_pages<br />");
+			echo("\Wprr\OddCore\PluginBase::create_pages<br />");
 
 			//MENOTE: should be overridden
 		}
 
 		protected function register_pages() {
-			//echo("\MRouterData\OddCore\PluginBase::register_pages<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_pages<br />");
 
 			$this->_pages = array();
 			$this->create_pages();
@@ -51,19 +51,19 @@
 		}
 
 		protected function add_additional_hook($additional_hook) {
-			//echo("\MRouterData\OddCore\PluginBase::add_additional_hook<br />");
+			//echo("\Wprr\OddCore\PluginBase::add_additional_hook<br />");
 
 			$this->_additional_hooks[] = $additional_hook;
 		}
 
 		protected function create_additional_hooks() {
-			//echo("\MRouterData\OddCore\PluginBase::create_additional_hooks<br />");
+			//echo("\Wprr\OddCore\PluginBase::create_additional_hooks<br />");
 
 			//MENOTE: should be overridden
 		}
 
 		protected function register_additional_hooks() {
-			//echo("\MRouterData\OddCore\PluginBase::register_additional_hooks<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_additional_hooks<br />");
 
 			$this->_additional_hooks = array();
 
@@ -73,7 +73,7 @@
 		}
 
 		protected function get_additional_hooks() {
-			//echo("\MRouterData\OddCore\PluginBase::get_additional_hooks<br />");
+			//echo("\Wprr\OddCore\PluginBase::get_additional_hooks<br />");
 
 			if(!isset($this->_additional_hooks)) {
 				$this->register_additional_hooks();
@@ -82,19 +82,19 @@
 		}
 
 		protected function add_custom_post_type($custom_post_type) {
-			//echo("\MRouterData\OddCore\PluginBase::add_custom_post_type<br />");
+			//echo("\Wprr\OddCore\PluginBase::add_custom_post_type<br />");
 
 			$this->_custom_post_types[$custom_post_type->get_system_name()] = $custom_post_type;
 		}
 
 		protected function create_custom_post_types() {
-			//echo("\MRouterData\OddCore\PluginBase::create_custom_post_types<br />");
+			//echo("\Wprr\OddCore\PluginBase::create_custom_post_types<br />");
 
 			//MENOTE: should be overridden
 		}
 
 		protected function register_custom_post_types() {
-			//echo("\MRouterData\OddCore\PluginBase::register_custom_post_types<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_custom_post_types<br />");
 
 			$this->_custom_post_types = array();
 
@@ -104,19 +104,19 @@
 		}
 
 		protected function add_filter($filter) {
-			//echo("\MRouterData\OddCore\PluginBase::add_filter<br />");
+			//echo("\Wprr\OddCore\PluginBase::add_filter<br />");
 
 			$this->_filters[] = $filter;
 		}
 
 		protected function create_filters() {
-			//echo("\MRouterData\OddCore\PluginBase::create_filters<br />");
+			//echo("\Wprr\OddCore\PluginBase::create_filters<br />");
 
 			//MENOTE: should be overridden
 		}
 
 		protected function register_filters() {
-			//echo("\MRouterData\OddCore\PluginBase::register_filters<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_filters<br />");
 
 			$this->_filters = array();
 
@@ -133,7 +133,7 @@
 		}
 
 		protected function get_pages() {
-			//echo("\MRouterData\OddCore\PluginBase::get_pages<br />");
+			//echo("\Wprr\OddCore\PluginBase::get_pages<br />");
 
 			if(!isset($this->_pages)) {
 				$this->register_pages();
@@ -142,7 +142,7 @@
 		}
 
 		protected function get_custom_post_types() {
-			//echo("\MRouterData\OddCore\PluginBase::custom_post_types<br />");
+			//echo("\Wprr\OddCore\PluginBase::custom_post_types<br />");
 
 			if(!isset($this->_custom_post_types)) {
 				$this->register_custom_post_types();
@@ -151,7 +151,7 @@
 		}
 
 		protected function get_filters() {
-			//echo("\MRouterData\OddCore\PluginBase::get_filters<br />");
+			//echo("\Wprr\OddCore\PluginBase::get_filters<br />");
 
 			if(!isset($this->_filters)) {
 				$this->register_filters();
@@ -160,7 +160,7 @@
 		}
 
 		protected function register_ajax_api_end_points() {
-			//echo("\MRouterData\OddCore\PluginBase::register_ajax_api_end_points<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_ajax_api_end_points<br />");
 
 			$this->_ajax_api_end_points = array();
 
@@ -168,7 +168,7 @@
 		}
 
 		protected function get_ajax_api_end_points() {
-			//echo("\MRouterData\OddCore\PluginBase::get_ajax_api_end_points<br />");
+			//echo("\Wprr\OddCore\PluginBase::get_ajax_api_end_points<br />");
 
 			if(!isset($this->_ajax_api_end_points)) {
 				$this->register_ajax_api_end_points();
@@ -196,20 +196,20 @@
 		}
 
 		protected function create_rest_api_end_points() {
-			//echo("\MRouterData\OddCore\PluginBase::create_rest_api_end_points<br />");
+			//echo("\Wprr\OddCore\PluginBase::create_rest_api_end_points<br />");
 
 			//MENOTE: should be overridden
 		}
 
 		protected function register_rest_api_end_points() {
-			//echo("\MRouterData\OddCore\PluginBase::register_rest_api_end_points<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_rest_api_end_points<br />");
 
 			$this->_rest_api_end_points = array();
 			$this->create_rest_api_end_points();
 		}
 
 		protected function get_rest_api_end_points() {
-			//echo("\MRouterData\OddCore\PluginBase::get_rest_api_end_points<br />");
+			//echo("\Wprr\OddCore\PluginBase::get_rest_api_end_points<br />");
 
 			if(!isset($this->_rest_api_end_points)) {
 				$this->register_rest_api_end_points();
@@ -218,26 +218,26 @@
 		}
 
 		protected function add_shortcode($shortcode) {
-			//echo("\MRouterData\OddCore\PluginBase::add_shortcode<br />");
+			//echo("\Wprr\OddCore\PluginBase::add_shortcode<br />");
 
 			$this->_shortcodes[] = $shortcode;
 		}
 
 		protected function create_shortcodes() {
-			//echo("\MRouterData\OddCore\PluginBase::create_shortcodes<br />");
+			//echo("\Wprr\OddCore\PluginBase::create_shortcodes<br />");
 
 			//MENOTE: should be overridden
 		}
 
 		protected function register_shortcodes() {
-			//echo("\MRouterData\OddCore\PluginBase::register_shortcodes<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_shortcodes<br />");
 
 			$this->_shortcodes = array();
 			$this->create_shortcodes();
 		}
 
 		protected function get_shortcodes() {
-			//echo("\MRouterData\OddCore\PluginBase::get_shortcodes<br />");
+			//echo("\Wprr\OddCore\PluginBase::get_shortcodes<br />");
 
 			if(!isset($this->_shortcodes)) {
 				$this->register_shortcodes();
@@ -246,7 +246,7 @@
 		}
 
 		protected function add_meta_box($system_name, $box, $post_type = 'post', $context = 'advanced', $priority = 'default') {
-			$new_registration = new \MRouterData\OddCore\Admin\MetaData\PostMetaDataBoxRegistration();
+			$new_registration = new \Wprr\OddCore\Admin\MetaData\PostMetaDataBoxRegistration();
 
 			$new_registration->setup($system_name, $box, $post_type, $context, $priority);
 
@@ -254,20 +254,20 @@
 		}
 
 		protected function create_meta_boxes() {
-			//echo("\MRouterData\OddCore\PluginBase::create_meta_boxes<br />");
+			//echo("\Wprr\OddCore\PluginBase::create_meta_boxes<br />");
 
 			//MENOTE: should be overridden
 		}
 
 		protected function register_meta_boxes() {
-			//echo("\MRouterData\OddCore\PluginBase::register_meta_boxes<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_meta_boxes<br />");
 
 			$this->_meta_boxes = array();
 			$this->create_meta_boxes();
 		}
 
 		protected function get_meta_boxes() {
-			//echo("\MRouterData\OddCore\PluginBase::get_meta_boxes<br />");
+			//echo("\Wprr\OddCore\PluginBase::get_meta_boxes<br />");
 
 			if(!isset($this->_meta_boxes)) {
 				$this->register_meta_boxes();
@@ -293,7 +293,7 @@
 		}
 
 		public function register_hooks() {
-			//echo("\MRouterData\OddCore\PluginBase::register_hooks<br />");
+			//echo("\Wprr\OddCore\PluginBase::register_hooks<br />");
 
 			add_action('init', array($this, 'hook_init'));
 			add_action('admin_menu', array($this, 'hook_admin_menu'));
@@ -348,7 +348,7 @@
 		}
 
 		public function hook_admin_menu() {
-			//echo("\MRouterData\OddCore\PluginBase::hook_admin_menu<br />");
+			//echo("\Wprr\OddCore\PluginBase::hook_admin_menu<br />");
 
 			$pages = $this->get_pages();
 
@@ -358,7 +358,7 @@
 		}
 
 		public function hook_admin_enqueue_scripts() {
-			//echo("\MRouterData\OddCore\PluginBase::hook_admin_enqueue_scripts<br />");
+			//echo("\Wprr\OddCore\PluginBase::hook_admin_enqueue_scripts<br />");
 
 			$screen = get_current_screen();
 			$current_page_name = $screen->id;
@@ -377,7 +377,7 @@
 		}
 
 		public function hook_rest_api_init() {
-			//echo("\MRouterData\OddCore\PluginBase::hook_rest_api_init<br />");
+			//echo("\Wprr\OddCore\PluginBase::hook_rest_api_init<br />");
 			$api_end_points = $this->get_rest_api_end_points();
 			foreach($api_end_points as $current_end_point) {
 				$current_end_point->register_hooks();
@@ -385,7 +385,7 @@
 		}
 
 		public function hook_edit_form_after_title() {
-			//echo("\MRouterData\OddCore\PluginBase::hook_edit_form_after_title<br />");
+			//echo("\Wprr\OddCore\PluginBase::hook_edit_form_after_title<br />");
 
 			$custom_post_types = $this->get_custom_post_types();
 
@@ -399,7 +399,7 @@
 		}
 
 		public function hook_edit_form_after_editor() {
-			//echo("\MRouterData\OddCore\PluginBase::hook_edit_form_after_editor<br />");
+			//echo("\Wprr\OddCore\PluginBase::hook_edit_form_after_editor<br />");
 
 			$custom_post_types = $this->get_custom_post_types();
 
@@ -413,7 +413,7 @@
 		}
 
 		public function hook_save_post($post_id, $post, $update) {
-			//echo("\MRouterData\OddCore\PluginBase::hook_save_post<br />");
+			//echo("\Wprr\OddCore\PluginBase::hook_save_post<br />");
 
 			if(wp_is_post_revision($post_id)) {
 				return;
@@ -433,12 +433,12 @@
 
 		public function hook_wp_enqueue_scripts() {
 			foreach($this->javascript_files as $id => $path) {
-				wp_enqueue_script($id, $path, array(), "wp-".get_bloginfo('version').','.M_ROUTER_DATA_DOMAIN.'-'.M_ROUTER_DATA_VERSION);
+				wp_enqueue_script($id, $path, array(), "wp-".get_bloginfo('version').','.M_ROUTER_DATA_DOMAIN.'-'.WPRR_VERSION);
 			}
 		}
 
 		public static function test_import() {
-			echo("Imported \MRouterData\OddCore\PluginBase<br />");
+			echo("Imported \Wprr\OddCore\PluginBase<br />");
 		}
 	}
 ?>

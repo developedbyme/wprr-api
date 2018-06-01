@@ -1,9 +1,9 @@
 <?php
-	namespace MRouterData\OddCore\Admin\MetaData;
+	namespace Wprr\OddCore\Admin\MetaData;
 	
-	use \MRouterData\OddCore\Admin\MetaData\TermMetaDataField as TermMetaDataField;
+	use \Wprr\OddCore\Admin\MetaData\TermMetaDataField as TermMetaDataField;
 	
-	// \MRouterData\OddCore\Admin\MetaData\TermRelationMetaDataField
+	// \Wprr\OddCore\Admin\MetaData\TermRelationMetaDataField
 	class TermRelationMetaDataField extends TermMetaDataField {
 		
 		protected $_related_term = 'master_ingredient';

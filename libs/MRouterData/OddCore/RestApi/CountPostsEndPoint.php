@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\OddCore\RestApi;
+	namespace Wprr\OddCore\RestApi;
 	
 	use \WP_Query;
-	use MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\OddCore\RestApi\CountPostsEndPoint
+	// \Wprr\OddCore\RestApi\CountPostsEndPoint
 	class CountPostsEndPoint extends EndPoint {
 		
 		function __construct() {

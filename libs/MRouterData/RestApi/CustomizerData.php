@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 
-	// \MRouterData\RestApi\CustomizerData
+	// \Wprr\RestApi\CustomizerData
 	class CustomizerData extends EndPoint {
 
 		function __construct() {
@@ -26,7 +26,7 @@
 				endforeach;
 			endif;
 
-			$encoder = new \MRouterData\MRouterDataEncoder();
+			$encoder = new \Wprr\WprrEncoder();
 
 			return $this->output_success($return_object);
 		}

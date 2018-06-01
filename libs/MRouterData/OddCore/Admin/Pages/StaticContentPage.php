@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\Pages;
+	namespace Wprr\OddCore\Admin\Pages;
 	
-	use MRouterData\OddCore\Admin\Pages\Page as Page;
+	use Wprr\OddCore\Admin\Pages\Page as Page;
 	
 	class StaticContentPage extends Page {
 		

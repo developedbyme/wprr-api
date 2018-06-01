@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\CustomPostTypes;
+	namespace Wprr\OddCore\Admin\CustomPostTypes;
 	
-	// \MRouterData\OddCore\Admin\CustomPostTypes\CustomPostTypePost
+	// \Wprr\OddCore\Admin\CustomPostTypes\CustomPostTypePost
 	class CustomPostTypePost {
 		
 		//METODO: create base object for posts and pages
@@ -99,36 +99,36 @@
 			}
 			
 			$this->_labels = array(
-				'name' => __( ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'singular_name' => __( ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'menu_name' => __( ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'name_admin_bar' => __( ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'add_new' => __( 'Add New', M_ROUTER_DATA_TEXTDOMAIN ),
-				'add_new_item' => __( 'Add New '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'edit_item' => __( 'Edit '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'new_item' => __( 'New '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'all_items' => __( 'All '.ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'view_item' => __( 'View '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'search_items' => __( 'Search '.ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'not_found' => __( 'No '.$multiple_name.' found', M_ROUTER_DATA_TEXTDOMAIN ),
-				'not_found_in_trash' => __( 'No '.$multiple_name.' found in trash', M_ROUTER_DATA_TEXTDOMAIN ),
-				'parent_item_colon'     => __( 'Parent '.ucfirst($name).':', M_ROUTER_DATA_TEXTDOMAIN ),
-				'archives'              => __( ucfirst($name).' Archives', M_ROUTER_DATA_TEXTDOMAIN ),
-				'edit_item'             => __( 'Edit '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'update_item'           => __( 'Update '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'view_item'             => __( 'View '.ucfirst($name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'search_items'          => __( 'Search '.ucfirst($multiple_name), M_ROUTER_DATA_TEXTDOMAIN ),
-				'items_list'            => __( ucfirst($multiple_name).' list', M_ROUTER_DATA_TEXTDOMAIN ),
-				'items_list_navigation' => __( ucfirst($multiple_name).' list navigation', M_ROUTER_DATA_TEXTDOMAIN ),
-				'filter_items_list'     => __( 'Filter '.ucfirst($multiple_name).' list', M_ROUTER_DATA_TEXTDOMAIN )
+				'name' => __( ucfirst($multiple_name), WPRR_TEXTDOMAIN ),
+				'singular_name' => __( ucfirst($name), WPRR_TEXTDOMAIN ),
+				'menu_name' => __( ucfirst($multiple_name), WPRR_TEXTDOMAIN ),
+				'name_admin_bar' => __( ucfirst($name), WPRR_TEXTDOMAIN ),
+				'add_new' => __( 'Add New', WPRR_TEXTDOMAIN ),
+				'add_new_item' => __( 'Add New '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'edit_item' => __( 'Edit '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'new_item' => __( 'New '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'all_items' => __( 'All '.ucfirst($multiple_name), WPRR_TEXTDOMAIN ),
+				'view_item' => __( 'View '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'search_items' => __( 'Search '.ucfirst($multiple_name), WPRR_TEXTDOMAIN ),
+				'not_found' => __( 'No '.$multiple_name.' found', WPRR_TEXTDOMAIN ),
+				'not_found_in_trash' => __( 'No '.$multiple_name.' found in trash', WPRR_TEXTDOMAIN ),
+				'parent_item_colon'     => __( 'Parent '.ucfirst($name).':', WPRR_TEXTDOMAIN ),
+				'archives'              => __( ucfirst($name).' Archives', WPRR_TEXTDOMAIN ),
+				'edit_item'             => __( 'Edit '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'update_item'           => __( 'Update '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'view_item'             => __( 'View '.ucfirst($name), WPRR_TEXTDOMAIN ),
+				'search_items'          => __( 'Search '.ucfirst($multiple_name), WPRR_TEXTDOMAIN ),
+				'items_list'            => __( ucfirst($multiple_name).' list', WPRR_TEXTDOMAIN ),
+				'items_list_navigation' => __( ucfirst($multiple_name).' list navigation', WPRR_TEXTDOMAIN ),
+				'filter_items_list'     => __( 'Filter '.ucfirst($multiple_name).' list', WPRR_TEXTDOMAIN )
 			);
 			
-			//'featured_image'        => __( 'Featured Image', M_ROUTER_DATA_TEXTDOMAIN ),
-			//'set_featured_image'    => __( 'Set featured image', M_ROUTER_DATA_TEXTDOMAIN ),
-			//'remove_featured_image' => __( 'Remove featured image', M_ROUTER_DATA_TEXTDOMAIN ),
-			//'use_featured_image'    => __( 'Use as featured image', M_ROUTER_DATA_TEXTDOMAIN ),
-			//'insert_into_item'      => __( 'Insert into item', M_ROUTER_DATA_TEXTDOMAIN ),
-			//'uploaded_to_this_item' => __( 'Uploaded to this item', M_ROUTER_DATA_TEXTDOMAIN ),
+			//'featured_image'        => __( 'Featured Image', WPRR_TEXTDOMAIN ),
+			//'set_featured_image'    => __( 'Set featured image', WPRR_TEXTDOMAIN ),
+			//'remove_featured_image' => __( 'Remove featured image', WPRR_TEXTDOMAIN ),
+			//'use_featured_image'    => __( 'Use as featured image', WPRR_TEXTDOMAIN ),
+			//'insert_into_item'      => __( 'Insert into item', WPRR_TEXTDOMAIN ),
+			//'uploaded_to_this_item' => __( 'Uploaded to this item', WPRR_TEXTDOMAIN ),
 		}
 		
 		public function get_owned_taxonomy($name) {
@@ -146,7 +146,7 @@
 		}
 		
 		public function create_taxonomy($system_name, $display_name, $hierarchical) {
-			$new_taxonomy = new \MRouterData\OddCore\Admin\Taxonomies\CustomTaxonomy();
+			$new_taxonomy = new \Wprr\OddCore\Admin\Taxonomies\CustomTaxonomy();
 			$new_taxonomy->set_names($system_name, $display_name);
 			$new_taxonomy->set_argument('hierarchical', $hierarchical);
 			

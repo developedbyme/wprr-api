@@ -1,9 +1,9 @@
 <?php
-	namespace MRouterData\OddCore\Admin\MetaData;
+	namespace Wprr\OddCore\Admin\MetaData;
 	
-	use \MRouterData\OddCore\Admin\MetaData\PostMetaDataBox;
+	use \Wprr\OddCore\Admin\MetaData\PostMetaDataBox;
 	
-	// \MRouterData\OddCore\Admin\MetaData\ReactPostMetaDataBox
+	// \Wprr\OddCore\Admin\MetaData\ReactPostMetaDataBox
 	class ReactPostMetaDataBox extends PostMetaDataBox {
 		
 		protected $_holder_id = null;
@@ -15,7 +15,7 @@
 			
 			$this->_holder_id = sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 			
-			//$portrait_image_meta_field = new \MRouterData\OddCore\Admin\MetaData\MetaField();
+			//$portrait_image_meta_field = new \Wprr\OddCore\Admin\MetaData\MetaField();
 			//$portrait_image_meta_field->set_name('portrait_image');
 			//$this->add_meta_field($portrait_image_meta_field);
 		}
@@ -50,7 +50,7 @@
 		public function output_box_start($post) {
 			?>
 				<div id="recipe-metadata" class="postbox">
-					<h3><span><?php _e($this->_display_name, M_ROUTER_DATA_TEXTDOMAIN) ?></span></h3>
+					<h3><span><?php _e($this->_display_name, WPRR_TEXTDOMAIN) ?></span></h3>
 					<div class="inside" id="<?php echo($this->_holder_id); ?>">
 			<?php
 		}

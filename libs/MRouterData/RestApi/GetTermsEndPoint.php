@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 	
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\RestApi\GetTaxonomiesEndPoint
+	// \Wprr\RestApi\GetTaxonomiesEndPoint
 	class GetTermsEndPoint extends EndPoint {
 		
 		function __construct() {
@@ -27,7 +27,7 @@
 				'hide_empty' => false
 			));
 			
-			$encoder = new \MRouterData\MRouterDataEncoder();
+			$encoder = new \Wprr\WprrEncoder();
 			
 			foreach($terms as $term) {
 				$return_array[] = $encoder->encode_term_link($term);

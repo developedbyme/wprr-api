@@ -1,13 +1,13 @@
 <?php
-	namespace MRouterData;
+	namespace Wprr;
 
 	use \WP_Query;
 	use \WP_Term;
 	use \WP_Post;
 	use \WP_User;
 
-	// \MRouterData\MRouterDataEncoder
-	class MRouterDataEncoder {
+	// \Wprr\WprrEncoder
+	class WprrEncoder {
 
 		protected $_performance = array();
 
@@ -29,7 +29,7 @@
 		protected function _get_meta_data() {
 			$returnObject = array();
 
-			$returnObject['mRouter'] = array('version' => M_ROUTER_DATA_VERSION);
+			$returnObject['mRouter'] = array('version' => WPRR_VERSION);
 
 			global $wp_version;
 			$returnObject['wordpress'] = array('version' => $wp_version);
@@ -949,7 +949,7 @@
 		}
 
 		public static function test_import() {
-			echo("Imported \MRouterData\MRouterDataEncoder<br />");
+			echo("Imported \Wprr\WprrEncoder<br />");
 		}
 	}
 ?>

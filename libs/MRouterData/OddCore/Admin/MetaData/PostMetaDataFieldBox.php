@@ -1,9 +1,9 @@
 <?php
-	namespace MRouterData\OddCore\Admin\MetaData;
+	namespace Wprr\OddCore\Admin\MetaData;
 	
-	use \MRouterData\OddCore\Admin\MetaData\PostMetaDataBox;
+	use \Wprr\OddCore\Admin\MetaData\PostMetaDataBox;
 	
-	// \MRouterData\OddCore\Admin\MetaData\PostMetaDataFieldBox
+	// \Wprr\OddCore\Admin\MetaData\PostMetaDataFieldBox
 	class PostMetaDataFieldBox extends PostMetaDataBox{
 		
 		protected $_meta_key = null;

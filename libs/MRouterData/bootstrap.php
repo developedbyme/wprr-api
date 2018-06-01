@@ -1,17 +1,17 @@
 <?php
 
-function MRouterData_Autoloader( $class ) {
-	//echo("MRouterData_Autoloader<br />");
+function Wprr_Autoloader( $class ) {
+	//echo("Wprr_Autoloader<br />");
 	
-	$namespace_length = strlen("MRouterData");
+	$namespace_length = strlen("Wprr");
 	
-	// Is a MRouterData class
-	if ( substr( $class, 0, $namespace_length ) != "MRouterData" ) {
+	// Is a Wprr class
+	if ( substr( $class, 0, $namespace_length ) != "Wprr" ) {
 		return false;
 	}
 
 	// Uses namespace
-	if ( substr( $class, 0, $namespace_length+1 ) == "MRouterData\\" ) {
+	if ( substr( $class, 0, $namespace_length+1 ) == "Wprr\\" ) {
 
 		$path = explode( "\\", $class );
 		unset( $path[0] );
@@ -21,7 +21,7 @@ function MRouterData_Autoloader( $class ) {
 	}
 
 	// Doesn't use namespaces
-	elseIf ( substr( $class, 0, $namespace_length+1 ) == "MRouterData_" ) {
+	elseIf ( substr( $class, 0, $namespace_length+1 ) == "Wprr_" ) {
 
 		$path = explode( "_", $class );
 		unset( $path[0] );
@@ -43,4 +43,4 @@ function MRouterData_Autoloader( $class ) {
 
 }
 
-spl_autoload_register("MRouterData_Autoloader"); // Register autoloader
+spl_autoload_register("Wprr_Autoloader"); // Register autoloader

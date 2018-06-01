@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\MetaData;
+	namespace Wprr\OddCore\Admin\MetaData;
 	
-	// \MRouterData\OddCore\Admin\MetaData\MetaField
+	// \Wprr\OddCore\Admin\MetaData\MetaField
 	class MetaField {
 		
 		protected $_field_name = null;

@@ -1,9 +1,9 @@
 <?php
-	namespace MRouterData\OddCore\Admin\MetaData;
+	namespace Wprr\OddCore\Admin\MetaData;
 	
-	use \MRouterData\OddCore\Admin\MetaData\MetaField;
+	use \Wprr\OddCore\Admin\MetaData\MetaField;
 	
-	// \MRouterData\OddCore\Admin\MetaData\ArrayMetaField
+	// \Wprr\OddCore\Admin\MetaData\ArrayMetaField
 	class ArrayMetaField extends MetaField {
 		
 		function __construct() {

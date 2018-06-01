@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\OddCore\RestApi;
+	namespace Wprr\OddCore\RestApi;
 	
 	use \WP_Query;
-	use MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\OddCore\RestApi\GetPostsEndPoint
+	// \Wprr\OddCore\RestApi\GetPostsEndPoint
 	class GetPostsEndPoint extends EndPoint {
 		
 		protected $_arguments = array();

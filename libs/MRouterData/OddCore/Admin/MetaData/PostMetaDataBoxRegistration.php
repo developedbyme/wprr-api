@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\MetaData;
+	namespace Wprr\OddCore\Admin\MetaData;
 	
-	// \MRouterData\OddCore\Admin\MetaData\PostMetaDataBoxRegistration
+	// \Wprr\OddCore\Admin\MetaData\PostMetaDataBoxRegistration
 	class PostMetaDataBoxRegistration {
 		
 		protected $_system_name = null;
@@ -40,7 +40,7 @@
 			
 			add_meta_box( 
 				$this->_system_name, 
-				__($this->_box->get_name(), M_ROUTER_DATA_TEXTDOMAIN), 
+				__($this->_box->get_name(), WPRR_TEXTDOMAIN), 
 				array($this->_box, 'output_registered_box'), 
 				$this->_post_type, 
 				$this->_context, 

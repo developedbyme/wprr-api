@@ -1,5 +1,5 @@
 <?php
-	namespace MRouterData\OddCore\Filters;
+	namespace Wprr\OddCore\Filters;
 	
 	class FilterBase {
 		

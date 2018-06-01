@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 	
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\RestApi\CommentsEndPoint
+	// \Wprr\RestApi\CommentsEndPoint
 	class CommentsEndPoint extends EndPoint {
 		
 		function __construct() {
@@ -36,7 +36,7 @@
 			
 			$return_array = array();
 			
-			$encoder = new \MRouterData\MRouterDataEncoder();
+			$encoder = new \Wprr\WprrEncoder();
 			
 			foreach($comments as $comment) {
 				$return_array[] = $encoder->encode_comment($comment);

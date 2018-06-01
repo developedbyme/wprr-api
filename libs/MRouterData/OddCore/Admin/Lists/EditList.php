@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\Lists;
+	namespace Wprr\OddCore\Admin\Lists;
 	
-	// \MRouterData\OddCore\Admin\Lists\EditList
+	// \Wprr\OddCore\Admin\Lists\EditList
 	class EditList {
 		
 		protected $_type = 'ingredient';
@@ -10,7 +10,7 @@
 		function __construct() {
 			//echo("\OddCore\Admin\Lists\EditList::__construct<br />");
 			
-			$this->_columns["master-ingredient"] = new \MRouterData\OddCore\Admin\Lists\EditListColumn();
+			$this->_columns["master-ingredient"] = new \Wprr\OddCore\Admin\Lists\EditListColumn();
 		}
 		
 		public function register_list() {

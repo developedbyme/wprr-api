@@ -1,9 +1,9 @@
 <?php
-	namespace MRouterData\OddCore\Admin\Pages;
+	namespace Wprr\OddCore\Admin\Pages;
 	
-	use MRouterData\OddCore\Admin\Pages\Page as Page;
+	use Wprr\OddCore\Admin\Pages\Page as Page;
 	
-	// \MRouterData\OddCore\Admin\Pages\ReactPage
+	// \Wprr\OddCore\Admin\Pages\ReactPage
 	class ReactPage extends Page {
 		
 		protected $_holder_id = null;

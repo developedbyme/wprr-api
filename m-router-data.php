@@ -1,24 +1,24 @@
 <?php 
 	/*
-	Plugin Name: mRouter data
-	Plugin URI: http://oddalice.se
-	Description: Providing data for the mRouter
+	Plugin Name: WPRR API
+	Plugin URI: http://wpreactrouter.com
+	Description: Endpoints and functionality for the WP react router.
 	Version: 0.16.0
-	Author: Odd alice
-	Author URI: http://oddalice.se
+	Author: Mattias Ekendahl
+	Author URI: http://developedbyme.com
 	*/
 	
 	define("WPRR_DOMAIN", "wprr");
 	define("M_ROUTER_DATA_DOMAIN", "m_router_data");
-	define("M_ROUTER_DATA_TEXTDOMAIN", "m-router-data");
-	define("M_ROUTER_DATA_MAIN_FILE", __FILE__);
-	define("M_ROUTER_DATA_DIR", untrailingslashit(dirname(__FILE__)));
-	define("M_ROUTER_DATA_URL", untrailingslashit(plugins_url('',__FILE__)));
-	define("M_ROUTER_DATA_VERSION", '0.16.0');
+	define("WPRR_TEXTDOMAIN", "m-router-data");
+	define("WPRR_MAIN_FILE", __FILE__);
+	define("WPRR_DIR", untrailingslashit(dirname(__FILE__)));
+	define("WPRR_URL", untrailingslashit(plugins_url('',__FILE__)));
+	define("WPRR_VERSION", '0.16.0');
 	
-	require_once(M_ROUTER_DATA_DIR."/libs/MRouterData/bootstrap.php");
+	require_once(WPRR_DIR."/libs/Wprr/bootstrap.php");
 
-	$MRouterDataPlugin = new \MRouterData\Plugin();
+	$WprrPlugin = new \Wprr\Plugin();
 
-	require_once(M_ROUTER_DATA_DIR."/external-functions.php");
+	require_once(WPRR_DIR."/external-functions.php");
 ?>

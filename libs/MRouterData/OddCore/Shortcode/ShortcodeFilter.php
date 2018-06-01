@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Shortcode;
+	namespace Wprr\OddCore\Shortcode;
 	
-	// \MRouterData\OddCore\Shortcode\ShortcodeFilter
+	// \Wprr\OddCore\Shortcode\ShortcodeFilter
 	class ShortcodeFilter {
 		
 		protected $_keyword = null;

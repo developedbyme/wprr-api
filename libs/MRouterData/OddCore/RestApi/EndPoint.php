@@ -1,5 +1,5 @@
 <?php
-	namespace MRouterData\OddCore\RestApi;
+	namespace Wprr\OddCore\RestApi;
 	
 	use \WP_Query;
 	use \WP_REST_Response;

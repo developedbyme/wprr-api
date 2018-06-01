@@ -1,5 +1,5 @@
 <?php
-	namespace MRouterData\OddCore\Admin\Pages;
+	namespace Wprr\OddCore\Admin\Pages;
 	
 	class Page {
 		

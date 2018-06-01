@@ -1,8 +1,8 @@
 <?php
-	namespace MRouterData\OddCore\RestApi;
+	namespace Wprr\OddCore\RestApi;
 	
 	use \WP_Query;
-	use MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
 	class StaticDataEndPoint extends EndPoint {
 		

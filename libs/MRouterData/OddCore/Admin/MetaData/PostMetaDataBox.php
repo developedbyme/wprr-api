@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\MetaData;
+	namespace Wprr\OddCore\Admin\MetaData;
 	
-	// \MRouterData\OddCore\Admin\MetaData\PostMetaDataBox
+	// \Wprr\OddCore\Admin\MetaData\PostMetaDataBox
 	class PostMetaDataBox {
 		
 		protected $_nonce_field_name = 'no-nonce';
@@ -34,7 +34,7 @@
 		
 		public function create_simple_meta_fields($field_names) {
 			foreach($field_names as $field_name) {
-				$current_field = new \MRouterData\OddCore\Admin\MetaData\MetaField();
+				$current_field = new \Wprr\OddCore\Admin\MetaData\MetaField();
 				$current_field->set_name($field_name);
 				$this->add_meta_field($current_field);
 			}
@@ -70,7 +70,7 @@
 		public function output_box_start($post) {
 			?>
 				<div id="recipe-metadata" class="postbox">
-					<h3><span><?php _e($this->_display_name, M_ROUTER_DATA_TEXTDOMAIN) ?></span></h3>
+					<h3><span><?php _e($this->_display_name, WPRR_TEXTDOMAIN) ?></span></h3>
 					<div class="inside">
 			<?php
 		}

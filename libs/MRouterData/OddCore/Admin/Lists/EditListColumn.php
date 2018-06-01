@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\Lists;
+	namespace Wprr\OddCore\Admin\Lists;
 	
-	// \MRouterData\OddCore\Admin\Lists\EditListColumn
+	// \Wprr\OddCore\Admin\Lists\EditListColumn
 	class EditListColumn {
 		
 		public $name = 'Master ingredient';

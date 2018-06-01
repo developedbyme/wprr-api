@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 
-	// \MRouterData\RestApi\CustomItemEndpoint
+	// \Wprr\RestApi\CustomItemEndpoint
 	class CustomItemEndpoint extends EndPoint {
 
 		function __construct() {

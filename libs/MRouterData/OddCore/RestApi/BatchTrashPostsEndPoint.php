@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\OddCore\RestApi;
+	namespace Wprr\OddCore\RestApi;
 	
 	use \WP_Query;
-	use MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\OddCore\RestApi\BatchTrashPostsEndPoint
+	// \Wprr\OddCore\RestApi\BatchTrashPostsEndPoint
 	class BatchTrashPostsEndPoint extends EndPoint {
 		
 		protected $_arguments = array();
@@ -23,8 +23,8 @@
 			$number_of_errors = 0;
 			$number_of_posts_trashed = 0;
 			
-			remove_action( 'transition_post_status',           array( '\MRouterData\Helper\Headlines', 'transition_post_status' ), 10, 3 );
-			remove_action( 'transition_post_status',           array( '\MRouterData\Helper\PartnerPromotion', 'transition_post_status' ), 10, 3 );
+			remove_action( 'transition_post_status',           array( '\Wprr\Helper\Headlines', 'transition_post_status' ), 10, 3 );
+			remove_action( 'transition_post_status',           array( '\Wprr\Helper\PartnerPromotion', 'transition_post_status' ), 10, 3 );
 			
 			foreach($ids as $id) {
 				$result = wp_trash_post(intval($id));

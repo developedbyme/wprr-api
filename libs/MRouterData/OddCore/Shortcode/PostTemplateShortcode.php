@@ -1,9 +1,9 @@
 <?php
-	namespace MRouterData\OddCore\Shortcode;
+	namespace Wprr\OddCore\Shortcode;
 	
-	use \MRouterData\OddCore\Shortcode\ShortcodeFilter;
+	use \Wprr\OddCore\Shortcode\ShortcodeFilter;
 	
-	// \MRouterData\OddCore\Shortcode\PostTemplateShortcode
+	// \Wprr\OddCore\Shortcode\PostTemplateShortcode
 	class PostTemplateShortcode extends ShortcodeFilter {
 		
 		protected $_template_path = null;

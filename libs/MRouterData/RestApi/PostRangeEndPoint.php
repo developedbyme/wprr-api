@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 	
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\RestApi\PostRangeEndPoint
+	// \Wprr\RestApi\PostRangeEndPoint
 	class PostRangeEndPoint extends EndPoint {
 		
 		function __construct() {
@@ -67,7 +67,7 @@
 			$posts = get_posts($query_args);
 			
 			$post_links = array();
-			$encoder = new \MRouterData\MRouterDataEncoder();
+			$encoder = new \Wprr\WprrEncoder();
 			
 			foreach($posts as $post_id) {
 				$post_links[] = $encoder->encode_post_link($post_id);

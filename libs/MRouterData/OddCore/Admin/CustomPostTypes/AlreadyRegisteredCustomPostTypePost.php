@@ -1,7 +1,7 @@
 <?php
-	namespace MRouterData\OddCore\Admin\CustomPostTypes;
+	namespace Wprr\OddCore\Admin\CustomPostTypes;
 	
-	// \MRouterData\OddCore\Admin\CustomPostTypes\AlreadyRegisteredCustomPostTypePost
+	// \Wprr\OddCore\Admin\CustomPostTypes\AlreadyRegisteredCustomPostTypePost
 	class AlreadyRegisteredCustomPostTypePost {
 		
 		//METODO: create base object for posts and pages
@@ -53,7 +53,7 @@
 		}
 		
 		public function create_taxonomy($system_name, $display_name, $hierarchical) {
-			$new_taxonomy = new \MRouterData\OddCore\Admin\Taxonomies\CustomTaxonomy();
+			$new_taxonomy = new \Wprr\OddCore\Admin\Taxonomies\CustomTaxonomy();
 			$new_taxonomy->set_names($system_name, $display_name);
 			$new_taxonomy->set_argument('hierarchical', $hierarchical);
 			

@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 	
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\RestApi\RemoveTermFromPostEndPoint
+	// \Wprr\RestApi\RemoveTermFromPostEndPoint
 	class RemoveTermFromPostEndPoint extends EndPoint {
 		
 		function __construct() {

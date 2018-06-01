@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 	
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 	
-	// \MRouterData\RestApi\AcfOptionsEndPoint
+	// \Wprr\RestApi\AcfOptionsEndPoint
 	class AcfOptionsEndPoint extends EndPoint {
 		
 		function __construct() {
@@ -21,7 +21,7 @@
 			
 			$fields_object = get_field_objects('option', false, true);
 			
-			$encoder = new \MRouterData\MRouterDataEncoder();
+			$encoder = new \Wprr\WprrEncoder();
 			
 			$data = $encoder->encode_acf_options();
 			

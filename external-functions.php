@@ -109,43 +109,43 @@
 	}
 	
 	function mrouter_encode() {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode();
 	}
 	
 	function mrouter_encode_post_link($post_id) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_post_link($post_id);
 	}
 	
 	function mrouter_encode_post($post) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_post($post);
 	}
 	
 	function mrouter_encode_image($post) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_image($post);
 	}
 	
 	function mrouter_encode_acf_field($field_object, $post_id) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_acf_field($field_object, $post_id);
 	}
 	
 	function mrouter_encode_post_acf_field($field_name, $post_id) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_post_acf_field($field_name, $post_id);
 	}
 	
 	function mrouter_encode_term($term) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_term($term);
 	}
@@ -153,7 +153,7 @@
 	function mrouter_encode_all_taxonomies() {
 		
 		$return_object = array();
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		$taxonomies = get_taxonomies(); 
 		foreach($taxonomies as $taxonomy) {
@@ -231,7 +231,7 @@
 		$return_array = array();
 		
 		$return_array['paths'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_paths', array());
-		$return_array['initialMRouterData'] = get_initial_mrouter_data();
+		$return_array['initialWprr'] = get_initial_mrouter_data();
 		$return_array['imageSizes'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_image_sizes', array());
 		$return_array['userData'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', null);
 		$return_array['settings'] = array();

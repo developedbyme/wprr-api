@@ -1,12 +1,12 @@
 <?php
-	namespace MRouterData;
+	namespace Wprr;
 
 	use \WP_Query;
 	use \WP_Term;
 	use \WP_Post;
 	use \WP_User;
 
-	// \MRouterData\RedirectHooks
+	// \Wprr\RedirectHooks
 	class RedirectHooks {
 
 		protected $settings = null;
@@ -14,21 +14,21 @@
 		protected $encoder = null;
 
 		function __construct() {
-			//echo("\MRouterData\RedirectHooks::__construct<br />");
+			//echo("\Wprr\RedirectHooks::__construct<br />");
 			
-			$this->encoder = new \MRouterData\MRouterDataEncoder();
+			$this->encoder = new \Wprr\WprrEncoder();
 			
 		}
 
 		public function register() {
-			//echo("\MRouterData\RedirectHooks::register<br />");
+			//echo("\Wprr\RedirectHooks::register<br />");
 
 			add_action('template_redirect', array($this, 'hook_template_redirect'));
 
 		}
 
 		public function hook_template_redirect() {
-			//echo("\MRouterData\RedirectHooks::hook_template_redirect<br />");
+			//echo("\Wprr\RedirectHooks::hook_template_redirect<br />");
 
 			if(isset($_GET['mRouterData']) && $_GET['mRouterData'] === 'json') {
 				
@@ -119,7 +119,7 @@
 		}
 		
 		public static function test_import() {
-			echo("Imported \MRouterData\RedirectHooks<br />");
+			echo("Imported \Wprr\RedirectHooks<br />");
 		}
 	}
 ?>

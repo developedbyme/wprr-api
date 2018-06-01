@@ -1,10 +1,10 @@
 <?php
-	namespace MRouterData\RestApi;
+	namespace Wprr\RestApi;
 
 	use \WP_Query;
-	use \MRouterData\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
 
-	// \MRouterData\RestApi\UploadAttachmentEndPoint
+	// \Wprr\RestApi\UploadAttachmentEndPoint
 	class UploadAttachmentEndPoint extends EndPoint {
 
 		function __construct() {

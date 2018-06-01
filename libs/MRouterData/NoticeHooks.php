@@ -1,21 +1,21 @@
 <?php
-	namespace MRouterData;
+	namespace Wprr;
 	
 	use \WP_Query;
 	
-	// \MRouterData\NoticeHooks
+	// \Wprr\NoticeHooks
 	class NoticeHooks {
 		
 		protected $settings = null;
 		
 		function __construct() {
-			//echo("\MRouterData\NoticeHooks::__construct<br />");
+			//echo("\Wprr\NoticeHooks::__construct<br />");
 			
 			
 		}
 		
 		public function register() {
-			//echo("\MRouterData\NoticeHooks::register<br />");
+			//echo("\Wprr\NoticeHooks::register<br />");
 			
 			add_action('admin_notices', array($this, 'hook_admin_notices'));
 			
@@ -24,7 +24,7 @@
 		
 		
 		public function hook_admin_notices() {
-			//echo("\MRouterData\NoticeHooks::hook_admin_notices<br />");
+			//echo("\Wprr\NoticeHooks::hook_admin_notices<br />");
 			
 			$screen = get_current_screen();
 			//var_dump($screen);
@@ -52,7 +52,7 @@
 		}
 		
 		public static function test_import() {
-			echo("Imported \MRouterData\NoticeHooks<br />");
+			echo("Imported \Wprr\NoticeHooks<br />");
 		}
 	}
 ?>

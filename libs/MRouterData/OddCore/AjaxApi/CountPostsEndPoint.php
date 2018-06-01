@@ -1,8 +1,8 @@
 <?php
-	namespace MRouterData\OddCore\AjaxApi;
+	namespace Wprr\OddCore\AjaxApi;
 	
 	use \WP_Query;
-	use MRouterData\OddCore\AjaxApi\EndPoint as EndPoint;
+	use Wprr\OddCore\AjaxApi\EndPoint as EndPoint;
 	
 	class CountPostsEndPoint extends EndPoint {
 		

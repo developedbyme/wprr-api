@@ -1,9 +1,9 @@
 {
-  "name": "m-router-data",
+  "name": "wprr",
   "version": "1.0.0",
-  "description": "Data to be used with the mRouter",
+  "description": "Endpoints and functionality for the WP react router.",
   "scripts": {},
-  "author": "Odd Alice",
+  "author": "mattias@developedbyme.com",
   "license": "ISC",
   "dependencies": {
     "isomorphic-fetch": "^2.2.1",

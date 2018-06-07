@@ -184,6 +184,11 @@
 				$screen = get_current_screen();
 				
 				$admin_data['screen'] = $screen;
+				
+				if($screen->parent_base === 'edit') {
+					global $post;
+					$admin_data['post'] = mrouter_encode_post($post);
+				}
 			}
 			
 			return $admin_data;

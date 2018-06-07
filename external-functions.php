@@ -259,7 +259,7 @@
 		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
 	}
 	
-	function wprr_output_module_with_custom_data($name, $data, $seo_content = null) {
+	function wprr_output_module_with_custom_data($name, $data, $seo_content = null, $module_data = null) {
 		
 		$element_id = 'wprr-'.sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 		
@@ -271,17 +271,18 @@
 			window.wprr.insertModule(
 				"<?php echo($name); ?>",
 				document.querySelector("#<?php echo($element_id); ?>"),
-				<?php echo(json_encode($data)); ?>
+				<?php echo(json_encode($data)); ?>,
+				<?php echo(json_encode($module_data)); ?>,
 			);
 		</script>
 		<?php
 	}
 	
-	function wprr_output_module($name) {
-		wprr_output_module_with_custom_data($name, wprr_get_configuration_data());
+	function wprr_output_module($name, $module_data = null) {
+		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), null, $module_data);
 	}
 	
-	function wprr_output_module_with_seo_content($name, $seo_path) {
-		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path));
+	function wprr_output_module_with_seo_content($name, $seo_path, $module_data = null) {
+		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path), $module_data);
 	}
 ?>

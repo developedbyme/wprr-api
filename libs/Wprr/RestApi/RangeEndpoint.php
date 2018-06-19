@@ -20,6 +20,9 @@
 			if($post_types !== 'any') {
 				$post_types = explode(',', $post_types);
 			}
+			else {
+				$post_types = get_post_types(array(), 'names');
+			}
 			
 			$selections = explode(',', $data['selections']);
 			$encodings = explode(',', $data['encodings']);

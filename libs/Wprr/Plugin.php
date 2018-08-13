@@ -94,6 +94,15 @@
 			$current_end_point->set_requiered_capability('edit_others_posts');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$current_end_point = new \Wprr\RestApi\Admin\ChangePostEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('admin/(?P<post_id>\d+)/edit', $api_namespace, 1, 'POST');
+			$current_end_point->set_requiered_capability('edit_others_posts');
+			$this->_rest_api_end_points[] = $current_end_point;
+			
+			
+			
+			
 		}
 		
 		public function filter_id_check_for_has_permission($has_permission) {

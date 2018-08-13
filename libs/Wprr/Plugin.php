@@ -100,9 +100,6 @@
 			$current_end_point->set_requiered_capability('edit_others_posts');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
-			
-			
-			
 		}
 		
 		public function filter_id_check_for_has_permission($has_permission) {

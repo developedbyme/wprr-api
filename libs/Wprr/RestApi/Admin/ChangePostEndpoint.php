@@ -23,14 +23,7 @@
 			$post = get_post($post_id);
 			
 			if($post) {
-				//Check that we are allowed to change the post
-				foreach($data['changes'] as $change) {
-					$change_type = $change['type'];
-					$change_data = $change['data'];
-					
-					//METODO: check if change is allowed
-					do_action(WPRR_DOMAIN.'/admin/change_post/'.$change_type, $change_data, $post_id);
-				}
+				wprr_apply_post_changes($post_id, $data['changes']);
 			}
 			else {
 				//Log error

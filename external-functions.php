@@ -285,4 +285,15 @@
 	function wprr_output_module_with_seo_content($name, $seo_path, $module_data = null) {
 		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path), $module_data);
 	}
+	
+	function wprr_apply_post_changes($post_id, $changes) {
+		//Check that we are allowed to change the post
+		foreach($changes as $change) {
+			$change_type = $change['type'];
+			$change_data = $change['data'];
+			
+			//METODO: check if change is allowed
+			do_action(WPRR_DOMAIN.'/admin/change_post/'.$change_type, $change_data, $post_id);
+		}
+	}
 ?>

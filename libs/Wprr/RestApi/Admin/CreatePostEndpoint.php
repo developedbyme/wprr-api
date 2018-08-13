@@ -27,13 +27,7 @@
 			$post_id = wp_insert_post($insert_arguments);
 			
 			if(isset($data['changes'])) {
-				foreach($data['changes'] as $change) {
-					$change_type = $change['type'];
-					$change_data = $change['data'];
-					
-					//METODO: check if change is allowed
-					do_action(WPRR_DOMAIN.'/admin/change_post/'.$change_type, $change_data, $post_id);
-				}
+				wprr_apply_post_changes($post_id, $data['changes']);
 			}
 			
 			return $this->output_success(array('id' => $post_id));

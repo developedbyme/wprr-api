@@ -9,7 +9,8 @@
 			//echo("\Wprr\Plugin::__construct<br />");
 
 			$this->add_additional_hook(new \Wprr\RedirectHooks());
-
+			$this->add_additional_hook(new \Wprr\ChangePostHooks());
+			
 			parent::__construct();
 
 			//$this->add_javascript('m-router-data-main', WPRR_URL.'/assets/js/main.js');
@@ -86,6 +87,13 @@
 			$api_namespace = 'wprr';
 			
 			$this->create_rest_api_end_point(new \Wprr\RestApi\RangeEndpoint(), 'range/(?P<post_types>[a-z0-9\-\_,]+)/(?P<selections>[a-z0-9\-\_,]+)/(?P<encodings>[a-z0-9\-\_,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			
+			$current_end_point = new \Wprr\RestApi\Admin\CreatePostEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('admin/(?P<post_type>[a-z0-9\-\_]+)/create', $api_namespace, 1, 'POST');
+			$current_end_point->set_requiered_capability('edit_others_posts');
+			$this->_rest_api_end_points[] = $current_end_point;
+			
 		}
 		
 		public function filter_id_check_for_has_permission($has_permission) {

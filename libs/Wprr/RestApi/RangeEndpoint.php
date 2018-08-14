@@ -13,6 +13,21 @@
 			
 		}
 		
+		protected function get_filters($names, $type, $data) {
+			$return_array = array();
+			foreach($names as $name) {
+				$has_permission = apply_filters(WPRR_DOMAIN.'/range_'.$type.'_has_permission/'.$name, true, $data);
+				if($has_permission) {
+					$return_array[] = $name;
+				}
+				else {
+					//METODO: log error
+				}
+			}
+			
+			return $return_array;
+		}
+		
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\RangeEndpoint::perform_call<br />");
 			
@@ -24,8 +39,8 @@
 				$post_types = get_post_types(array(), 'names');
 			}
 			
-			$selections = explode(',', $data['selections']);
-			$encodings = explode(',', $data['encodings']);
+			$selections = $this->get_filters(explode(',', $data['selections']), 'selection', $data);
+			$encodings = $this->get_filters(explode(',', $data['encodings']), 'encoding', $data);
 			
 			$general_has_permission_filter_name = WPRR_DOMAIN.'/range_has_permission';
 			

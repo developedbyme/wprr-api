@@ -10,6 +10,7 @@
 
 			$this->add_additional_hook(new \Wprr\RedirectHooks());
 			$this->add_additional_hook(new \Wprr\ChangePostHooks());
+			$this->add_additional_hook(new \Wprr\RangeHooks());
 			
 			parent::__construct();
 

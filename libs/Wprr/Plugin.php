@@ -89,6 +89,9 @@
 			
 			$this->create_rest_api_end_point(new \Wprr\RestApi\RangeEndpoint(), 'range/(?P<post_types>[a-z0-9\-\_,]+)/(?P<selections>[a-z0-9\-\_,]+)/(?P<encodings>[a-z0-9\-\_,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
+			$this->create_rest_api_end_point(new \Wprr\RestApi\GetTermsEndPoint(), 'taxonomy/(?P<taxonomy>[a-z0-9\-\_]+)/terms', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			$this->create_rest_api_end_point(new \Wprr\RestApi\GetTaxonomiesEndPoint(), 'taxonomies', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			
 			$current_end_point = new \Wprr\RestApi\Admin\CreatePostEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('admin/(?P<post_type>[a-z0-9\-\_]+)/create', $api_namespace, 1, 'POST');
@@ -97,7 +100,7 @@
 			
 			$current_end_point = new \Wprr\RestApi\Admin\ChangePostEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$current_end_point->setup('admin/(?P<post_id>\d+)/edit', $api_namespace, 1, 'POST');
+			$current_end_point->setup('admin/post/(?P<post_id>\d+)/edit', $api_namespace, 1, 'POST');
 			$current_end_point->set_requiered_capability('edit_others_posts');
 			$this->_rest_api_end_points[] = $current_end_point;
 			

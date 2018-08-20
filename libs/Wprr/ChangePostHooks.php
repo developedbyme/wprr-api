@@ -30,6 +30,7 @@
 			//METODO: remove terms
 			$this->register_hook_for_type('meta', 'hook_set_meta');
 			//METODO: remove meta
+			$this->register_hook_for_type('acf', 'hook_set_acf');
 			
 		}
 		
@@ -99,6 +100,13 @@
 			
 			$value = $data['value'];
 			update_post_meta($post_id, $data['field'], $value);
+		}
+		
+		public function hook_set_acf($data, $post_id) {
+			//echo("\Wprr\ChangePostHooks::hook_set_acf<br />");
+			
+			$value = $data['value'];
+			update_field($data['field'], $value, $post_id);
 		}
 		
 		public static function test_import() {

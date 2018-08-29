@@ -104,6 +104,11 @@
 			$current_end_point->set_requiered_capability('edit_others_posts');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
+			$current_end_point = new \Wprr\RestApi\Admin\BatchChangePostsEndpoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('admin/batch/edit-posts', $api_namespace, 1, 'POST');
+			$current_end_point->set_requiered_capability('edit_others_posts');
+			$this->_rest_api_end_points[] = $current_end_point;
 		}
 		
 		public function filter_id_check_for_has_permission($has_permission) {
@@ -141,6 +146,9 @@
 			$paths['login'] = wp_login_url();
 			$paths['logout'] = wp_logout_url();
 			$paths['lostPassword'] = wp_lostpassword_url();
+			
+			$upload_dir = wp_upload_dir(null, false);
+			$paths['uploads'] = $upload_dir['baseurl'];
 			
 			return $paths;
 		}

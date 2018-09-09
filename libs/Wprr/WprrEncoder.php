@@ -694,6 +694,10 @@
 		}
 
 		public function encode_term($term) {
+			
+			if(!$term) {
+				return null;
+			}
 
 			$start_time = microtime(true);
 

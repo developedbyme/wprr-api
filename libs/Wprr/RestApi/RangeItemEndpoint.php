@@ -59,7 +59,8 @@
 			$query_args = array(
 				'post_type' => $post_types,
 				'posts_per_page' => 1,
-				'fields' => 'ids'
+				'fields' => 'ids',
+				'suppress_filters' => 0
 			);
 			
 			if(isset($data['order'])) {

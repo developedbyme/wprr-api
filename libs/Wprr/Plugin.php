@@ -110,6 +110,12 @@
 			$current_end_point->setup('admin/batch/edit-posts', $api_namespace, 1, 'POST');
 			$current_end_point->set_requiered_capability('edit_others_posts');
 			$this->_rest_api_end_points[] = $current_end_point;
+			
+			$current_end_point = new \Wprr\RestApi\UploadAttachmentEndPoint();
+			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point->setup('admin/upload-attachment', $api_namespace, 1, 'POST');
+			$current_end_point->set_requiered_capability('edit_others_posts');
+			$this->_rest_api_end_points[] = $current_end_point;
 		}
 		
 		public function filter_id_check_for_has_permission($has_permission) {
@@ -257,14 +263,16 @@
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_admin_data', array($this, 'filter_admin_data'), 10, 3);
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
+			add_action(WPRR_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'filter_post_meta', array($this, 'filter_acf_post_meta'), 10, 2);
 		}
 		
 		public function hook_prepare_api_request($data) {
+			
 			if(isset($data['language'])) {
 				global $sitepress;
-	
+				
 				if(isset($sitepress)) {
 					$sitepress->switch_lang($data['language']);
 				}

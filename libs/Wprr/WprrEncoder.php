@@ -285,13 +285,16 @@
 		}
 
 		protected function _encode_acf_single_post_object_or_id($post_or_id) {
+			$id = $post_or_id;
 			if($post_or_id instanceof \WP_Post) {
-				return $this->encode_post_link($post_or_id->ID);
+				$id = $post_or_id->ID;
 			}
-			else {
-				
-				return $this->encode_post_link($post_or_id);
+			
+			if(function_exists('icl_object_id')) {
+				$id = icl_object_id($id, 'post', true, ICL_LANGUAGE_CODE);
 			}
+			
+			return $this->encode_post_link($post_or_id);
 		}
 
 		protected function _encode_acf_post_object($value) {

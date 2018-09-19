@@ -892,6 +892,21 @@
 				}
 
 				$posts = array();
+				$query_data = array();
+				
+				if(defined('ICL_LANGUAGE_CODE')) {
+					global $sitepress;
+				
+					if(isset($sitepress)) {
+						$sitepress->switch_lang(ICL_LANGUAGE_CODE);
+					}
+				
+					if(function_exists('acf_update_setting')) {
+						acf_update_setting('current_language', ICL_LANGUAGE_CODE);
+					}
+					
+					$query_data['language'] = ICL_LANGUAGE_CODE;
+				}
 
 				while(have_posts()) {
 					the_post();
@@ -914,15 +929,12 @@
 
 				$data['data']['templateSelection'] = $template_selection;
 
-				$query_data = array();
+				
 
 				$query_data['searchQuery'] = ($wp_query->is_search ? get_search_query() : null);
 				$query_data['numberOfPosts'] = intval($wp_query->found_posts);
 				$query_data['numberOfPaginationPages'] = intval($wp_query->max_num_pages);
 				
-				if(defined('ICL_LANGUAGE_CODE')) {
-					$query_data['language'] = ICL_LANGUAGE_CODE;
-				}
 
 				if($query_data['numberOfPaginationPages'] === 0) {
 					$query_data['currentPaginationIndex'] = 0;

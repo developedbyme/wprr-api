@@ -296,7 +296,7 @@
 				var_dump($id);
 			}
 			
-			return $this->encode_post_link($post_or_id);
+			return $this->encode_post_link($id);
 		}
 
 		protected function _encode_acf_post_object($value) {

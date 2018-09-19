@@ -79,10 +79,22 @@
 			$this->update_post_data($post_id, 'post_title', $data['value']);
 		}
 		
+		protected function get_terms($data) {
+			$terms = $data['value'];
+			if(isset($data['field'])) {
+				switch($data['field']) {
+					case 'slugPath':
+						$terms = \Wprr\OddCore\Utils\TaxonomyFunctions::get_ids_from_terms(\Wprr\OddCore\Utils\TaxonomyFunctions::get_terms_by_slug_paths($terms, $data['taxonomy']));
+				}
+			}
+			
+			return $terms;
+		}
+		
 		public function hook_set_terms($data, $post_id) {
 			//echo("\Wprr\ChangePostHooks::hook_set_terms<br />");
 			
-			$terms = $data['value'];
+			$terms = $this->get_terms($data);
 			
 			wp_set_post_terms($post_id, $terms, $data['taxonomy'], false);
 		}
@@ -90,7 +102,7 @@
 		public function hook_add_terms($data, $post_id) {
 			//echo("\Wprr\ChangePostHooks::hook_add_terms<br />");
 			
-			$terms = $data['value'];
+			$terms = $this->get_terms($data);
 			
 			wp_set_post_terms($post_id, $terms, $data['taxonomy'], true);
 		}

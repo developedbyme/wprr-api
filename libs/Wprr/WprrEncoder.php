@@ -291,9 +291,7 @@
 			}
 			
 			if(function_exists('icl_object_id')) {
-				var_dump($id, ICL_LANGUAGE_CODE);
 				$id = icl_object_id($id, 'post', true, ICL_LANGUAGE_CODE);
-				var_dump($id);
 			}
 			
 			return $this->encode_post_link($id);
@@ -853,7 +851,7 @@
 
 			$start_time = microtime(true);
 
-			//ob_start();
+			ob_start();
 
 			try {
 
@@ -958,10 +956,10 @@
 				$data['metadata']['phpError'] = $error;
 			}
 
-			//$php_output = ob_get_contents();
-			//ob_clean();
+			$php_output = ob_get_contents();
+			ob_clean();
 
-			//$data['metadata']['phpOutput'] = $php_output;
+			$data['metadata']['phpOutput'] = $php_output;
 
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode', $end_time-$start_time);

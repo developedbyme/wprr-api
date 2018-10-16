@@ -40,6 +40,8 @@
 		public function encode_post($post) {
 			//echo('encode_post');
 			//var_dump($post);
+			
+			global $sitepress;
 
 			$start_time = microtime(true);
 
@@ -173,11 +175,34 @@
 			$this->_add_performance_data('encode_post/encode_post_add_ons', $end_time_part-$start_time_part);
 
 			$start_time_part = microtime(true);
-
+			
+			$current_language = apply_filters( 'wpml_post_language_details', NULL, $post_id);
+			if($current_language) {
+				$current_post_data["language"] = $current_language['language_code'];
+			}
+			else {
+				$current_post_data["language"] = null;
+			}
+			
 			$current_post_data["languages"] = null;
-			if ( function_exists('icl_get_languages') ) {
-				$current_post_data["languages"] = icl_get_languages( "skip_missing=0" );
-				$current_post_data["languages"]["ICL_LANGUAGE_CODE"] = ( ICL_LANGUAGE_CODE == "sv" ? "en" : "sv" );
+			
+			if ( $sitepress ) {
+				
+				$t_post_id = $sitepress->get_element_trid($post_id, 'post_dp_template' );
+				$translations = $sitepress->get_element_translations($t_post_id, 'post_'.($post->post_type), false, true);
+				
+				$return_langauges = array();
+				
+				foreach($translations as $language_code => $translation) {
+					
+					$current_translation = array(
+						'language' => $language_code,
+						'post' => $this->encode_post_link($translation->element_id)
+					);
+					$return_langauges[] = $current_translation;
+				}
+				
+				$current_post_data["languages"] = $return_langauges;
 			}
 
 			$end_time_part = microtime(true);

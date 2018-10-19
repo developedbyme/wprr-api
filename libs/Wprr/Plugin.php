@@ -224,6 +224,10 @@
 					global $post;
 					$admin_data['post'] = mrouter_encode_post($post);
 				}
+				else if($screen->parent_base === 'woocommerce' && $screen->post_type === 'shop_order') {
+					global $post;
+					$admin_data['post'] = mrouter_encode_post($post);
+				}
 			}
 			
 			return $admin_data;

@@ -145,6 +145,10 @@
 	}
 	
 	function mrouter_encode_term($term) {
+		return wprr_encode_term($term);
+	}
+	
+	function wprr_encode_term($term) {
 		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_term($term);

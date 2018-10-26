@@ -276,7 +276,7 @@
 				"<?php echo($name); ?>",
 				document.querySelector("#<?php echo($element_id); ?>"),
 				<?php echo(json_encode($data)); ?>,
-				<?php echo(json_encode($module_data)); ?>,
+				<?php echo(json_encode($module_data)); ?>
 			);
 		</script>
 		<?php

@@ -194,10 +194,9 @@
 				$return_langauges = array();
 				
 				foreach($translations as $language_code => $translation) {
-					
 					$current_translation = array(
 						'language' => $language_code,
-						'post' => $this->encode_post_link($translation->element_id)
+						'post' => $this->encode_post_link_in_language($translation->element_id, $language_code)
 					);
 					$return_langauges[] = $current_translation;
 				}
@@ -716,6 +715,21 @@
 
 			$current_post_data["id"] = $post_id;
 			$current_post_data["permalink"] = get_permalink($post_id);
+			$current_post_data["title"] = get_the_title($post_id);
+
+			return $current_post_data;
+		}
+		
+		public function encode_post_link_in_language($post_id, $language_code) {
+			//echo('encode_post_link');
+			//var_dump($post_id);
+
+			if($post_id === 0 || get_post_status($post_id) !== "publish") {
+				return null;
+			}
+
+			$current_post_data["id"] = $post_id;
+			$current_post_data["permalink"] = apply_filters('wpml_permalink', get_permalink($post_id), $language_code);
 			$current_post_data["title"] = get_the_title($post_id);
 
 			return $current_post_data;

@@ -31,7 +31,8 @@
 			$this->register_hook_for_type('meta', 'hook_set_meta');
 			//METODO: remove meta
 			$this->register_hook_for_type('acf', 'hook_set_acf');
-			
+			$this->register_hook_for_type('wpml/createDuplicates', 'hook_wpml_create_duplicates');
+			$this->register_hook_for_type('wpml/createCopies', 'hook_wpml_create_copies');
 		}
 		
 		protected function update_post_data($post_id, $field, $value) {
@@ -120,6 +121,24 @@
 			$value = $data['value'];
 			update_field($data['field'], $value, $post_id);
 		}
+		
+		public function hook_wpml_create_duplicates($data, $post_id) {
+			update_post_meta($post_id, '_wpml_media_featured', 1);
+			do_action( 'wpml_admin_make_post_duplicates', $post_id );
+		}
+		
+		public function hook_wpml_create_copies($data, $post_id) {
+			update_post_meta($post_id, '_wpml_media_featured', 1);
+			do_action( 'wpml_admin_make_post_duplicates', $post_id );
+			
+			$translations = apply_filters('wpml_post_duplicates', $post_id);
+			
+			foreach ($translations as $translation_id) {
+				delete_post_meta($translation_id, '_icl_lang_duplicate_of', $post_id);
+			}
+		}
+		
+		
 		
 		public static function test_import() {
 			echo("Imported \Wprr\ChangePostHooks<br />");

@@ -109,43 +109,43 @@
 	}
 	
 	function mrouter_encode() {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode();
 	}
 	
 	function mrouter_encode_post_link($post_id) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_post_link($post_id);
 	}
 	
 	function mrouter_encode_post($post) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_post($post);
 	}
 	
 	function mrouter_encode_image($post) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_image($post);
 	}
 	
 	function mrouter_encode_acf_field($field_object, $post_id) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_acf_field($field_object, $post_id);
 	}
 	
 	function mrouter_encode_post_acf_field($field_name, $post_id) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_post_acf_field($field_name, $post_id);
 	}
 	
 	function mrouter_encode_term($term) {
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_term($term);
 	}
@@ -153,7 +153,7 @@
 	function mrouter_encode_all_taxonomies() {
 		
 		$return_object = array();
-		$encoder = new \MRouterData\MRouterDataEncoder();
+		$encoder = new \Wprr\WprrEncoder();
 		
 		$taxonomies = get_taxonomies(); 
 		foreach($taxonomies as $taxonomy) {
@@ -259,7 +259,7 @@
 		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
 	}
 	
-	function wprr_output_module_with_custom_data($name, $data, $seo_content = null) {
+	function wprr_output_module_with_custom_data($name, $data, $seo_content = null, $module_data = null) {
 		
 		$element_id = 'wprr-'.sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));
 		
@@ -271,17 +271,29 @@
 			window.wprr.insertModule(
 				"<?php echo($name); ?>",
 				document.querySelector("#<?php echo($element_id); ?>"),
-				<?php echo(json_encode($data)); ?>
+				<?php echo(json_encode($data)); ?>,
+				<?php echo(json_encode($module_data)); ?>,
 			);
 		</script>
 		<?php
 	}
 	
-	function wprr_output_module($name) {
-		wprr_output_module_with_custom_data($name, wprr_get_configuration_data());
+	function wprr_output_module($name, $module_data = null) {
+		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), null, $module_data);
 	}
 	
-	function wprr_output_module_with_seo_content($name, $seo_path) {
-		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path));
+	function wprr_output_module_with_seo_content($name, $seo_path, $module_data = null) {
+		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path), $module_data);
+	}
+	
+	function wprr_apply_post_changes($post_id, $changes) {
+		//Check that we are allowed to change the post
+		foreach($changes as $change) {
+			$change_type = $change['type'];
+			$change_data = $change['data'];
+			
+			//METODO: check if change is allowed
+			do_action(WPRR_DOMAIN.'/admin/change_post/'.$change_type, $change_data, $post_id);
+		}
 	}
 ?>

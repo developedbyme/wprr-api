@@ -1,4 +1,4 @@
-# mRouter data
+# WPRR API
 
 This plugin enables data to be outputted at json for any url in wordpress.
 
@@ -10,14 +10,17 @@ Add the query ?mRouterData=json to any url to get output as json.
 ### From your WordPress dashboard
 
 1. Visit 'Plugins > Add New'
-2. Search for 'mRouter data'
-3. Activate mRouter data from your Plugins page.
+2. Search for 'WPRR API'
+3. Activate WPRR API from your Plugins page.
 
 ### From WordPress.org
-1. Upload the folder `m-router-data` to the `/wp-content/plugins/` directory.
+1. Upload the folder `wprr-api` to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
 ## Changelog
+
+### 0.17.0
+* Started to move over to the wprr namespace
 
 ### 0.16.0
 * New endpoint for range

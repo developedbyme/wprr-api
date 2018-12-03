@@ -194,10 +194,9 @@
 				$return_langauges = array();
 				
 				foreach($translations as $language_code => $translation) {
-					
 					$current_translation = array(
 						'language' => $language_code,
-						'post' => $this->encode_post_link($translation->element_id)
+						'post' => $this->encode_post_link_in_language($translation->element_id, $language_code)
 					);
 					$return_langauges[] = $current_translation;
 				}
@@ -310,13 +309,16 @@
 		}
 
 		protected function _encode_acf_single_post_object_or_id($post_or_id) {
+			$id = $post_or_id;
 			if($post_or_id instanceof \WP_Post) {
-				return $this->encode_post_link($post_or_id->ID);
+				$id = $post_or_id->ID;
 			}
-			else {
-				
-				return $this->encode_post_link($post_or_id);
+			
+			if(function_exists('icl_object_id')) {
+				$id = icl_object_id($id, 'post', true, ICL_LANGUAGE_CODE);
 			}
+			
+			return $this->encode_post_link($id);
 		}
 
 		protected function _encode_acf_post_object($value) {
@@ -717,6 +719,21 @@
 
 			return $current_post_data;
 		}
+		
+		public function encode_post_link_in_language($post_id, $language_code) {
+			//echo('encode_post_link');
+			//var_dump($post_id);
+
+			if($post_id === 0 || get_post_status($post_id) !== "publish") {
+				return null;
+			}
+
+			$current_post_data["id"] = $post_id;
+			$current_post_data["permalink"] = apply_filters('wpml_permalink', get_permalink($post_id), $language_code);
+			$current_post_data["title"] = get_the_title($post_id);
+
+			return $current_post_data;
+		}
 
 		public function encode_term($term) {
 			
@@ -917,6 +934,21 @@
 				}
 
 				$posts = array();
+				$query_data = array();
+				
+				if(defined('ICL_LANGUAGE_CODE')) {
+					global $sitepress;
+				
+					if(isset($sitepress)) {
+						$sitepress->switch_lang(ICL_LANGUAGE_CODE);
+					}
+				
+					if(function_exists('acf_update_setting')) {
+						acf_update_setting('current_language', ICL_LANGUAGE_CODE);
+					}
+					
+					$query_data['language'] = ICL_LANGUAGE_CODE;
+				}
 
 				while(have_posts()) {
 					the_post();
@@ -939,15 +971,12 @@
 
 				$data['data']['templateSelection'] = $template_selection;
 
-				$query_data = array();
+				
 
 				$query_data['searchQuery'] = ($wp_query->is_search ? get_search_query() : null);
 				$query_data['numberOfPosts'] = intval($wp_query->found_posts);
 				$query_data['numberOfPaginationPages'] = intval($wp_query->max_num_pages);
 				
-				if(defined('ICL_LANGUAGE_CODE')) {
-					$query_data['language'] = ICL_LANGUAGE_CODE;
-				}
 
 				if($query_data['numberOfPaginationPages'] === 0) {
 					$query_data['currentPaginationIndex'] = 0;

@@ -11,6 +11,7 @@
 			$this->add_additional_hook(new \Wprr\RedirectHooks());
 			$this->add_additional_hook(new \Wprr\ChangePostHooks());
 			$this->add_additional_hook(new \Wprr\RangeHooks());
+			$this->add_additional_hook(new \Wprr\GlobalItemHooks());
 			
 			parent::__construct();
 
@@ -91,12 +92,13 @@
 			
 			$this->create_rest_api_end_point(new \Wprr\RestApi\CommentsEndPoint(), 'post/(?P<id>\d+)/comments', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
-			
 			$this->create_rest_api_end_point(new \Wprr\RestApi\RangeEndpoint(), 'range/(?P<post_types>[a-z0-9\-\_,]+)/(?P<selections>[a-z0-9\-\_,]+)/(?P<encodings>[a-z0-9\-\_,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			$this->create_rest_api_end_point(new \Wprr\RestApi\RangeItemEndpoint(), 'range-item/(?P<post_types>[a-z0-9\-\_,]+)/(?P<selections>[a-z0-9\-\_,]+)/(?P<encodings>[a-z0-9\-\_,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
 			$this->create_rest_api_end_point(new \Wprr\RestApi\GetTermsEndPoint(), 'taxonomy/(?P<taxonomy>[a-z0-9\-\_]+)/terms', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			$this->create_rest_api_end_point(new \Wprr\RestApi\GetTaxonomiesEndPoint(), 'taxonomies', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			
+			$this->create_rest_api_end_point(new \Wprr\RestApi\GlobalItemEndpoint(), 'global/(?P<item>[a-z0-9\-\_\/]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
 			$current_end_point = new \Wprr\RestApi\Admin\CreatePostEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
@@ -224,6 +226,10 @@
 				$admin_data['screen'] = $screen;
 				
 				if($screen->parent_base === 'edit') {
+					global $post;
+					$admin_data['post'] = mrouter_encode_post($post);
+				}
+				else if($screen->parent_base === 'woocommerce' && $screen->post_type === 'shop_order') {
 					global $post;
 					$admin_data['post'] = mrouter_encode_post($post);
 				}

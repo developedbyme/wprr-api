@@ -33,6 +33,20 @@
 				$this->output_error("Post does not exist");
 			}
 			
+			//METODO: can this mess up when the initial data is generated
+			$current_language = apply_filters( 'wpml_post_language_details', NULL, $id);
+			if($current_language) {
+				global $sitepress;
+
+				if(isset($sitepress)) {
+					$sitepress->switch_lang($current_language['language_code']);
+				}
+
+				if(function_exists('acf_update_setting')) {
+					acf_update_setting('current_language', $current_language['language_code']);
+				}
+			}
+			
 			$return_object = array();
 			
 			$return_object["url"] = get_permalink($post);

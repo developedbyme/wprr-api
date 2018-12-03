@@ -145,6 +145,10 @@
 	}
 	
 	function mrouter_encode_term($term) {
+		return wprr_encode_term($term);
+	}
+	
+	function wprr_encode_term($term) {
 		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_term($term);
@@ -272,7 +276,7 @@
 				"<?php echo($name); ?>",
 				document.querySelector("#<?php echo($element_id); ?>"),
 				<?php echo(json_encode($data)); ?>,
-				<?php echo(json_encode($module_data)); ?>,
+				<?php echo(json_encode($module_data)); ?>
 			);
 		</script>
 		<?php

@@ -315,7 +315,9 @@
 			}
 			
 			if(function_exists('icl_object_id')) {
-				$id = icl_object_id($id, 'post', true, ICL_LANGUAGE_CODE);
+				global $sitepress;
+				
+				$id = icl_object_id($id, 'post', true, $sitepress->get_current_language());
 			}
 			
 			return $this->encode_post_link($id);

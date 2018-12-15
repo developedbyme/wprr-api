@@ -27,7 +27,7 @@
 			$this->register_hook_for_type('title', 'hook_set_title');
 			$this->register_hook_for_type('terms', 'hook_set_terms');
 			$this->register_hook_for_type('addTerms', 'hook_add_terms');
-			//METODO: remove terms
+			$this->register_hook_for_type('removeTerms', 'hook_remove_terms');
 			$this->register_hook_for_type('meta', 'hook_set_meta');
 			//METODO: remove meta
 			$this->register_hook_for_type('acf', 'hook_set_acf');
@@ -106,6 +106,12 @@
 			$terms = $this->get_terms($data);
 			
 			wp_set_post_terms($post_id, $terms, $data['taxonomy'], true);
+		}
+		
+		public function hook_remove_terms($data, $post_id) {
+			$terms = $this->get_terms($data);
+			
+			wp_remove_object_terms($post_id, $terms, $data['taxonomy'], false);
 		}
 		
 		public function hook_set_meta($data, $post_id) {

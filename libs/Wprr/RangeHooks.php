@@ -30,6 +30,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/default', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/status', array($this, 'filter_encode_status'), 10, 3);
 			
+			add_filter(WPRR_DOMAIN.'/range_encoding/fullPost', array($this, 'filter_encode_full_post'), 10, 3);
 		}
 		
 		public function filter_query_standard($query_args, $data) {
@@ -82,6 +83,14 @@
 			//echo("\Wprr\RangeHooks::filter_encode_status<br />");
 			
 			$encoded_data['status'] = get_post_status($post_id);
+			
+			return $encoded_data;
+		}
+		
+		public function filter_encode_full_post($encoded_data, $post_id, $data) {
+			//echo("\Wprr\RangeHooks::filter_encode_full_post<br />");
+			
+			$encoded_data = mrouter_encode_post(get_post($post_id));
 			
 			return $encoded_data;
 		}

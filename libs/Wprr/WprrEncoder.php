@@ -678,6 +678,12 @@
 						$current_term = get_term_by('id', $unencoded_value, $taxonomy);
 						return array($this->encode_term($current_term));
 					}
+				case 'post_object':
+				case 'relationship':
+					if(empty($unencoded_value)) {
+						return null;
+					}
+					return $this->_encode_acf_post_object($unencoded_value);
 				case 'wysiwyg':
 					return apply_filters('the_content', $unencoded_value);
 				case 'user':

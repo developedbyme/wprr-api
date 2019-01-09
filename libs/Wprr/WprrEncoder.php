@@ -694,6 +694,8 @@
 					else {
 						return null;
 					}
+				case 'image':
+					return $this->_encode_acf_image($unencoded_value);
 				case 'number':
 					return (float)$unencoded_value;
 				case 'text':

@@ -198,6 +198,7 @@
 						'language' => $language_code,
 						'post' => $this->encode_post_link_in_language($translation->element_id, $language_code)
 					);
+					
 					$return_langauges[] = $current_translation;
 				}
 				
@@ -734,7 +735,7 @@
 			//echo('encode_post_link');
 			//var_dump($post_id);
 
-			if($post_id === 0 || get_post_status($post_id) !== "publish") {
+			if($post_id === 0 || (get_post_status($post_id) !== "publish" && get_post_status($post_id) !== "draft")) {
 				return null;
 			}
 

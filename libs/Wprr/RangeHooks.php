@@ -29,6 +29,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/standard', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/default', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/status', array($this, 'filter_encode_status'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/translations', array($this, 'filter_encode_translations'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/fullPost', array($this, 'filter_encode_full_post'), 10, 3);
 		}
@@ -83,6 +84,37 @@
 			//echo("\Wprr\RangeHooks::filter_encode_status<br />");
 			
 			$encoded_data['status'] = get_post_status($post_id);
+			
+			return $encoded_data;
+		}
+		
+		public function filter_encode_translations($encoded_data, $post_id, $data) {
+			//echo("\Wprr\RangeHooks::filter_encode_translations<br />");
+			
+			global $sitepress;
+			
+			if($sitepress) {
+				
+				$post = get_post($post_id);
+				
+				$t_post_id = $sitepress->get_element_trid($post_id, 'post_dp_template' );
+				$translations = $sitepress->get_element_translations($t_post_id, 'post_'.($post->post_type), false, true);
+				
+				$return_langauges = array();
+				
+				$wprr_encoder = new \Wprr\WprrEncoder();
+				
+				foreach($translations as $language_code => $translation) {
+					$current_translation = array(
+						'language' => $language_code,
+						'post' => $wprr_encoder->encode_post_link_in_language($translation->element_id, $language_code)
+					);
+					
+					$return_langauges[] = $current_translation;
+				}
+				
+				$encoded_data["languages"] = $return_langauges;
+			}
 			
 			return $encoded_data;
 		}

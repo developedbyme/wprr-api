@@ -12,6 +12,7 @@
 			$this->add_additional_hook(new \Wprr\ChangePostHooks());
 			$this->add_additional_hook(new \Wprr\RangeHooks());
 			$this->add_additional_hook(new \Wprr\GlobalItemHooks());
+			$this->add_additional_hook(new \Wprr\ApiActionHooks());
 			
 			parent::__construct();
 
@@ -126,7 +127,7 @@
 			
 			$current_end_point = new \Wprr\RestApi\ActionEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
-			$current_end_point->setup('action/(?P<action_name>[a-zA-Z0-9\-\_]+)', $api_namespace, 1, 'POST');
+			$current_end_point->setup('action/(?P<action_name>[a-zA-Z0-9\-\_\/]+)', $api_namespace, 1, 'POST');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
 		}
@@ -166,6 +167,12 @@
 			$paths['login'] = wp_login_url();
 			$paths['logout'] = wp_logout_url();
 			$paths['lostPassword'] = wp_lostpassword_url();
+			
+			if(function_exists('wc_get_page_id')) {
+				$paths['shop'] = get_permalink(wc_get_page_id('shop'));
+				$paths['cart'] = wc_get_cart_url();
+				$paths['checkout'] = wc_get_checkout_url();
+			}
 			
 			$upload_dir = wp_upload_dir(null, false);
 			$paths['uploads'] = $upload_dir['baseurl'];

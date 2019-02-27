@@ -18,16 +18,20 @@
 			
 			$hook_name = 'wprr/api_action/'.$type;
 			
-			$has_action = has_action('wprr/api_action/'.$type);
+			$has_action = has_action($hook_name);
+			
+			$return_data = array(
+				'logs' => array()
+			);
 			
 			if($has_action) {
-				do_action($hook_name, $data);
+				do_action_ref_array($hook_name, array($data, &$return_data));
 			}
 			else {
 				return $this->output_error('Action '.$hook_name.' doesn\'t exist');
 			}
 			
-			return $this->output_success($has_action);
+			return $this->output_success($return_data);
 		}
 
 		public static function test_import() {

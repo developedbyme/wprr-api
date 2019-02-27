@@ -168,6 +168,12 @@
 			$paths['logout'] = wp_logout_url();
 			$paths['lostPassword'] = wp_lostpassword_url();
 			
+			if(function_exists('wc_get_page_id')) {
+				$paths['shop'] = get_permalink(wc_get_page_id('shop'));
+				$paths['cart'] = wc_get_cart_url();
+				$paths['checkout'] = wc_get_checkout_url();
+			}
+			
 			$upload_dir = wp_upload_dir(null, false);
 			$paths['uploads'] = $upload_dir['baseurl'];
 			

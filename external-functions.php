@@ -300,4 +300,19 @@
 			do_action(WPRR_DOMAIN.'/admin/change_post/'.$change_type, $change_data, $post_id);
 		}
 	}
+	
+	function wprr_get_page_breadcrumb($post_id) {
+		
+		$parent_id = wp_get_post_parent_id($post_id);
+		if($parent_id) {
+			$return_array = wprr_get_page_breadcrumb($parent_id);
+		}
+		else {
+			$return_array = array();
+		}
+		
+		$return_array[] = mrouter_encode_post_link($post_id);
+		
+		return $return_array;
+	}
 ?>

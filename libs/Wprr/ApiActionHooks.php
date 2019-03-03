@@ -1,6 +1,6 @@
 <?php
 	namespace Wprr;
-
+	
 	// \Wprr\ApiActionHooks
 	class ApiActionHooks {
 
@@ -14,6 +14,8 @@
 
 			add_action('wprr/api_action/woocommerce/add-to-cart', array($this, 'hook_woocommerce_add_to_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/apply-dicount-code', array($this, 'hook_woocommerce_apply_discount_code'), 10, 2);
+			add_action('wprr/api_action/woocommerce/checkout', array($this, 'hook_woocommerce_checkout'), 10, 2);
+			add_action('wprr/api_action/woocommerce/empty-cart', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
 
 		}
 
@@ -51,6 +53,26 @@
 			}
 			
 			$response_data['results'] = $results;
+		}
+		
+		public function hook_woocommerce_checkout($data, &$response_data) {
+			//echo("\Wprr\ApiActionHooks::hook_woocommerce_checkout<br />");
+			
+			$cart = WC()->cart;
+			$order_id = WC()->checkout()->create_order(array('customer_id' => get_current_user_id()));
+			$order = wc_get_order( $order_id );
+			//update_post_meta($order_id, '_customer_user', get_current_user_id());
+			$order->calculate_totals();
+			$response_data['order_id'] = $order_id;
+			
+			//Empty cart
+			WC()->cart->empty_cart();
+		}
+		
+		public function hook_woocommerce_empty_cart($data, &$response_data) {
+			//echo("\Wprr\ApiActionHooks::hook_woocommerce_empty_cart<br />");
+			
+			WC()->cart->empty_cart();
 		}
 		
 		public static function test_import() {

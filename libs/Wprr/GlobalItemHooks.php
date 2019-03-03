@@ -18,6 +18,7 @@
 			$prefix = WPRR_DOMAIN.'/global-item';
 			
 			add_filter($prefix.'/wpml/languages', array($this, 'filter_wpml_languages'), 10, 1);
+			add_filter($prefix.'/woocommerce/cart', array($this, 'filter_woocommerce_cart'), 10, 1);
 		}
 		
 		public function filter_wpml_languages($return_object) {
@@ -33,6 +34,36 @@
 					'flagUrl' => $language['country_flag_url']
 				);
 			}
+			
+			return $return_object;
+		}
+		
+		public function filter_woocommerce_cart($return_object) {
+			//echo("\Wprr\GlobalItemHooks::filter_woocommerce_cart<br />");
+			
+			global $woocommerce;
+			
+			$cart = $woocommerce->cart;
+			
+			$encoded_items = array();
+			
+			$return_object['coupons'] = $cart->get_applied_coupons();
+			$return_object['totals'] = $cart->get_totals();
+			
+			$items = $cart->get_cart();
+			foreach($items as $key => $cart_item) {
+				
+				$encoded_item = array(
+					'key' => $key,
+					'quantity' => $cart_item['quantity'],
+					'product' => mrouter_encode_post_link($cart_item['product_id']),
+					'total' => $cart_item['line_total']
+				);
+				
+				$encoded_items[] = $encoded_item;
+			}
+					
+			$return_object['items'] = $encoded_items;
 			
 			return $return_object;
 		}

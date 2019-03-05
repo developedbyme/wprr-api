@@ -154,6 +154,12 @@
 		return $encoder->encode_term($term);
 	}
 	
+	function wprr_encode_user($user) {
+		$encoder = new \Wprr\WprrEncoder();
+		
+		return $encoder->encode_user($user);
+	}
+	
 	function mrouter_encode_all_taxonomies() {
 		
 		$return_object = array();

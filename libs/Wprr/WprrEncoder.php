@@ -357,24 +357,25 @@
 		}
 
 		protected function _encode_acf_image($value) {
+			
+			if($value && !empty($value)) {
+				$return_array = array();
 
-			if($value === false || $value === null) {
-				return null;
-			}
+				if(is_array($value)) {
 
-			$return_array = array();
-
-			if(is_array($value)) {
-
-				foreach($value as $post_or_id) {
-					$return_array[] = $this->_encode_acf_single_image_or_id($post_or_id);
+					foreach($value as $post_or_id) {
+						$return_array[] = $this->_encode_acf_single_image_or_id($post_or_id);
+					}
 				}
-			}
-			else {
-				$return_array[] = $this->_encode_acf_single_image_or_id($value);
-			}
+				else {
+					$return_array[] = $this->_encode_acf_single_image_or_id($value);
+				}
 
-			return $return_array;
+				return $return_array;
+				
+			}
+			
+			return null;
 		}
 
 		protected function _encode_acf_single_taxonomy_or_id($term_or_id, $taxonomy) {

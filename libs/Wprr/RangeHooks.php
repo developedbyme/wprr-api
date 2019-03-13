@@ -31,6 +31,10 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/status', array($this, 'filter_encode_status'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/translations', array($this, 'filter_encode_translations'), 10, 3);
 			
+			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_standard'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_edit_fields'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_status'), 10, 3);
+			
 			add_filter(WPRR_DOMAIN.'/range_encoding/fullPost', array($this, 'filter_encode_full_post'), 10, 3);
 		}
 		
@@ -76,6 +80,18 @@
 			
 			$encoded_data["permalink"] = get_permalink($post_id);
 			$encoded_data["title"] = get_the_title($post_id);
+			
+			return $encoded_data;
+		}
+		
+		public function filter_encode_edit_fields($encoded_data, $post_id, $data) {
+			
+			$encoded_data["_thumbnail_id"] = get_post_meta($post_id, '_thumbnail_id', true);
+			
+			$post = get_post($post_id); 
+			
+			$encoded_data["slug"] = $post->post_name;
+			$encoded_data["parent"] = $post->parent;
 			
 			return $encoded_data;
 		}

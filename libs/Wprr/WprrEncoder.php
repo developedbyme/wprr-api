@@ -577,7 +577,13 @@
 					break;
 				case 'gallery':
 					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
-					$return_object['value'] = $this->_encode_acf_image($field_value);
+					$encoded_array = array();
+					if($field_value) {
+						foreach($field_value as $image_id) {
+							$encoded_array[] = $this->_encode_acf_single_image_or_id($image_id);
+						}
+					}
+					$return_object['value'] = $encoded_array;
 					break;
 				case 'file':
 					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
@@ -698,6 +704,14 @@
 					}
 				case 'image':
 					return $this->_encode_acf_image($unencoded_value);
+				case 'gallery':
+					$encoded_array = array();
+					if($unencoded_value) {
+						foreach($unencoded_value as $image_id) {
+							$encoded_array[] = $this->_encode_acf_single_image_or_id($image_id);
+						}
+					}
+					return $encoded_array;
 				case 'number':
 					return (float)$unencoded_value;
 				case 'text':

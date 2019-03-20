@@ -14,11 +14,17 @@
 		protected $_input_settings = array();
 		protected $_headers = array();
 		protected $_requiered_capability = null;
+		protected $_logs = array();
 		
 		function __construct() {
 			//echo("\OddCore\RestApi\EndPoint::__construct<br />");
 			
 			
+		}
+		
+		public function add_log($log_text) {
+			//echo("\OddCore\RestApi\EndPoint::add_log<br />");
+			$this->_logs[] = $log_text;
 		}
 		
 		public function add_headers($headers) {
@@ -49,7 +55,13 @@
 		
 		protected function output_success($data) {
 			
-			$return_response = new WP_REST_Response(array('code' => 'success', 'data' => $data));
+			$return_data = array('code' => 'success', 'data' => $data);
+			
+			if(!empty($this->_logs)) {
+				$return_data['logs'] = $this->_logs;
+			}
+			
+			$return_response = new WP_REST_Response($return_data);
 			
 			foreach($this->_headers as $key => $value) {
 				$return_response->header($key, $value);

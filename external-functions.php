@@ -115,12 +115,20 @@
 	}
 	
 	function mrouter_encode_post_link($post_id) {
+		return wprr_encode_post_link($post_id);
+	}
+	
+	function mrouter_encode_post($post) {
+		return wprr_encode_post($post);
+	}
+	
+	function wprr_encode_post_link($post_id) {
 		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_post_link($post_id);
 	}
 	
-	function mrouter_encode_post($post) {
+	function wprr_encode_post($post) {
 		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_post($post);
@@ -296,14 +304,29 @@
 		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path), $module_data);
 	}
 	
-	function wprr_apply_post_changes($post_id, $changes) {
+	function wprr_apply_post_changes($post_id, $changes, $logger = null) {
+		
 		//Check that we are allowed to change the post
 		foreach($changes as $change) {
 			$change_type = $change['type'];
 			$change_data = $change['data'];
 			
 			//METODO: check if change is allowed
-			do_action(WPRR_DOMAIN.'/admin/change_post/'.$change_type, $change_data, $post_id);
+			$action_path = WPRR_DOMAIN.'/admin/change_post/'.$change_type;
+			
+			if($logger) {
+				$logger->add_log('Applying change '.$change_type);
+			}
+			
+			if(has_action($action_path)) {
+				do_action($action_path, $change_data, $post_id);
+			}
+			else {
+				if($logger) {
+					$logger->add_log('No change function for type '.$change_type);
+				}
+			}
+			
 		}
 	}
 	

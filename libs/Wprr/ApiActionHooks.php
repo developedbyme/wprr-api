@@ -65,11 +65,16 @@
 			$order = wc_get_order( $order_id );
 			//update_post_meta($order_id, '_customer_user', get_current_user_id());
 			$order->calculate_totals();
+			
+			$order->set_payment_method('manual'); //MEDEBUG
+			
 			$response_data['orderId'] = $order_id;
 			
 			//Empty cart
 			WC()->cart->empty_cart();
 		}
+		
+		//METODO: set payment for order
 		
 		public function hook_woocommerce_empty_cart($data, &$response_data) {
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_empty_cart<br />");
@@ -122,12 +127,14 @@
 				}
 				
 				$subscription->calculate_totals();
+				$subscription->save();
 				$subscription_ids[] = $subscription->get_id();
 			}
 			
 			$response_data['subscriptionIds'] = $subscription_ids;
 			
 			\WC_Subscriptions_Manager::activate_subscriptions_for_order($order);
+			do_action('wprr/api_action_part/woocommerce/subscriptions/created_from_order', $subscription_ids, $order, $response_data);
 		}
 		
 		public static function test_import() {

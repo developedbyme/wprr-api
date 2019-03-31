@@ -3,7 +3,7 @@
 	Plugin Name: WPRR API
 	Plugin URI: http://wpreactrouter.com
 	Description: Endpoints and functionality for the WP react router.
-	Version: 0.17.6
+	Version: 0.17.7
 	Author: Mattias Ekendahl
 	Author URI: http://developedbyme.com
 	*/
@@ -14,7 +14,7 @@
 	define("WPRR_MAIN_FILE", __FILE__);
 	define("WPRR_DIR", untrailingslashit(dirname(__FILE__)));
 	define("WPRR_URL", untrailingslashit(plugins_url('',__FILE__)));
-	define("WPRR_VERSION", '0.17.6');
+	define("WPRR_VERSION", '0.17.7');
 	
 	require_once(WPRR_DIR."/libs/Wprr/bootstrap.php");
 

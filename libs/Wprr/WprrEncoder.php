@@ -271,8 +271,13 @@
 					}
 				}
 			}
-
-			$image_size_data['full'] = array('url' => $img_url, 'width' => $media_meta['width'], 'height' => $media_meta['height']);
+			
+			if($media_meta) {
+				$image_size_data['full'] = array('url' => $img_url, 'width' => $media_meta['width'], 'height' => $media_meta['height']);
+			}
+			else {
+				$image_size_data['full'] = array('url' => $img_url, 'width' => 0, 'height' => 0);
+			}
 
 			$image_data["sizes"] = $image_size_data;
 			

@@ -163,6 +163,10 @@
 			$encoded_data["slug"] = $post->post_name;
 			$encoded_data["parent"] = $post->parent;
 			
+			$post_type = get_post_type($post_id);
+			
+			$encoded_data = apply_filters(WPRR_DOMAIN.'/edit_fields/type/'.$post_type, $encoded_data, $post_id, $data);
+			
 			return $encoded_data;
 		}
 		

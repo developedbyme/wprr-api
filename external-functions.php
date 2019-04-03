@@ -134,10 +134,27 @@
 		return $encoder->encode_post($post);
 	}
 	
-	function mrouter_encode_image($post) {
+	function wprr_encode_image($post) {
 		$encoder = new \Wprr\WprrEncoder();
 		
 		return $encoder->encode_image($post);
+	}
+	
+	function mrouter_encode_image($post) {
+		return wprr_encode_image($post);
+	}
+	
+	function wprr_encode_post_image($post_id) {
+		$encoder = new \Wprr\WprrEncoder();
+		
+		$media_post_id = get_post_thumbnail_id($post_id);
+		if($media_post_id) {
+			$media_post = get_post($media_post_id);
+
+			return wprr_encode_image($media_post);
+		}
+		
+		return null;
 	}
 	
 	function mrouter_encode_acf_field($field_object, $post_id) {

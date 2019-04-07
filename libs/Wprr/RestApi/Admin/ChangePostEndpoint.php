@@ -23,10 +23,17 @@
 			$post = get_post($post_id);
 			
 			if($post) {
-				wprr_apply_post_changes($post_id, $data['changes'], $this);
+				if(isset($data['changes'])) {
+					wprr_apply_post_changes($post_id, $data['changes'], $this);
+				}
+				else {
+					$this->add_log('Request contains no changes.');
+					return $this->output_error('Request contains no changes.');
+				}
 			}
 			else {
-				//Log error
+				$this->add_log('No post with id '.$post_id);
+				return $this->output_error('No post with id '.$post_id);
 			}
 
 			

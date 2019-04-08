@@ -77,9 +77,13 @@
 			}
 			
 			$posts = get_posts($query_args);
+			foreach($selections as $selection) {
+				$filter_name = WPRR_DOMAIN.'/range_filter/'.$selection;
+				
+				$posts = apply_filters($filter_name, $posts, $data);
+			}
 			
 			$post_links = array();
-			
 			foreach($posts as $post_id) {
 				
 				$encoded_data = array('id' => $post_id);

@@ -43,6 +43,7 @@
 			
 			global $woocommerce;
 			
+			
 			$cart = $woocommerce->cart;
 			
 			$encoded_items = array();
@@ -59,6 +60,8 @@
 					'product' => mrouter_encode_post_link($cart_item['product_id']),
 					'total' => $cart_item['line_total']
 				);
+				
+				$encoded_item = apply_filters(WPRR_DOMAIN.'/global-item/woocommerce/cart/meta', $encoded_item, $key, $cart_item);
 				
 				$encoded_items[] = $encoded_item;
 			}

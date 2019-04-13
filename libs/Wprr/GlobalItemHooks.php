@@ -38,18 +38,13 @@
 			return $return_object;
 		}
 		
-		public function filter_woocommerce_cart($return_object) {
-			//echo("\Wprr\GlobalItemHooks::filter_woocommerce_cart<br />");
-			
-			global $woocommerce;
-			
-			
-			$cart = $woocommerce->cart;
+		protected function add_cart_data($cart, &$return_object) {
 			
 			$encoded_items = array();
 			
 			$return_object['coupons'] = $cart->get_applied_coupons();
 			$return_object['totals'] = $cart->get_totals();
+			$return_object['currency'] = get_option('woocommerce_currency');
 			
 			$items = $cart->get_cart();
 			foreach($items as $key => $cart_item) {
@@ -67,6 +62,34 @@
 			}
 					
 			$return_object['items'] = $encoded_items;
+			
+		}
+		
+		public function filter_woocommerce_cart($return_object) {
+			//echo("\Wprr\GlobalItemHooks::filter_woocommerce_cart<br />");
+			
+			global $woocommerce;
+			
+			$cart = $woocommerce->cart;
+			
+			$this->add_cart_data($cart, $return_object);
+			
+			if($woocommerce->cart->recurring_carts) {
+				$encoded_recurring_carts = array();
+				
+				foreach($woocommerce->cart->recurring_carts as $key => $recurring_cart) {
+					$current_encoded_cart = array();
+					$this->add_cart_data($recurring_cart, $current_encoded_cart);
+					$encoded_recurring_carts[] = array(
+						'key' => $key,
+						'cart' => $current_encoded_cart,
+						'nextPayment' => $recurring_cart->next_payment_date
+					);
+				}
+				
+				$return_object['recurring'] = $encoded_recurring_carts;
+			}
+			//var_dump($woocommerce->cart->recurring_carts);
 			
 			return $return_object;
 		}

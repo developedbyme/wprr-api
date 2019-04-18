@@ -70,9 +70,13 @@
 			
 			global $woocommerce;
 			
+			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
+			
 			$cart = $woocommerce->cart;
 			
 			$this->add_cart_data($cart, $return_object);
+			
+			$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $woocommerce->cart);
 			
 			if($woocommerce->cart->recurring_carts) {
 				$encoded_recurring_carts = array();
@@ -89,7 +93,6 @@
 				
 				$return_object['recurring'] = $encoded_recurring_carts;
 			}
-			//var_dump($woocommerce->cart->recurring_carts);
 			
 			return $return_object;
 		}

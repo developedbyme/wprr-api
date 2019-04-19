@@ -69,12 +69,16 @@
 			//update_post_meta($order_id, '_customer_user', get_current_user_id());
 			$order->calculate_totals();
 			
-			$order->set_payment_method('manual'); //MEDEBUG
+			if(isset($data['payment_method'])) {
+				$gateways = WC()->payment_gateways->get_available_payment_gateways();
+				$order->set_payment_method($gateways[$data['payment_method']]);
+			}
+			
 			
 			$response_data['orderId'] = $order_id;
 			
 			//Empty cart
-			WC()->cart->empty_cart();
+			//WC()->cart->empty_cart(); //MEDEBUG: //
 		}
 		
 		//METODO: set payment for order

@@ -19,6 +19,8 @@
 			
 			add_filter($prefix.'/wpml/languages', array($this, 'filter_wpml_languages'), 10, 1);
 			add_filter($prefix.'/woocommerce/cart', array($this, 'filter_woocommerce_cart'), 10, 1);
+			add_filter($prefix.'/woocommerce/gateways', array($this, 'filter_woocommerce_gateways'), 10, 1);
+			
 		}
 		
 		public function filter_wpml_languages($return_object) {
@@ -66,6 +68,22 @@
 			$return_object['items'] = $encoded_items;
 			
 			return $return_object;
+		}
+		
+		public function filter_woocommerce_gateways($return_object) {
+			$gateways = WC()->payment_gateways->get_available_payment_gateways();
+			
+			$encoded_gateways = array();
+			
+			foreach($gateways as $id => $gateway) {
+				$encoded_gateways[] = array(
+					'id' => $id,
+					'title' => $gateway->get_title(),
+					'description' => $gateway->get_description()
+				);
+			}
+			
+			return $encoded_gateways;
 		}
 		
 		public static function test_import() {

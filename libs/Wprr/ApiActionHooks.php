@@ -69,9 +69,9 @@
 			//update_post_meta($order_id, '_customer_user', get_current_user_id());
 			$order->calculate_totals();
 			
-			if(isset($data['payment_method'])) {
+			if(isset($data['paymentMethod'])) {
 				$gateways = WC()->payment_gateways->get_available_payment_gateways();
-				$order->set_payment_method($gateways[$data['payment_method']]);
+				$order->set_payment_method($gateways[$data['paymentMethod']]);
 			}
 			
 			

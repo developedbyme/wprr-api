@@ -70,8 +70,10 @@
 			$order->calculate_totals();
 			
 			if(isset($data['paymentMethod'])) {
-				$gateways = WC()->payment_gateways->get_available_payment_gateways();
-				$order->set_payment_method($gateways[$data['paymentMethod']]);
+				//$gateways = WC()->payment_gateways->get_available_payment_gateways();
+				//$selected_gateway = $gateways[$data['paymentMethod']];
+				$order->set_payment_method($data['paymentMethod']);
+				$order->save();
 			}
 			
 			
@@ -123,6 +125,8 @@
 			
 			foreach($subscription_groups as $group_name => $group_data) {
 				$subscription = wcs_create_subscription(array('order_id' => $order_id, 'billing_period' => $group_data['period'], 'billing_interval' => $group_data['interval'], 'start_date' => $start_date));
+				
+				$subscription->set_payment_method($order->get_payment_method());
 				
 				foreach($group_data['items'] as $item_data) {
 					$product = $item_data->get_product();

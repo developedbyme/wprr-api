@@ -20,6 +20,7 @@
 			add_filter($prefix.'/wpml/languages', array($this, 'filter_wpml_languages'), 10, 1);
 			add_filter($prefix.'/woocommerce/cart', array($this, 'filter_woocommerce_cart'), 10, 1);
 			add_filter($prefix.'/woocommerce/gateways', array($this, 'filter_woocommerce_gateways'), 10, 1);
+			add_filter($prefix.'/woocommerce/current-customer', array($this, 'filter_woocommerce_current_customer'), 10, 1);
 			
 		}
 		
@@ -113,6 +114,14 @@
 			}
 			
 			return $encoded_gateways;
+		}
+		
+		public function filter_woocommerce_current_customer($return_object) {
+			$customer = WC()->customer;
+			
+			$return_object = $customer->get_data();
+			
+			return $return_object;
 		}
 		
 		public static function test_import() {

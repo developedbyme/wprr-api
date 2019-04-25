@@ -58,6 +58,16 @@
 			}
 			
 			$response_data['results'] = $results;
+			
+			$notices = array();
+			$notice_groups = wc_get_notices();
+			foreach($notice_groups as $type => $messages) {
+				foreach($messages as $message) {
+					$notices[] = array('type' => $type, 'message' => $message);
+				}
+			}
+			$response_data['notices'] = $notices;
+			wc_clear_notices();
 		}
 		
 		public function hook_woocommerce_checkout($data, &$response_data) {

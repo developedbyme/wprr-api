@@ -79,12 +79,18 @@
 			//update_post_meta($order_id, '_customer_user', get_current_user_id());
 			$order->calculate_totals();
 			
-			$order->set_payment_method('manual'); //MEDEBUG
+			if(isset($data['paymentMethod'])) {
+				//$gateways = WC()->payment_gateways->get_available_payment_gateways();
+				//$selected_gateway = $gateways[$data['paymentMethod']];
+				$order->set_payment_method($data['paymentMethod']);
+				$order->save();
+			}
+			
 			
 			$response_data['orderId'] = $order_id;
 			
 			//Empty cart
-			WC()->cart->empty_cart();
+			//WC()->cart->empty_cart(); //MEDEBUG: //
 		}
 		
 		//METODO: set payment for order
@@ -129,6 +135,8 @@
 			
 			foreach($subscription_groups as $group_name => $group_data) {
 				$subscription = wcs_create_subscription(array('order_id' => $order_id, 'billing_period' => $group_data['period'], 'billing_interval' => $group_data['interval'], 'start_date' => $start_date));
+				
+				$subscription->set_payment_method($order->get_payment_method());
 				
 				foreach($group_data['items'] as $item_data) {
 					$product = $item_data->get_product();

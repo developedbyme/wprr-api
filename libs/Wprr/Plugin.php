@@ -171,7 +171,7 @@
 			$paths['rest'] = rest_url();
 			
 			$paths['login'] = wp_login_url();
-			$paths['logout'] = wp_logout_url();
+			$paths['logout'] = html_entity_decode(wp_logout_url());
 			$paths['lostPassword'] = wp_lostpassword_url();
 			
 			if(function_exists('wc_get_page_id')) {

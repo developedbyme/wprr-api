@@ -64,14 +64,29 @@
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_checkout<br />");
 			
 			$cart = WC()->cart;
-			$order_id = WC()->checkout()->create_order(array('customer_id' => get_current_user_id()));
+			
+			$order_data = array();
+			
+			$user_id = get_current_user_id();
+			
+			if($user_id) {
+				$order_data['customer_id'] = $user_id;
+				$customer = new \WC_Customer($user_id);
+				
+				$order_data['billing_address_1'] = $customer->get_billing_address_1();
+				$order_data['billing_address_2'] = $customer->get_billing_address_2();
+				$order_data['billing_postcode'] = $customer->get_billing_postcode();
+				$order_data['billing_city'] = $customer->get_billing_city();
+				$order_data['billing_country'] = $customer->get_billing_country();
+				$order_data['billing_phone'] = $customer->get_billing_phone();
+			}
+			
+			
+			$order_id = WC()->checkout()->create_order($order_data);
 			$order = wc_get_order( $order_id );
-			//update_post_meta($order_id, '_customer_user', get_current_user_id());
 			$order->calculate_totals();
 			
 			if(isset($data['paymentMethod'])) {
-				//$gateways = WC()->payment_gateways->get_available_payment_gateways();
-				//$selected_gateway = $gateways[$data['paymentMethod']];
 				$order->set_payment_method($data['paymentMethod']);
 				$order->save();
 			}

@@ -8,11 +8,7 @@
 		function __construct() {
 			//echo("\Wprr\Plugin::__construct<br />");
 
-			$this->add_additional_hook(new \Wprr\RedirectHooks());
-			$this->add_additional_hook(new \Wprr\ChangePostHooks());
-			$this->add_additional_hook(new \Wprr\RangeHooks());
-			$this->add_additional_hook(new \Wprr\GlobalItemHooks());
-			$this->add_additional_hook(new \Wprr\ApiActionHooks());
+			
 			
 			parent::__construct();
 
@@ -34,7 +30,11 @@
 		protected function create_additional_hooks() {
 			//echo("\Wprr\Plugin::create_additional_hooks<br />");
 
-
+			$this->add_additional_hook(new \Wprr\RedirectHooks());
+			$this->add_additional_hook(new \Wprr\ChangePostHooks());
+			$this->add_additional_hook(new \Wprr\RangeHooks());
+			$this->add_additional_hook(new \Wprr\GlobalItemHooks());
+			$this->add_additional_hook(new \Wprr\ApiActionHooks());
 		}
 
 		protected function create_rest_api_end_points() {

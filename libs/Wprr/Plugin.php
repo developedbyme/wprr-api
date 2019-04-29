@@ -244,17 +244,32 @@
 				
 				$admin_data['screen'] = $screen;
 				
-				if($screen->parent_base === 'edit') {
-					global $post;
-					$admin_data['post'] = mrouter_encode_post($post);
-				}
-				else if($screen->parent_base === 'woocommerce' && $screen->post_type === 'shop_order') {
+				$should_encode_post = apply_filters(M_ROUTER_DATA_DOMAIN.'/configuration_admin_data/should_encode_post', false, $screen);
+				
+				if($should_encode_post) {
 					global $post;
 					$admin_data['post'] = mrouter_encode_post($post);
 				}
 			}
 			
 			return $admin_data;
+		}
+		
+		public function filter_admin_data_should_encode_post($should, $screen) {
+			switch($screen->parent_base) {
+				case 'edit':
+					return true;
+				case 'woocommerce':
+					if($screen->post_type === 'shop_order' || $screen->post_type === 'shop_subscription') {
+						return true;
+					}
+					break;
+				default:
+					//MENOTE: do nothing
+					break;
+			}
+			
+			return $should;
 		}
 		
 		public function filter_acf_post_meta($meta_data, $post_id) {
@@ -291,6 +306,7 @@
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data', array($this, 'filter_user_data'), 10, 3);
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_user_data_if_logged_in', array($this, 'filter_user_data_if_logged_in'), 10, 1);
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_admin_data', array($this, 'filter_admin_data'), 10, 3);
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_admin_data/should_encode_post', array($this, 'filter_admin_data_should_encode_post'), 10, 2);
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
 			add_action(WPRR_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);

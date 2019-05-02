@@ -65,6 +65,8 @@
 			add_filter(WPRR_DOMAIN.'/range_query/privates', array($this, 'filter_query_privates'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/attachmentStatus', array($this, 'filter_query_attachment_status'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/idSelection', array($this, 'filter_query_id_selection'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/myOrders', array($this, 'filter_query_my_orders'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_filter/myOrders', array($this, 'filter_filter_my_orders'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/inTaxonomy', array($this, 'filter_query_in_taxonomy'), 10, 2);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/id', array($this, 'filter_encode_id'), 10, 3);
@@ -146,6 +148,45 @@
 			$query_args['post_status'][] = 'privates';
 			
 			return $query_args;
+		}
+		
+		public function filter_query_my_orders($query_args, $data) {
+			//echo("\Wprr\RangeHooks::filter_query_my_orders<br />");
+			
+			if(!isset($query_args['post_status'])) {
+				$query_args['post_status'] = array('publish');
+			}
+			
+			$order_statuses = wc_get_order_statuses();
+			foreach($order_statuses as $key => $label) {
+				$query_args['post_status'][] = $key;
+			}
+			
+			return $query_args;
+		}
+		
+		public function filter_filter_my_orders($ids, $data) {
+			//echo("\Wprr\RangeHooks::filter_filter_my_orders<br />");
+			
+			if(current_user_can('edit_others_posts') && false) {
+				return $ids;
+			}
+			
+			$current_user_id = get_current_user_id();
+			
+			if(!$current_user_id) {
+				return array();
+			}
+			
+			$qualified_ids = array();
+			foreach($ids as $id) {
+				$order_user_id = (int)get_post_meta($id, '_customer_user', true);
+				if($order_user_id === $current_user_id) {
+					$qualified_ids[] = $id;
+				}
+			}
+			
+			return $qualified_ids;
 		}
 		
 		public function filter_query_attachment_status($query_args, $data) {

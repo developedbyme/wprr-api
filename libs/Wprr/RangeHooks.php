@@ -62,6 +62,7 @@
 			add_filter(WPRR_DOMAIN.'/range_query/default', array($this, 'filter_query_standard'), 10, 2);
 			//add_filter(WPRR_DOMAIN.'/range_selection_has_permission/drafts', array('\Wprr\PermissionFilters', 'waterfall_is_admin'), 10, 1);
 			add_filter(WPRR_DOMAIN.'/range_query/drafts', array($this, 'filter_query_drafts'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/privates', array($this, 'filter_query_privates'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/attachmentStatus', array($this, 'filter_query_attachment_status'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/idSelection', array($this, 'filter_query_id_selection'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/inTaxonomy', array($this, 'filter_query_in_taxonomy'), 10, 2);
@@ -115,12 +116,34 @@
 		public function filter_query_drafts($query_args, $data) {
 			//echo("\Wprr\RangeHooks::filter_query_drafts<br />");
 			
+			if(!current_user_can('edit_others_posts')) {
+				$query_args['post__in'] = array(0);
+				return $query_args;
+			}
+			
 			if(!isset($query_args['post_status'])) {
 				$query_args['post_status'] = array('publish');
 			}
 			
 			$query_args['post_status'][] = 'draft';
 			$query_args['post_status'][] = 'pending';
+			
+			return $query_args;
+		}
+		
+		public function filter_query_privates($query_args, $data) {
+			//echo("\Wprr\RangeHooks::filter_query_privates<br />");
+			
+			if(!current_user_can('read_private_posts')) {
+				$query_args['post__in'] = array(0);
+				return $query_args;
+			}
+			
+			if(!isset($query_args['post_status'])) {
+				$query_args['post_status'] = array('publish');
+			}
+			
+			$query_args['post_status'][] = 'privates';
 			
 			return $query_args;
 		}

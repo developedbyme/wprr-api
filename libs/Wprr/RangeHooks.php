@@ -69,8 +69,8 @@
 			add_filter(WPRR_DOMAIN.'/range_filter/myOrders', array($this, 'filter_filter_my_orders'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/inTaxonomy', array($this, 'filter_query_in_taxonomy'), 10, 2);
 			
-			add_filter(WPRR_DOMAIN.'/range_query/allOrderStatuses', array($this, 'filter_query_allOrderStatuses'), 10, 2);
-			add_filter(WPRR_DOMAIN.'/range_query/allSubscriptionStatuses', array($this, 'filter_query_allSubscriptionStatuses'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/allOrders', array($this, 'filter_query_allOrders'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/allSubscriptions', array($this, 'filter_query_allSubscriptions'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/activeSubscriptions', array($this, 'filter_query_activeSubscriptions'), 10, 2);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/id', array($this, 'filter_encode_id'), 10, 3);
@@ -338,7 +338,7 @@
 			return $return_object;
 		}
 		
-		public function filter_query_allOrderStatuses($query_args, $data) {
+		public function filter_query_allOrders($query_args, $data) {
 			
 			$current_user_id = get_current_user_id();
 			
@@ -352,8 +352,8 @@
 			return $query_args;
 		}
 		
-		public function filter_query_allSubscriptionStatuses($query_args, $data) {
-			//echo("\Wprr\RangeHooks::query_allSubscriptionStatuses<br />");
+		public function filter_query_allSubscriptions($query_args, $data) {
+			//echo("\Wprr\RangeHooks::query_allSubscriptions<br />");
 			
 			$current_user_id = get_current_user_id();
 			

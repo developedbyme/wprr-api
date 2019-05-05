@@ -297,6 +297,7 @@
 		}
 		
 		public function filter_encode_order($return_object, $post_id) {
+			echo("\Wprr\RangeHooks::filter_encode_order<br />");
 			
 			$order = new \WC_Order($post_id);
 			
@@ -367,7 +368,7 @@
 		}
 		
 		public function filter_query_activeSubscriptions($query_args, $data) {
-			//echo("\Wprr\RangeHooks::filter_query_activeSubscriptions<br />");
+			echo("\Wprr\RangeHooks::filter_query_activeSubscriptions<br />");
 			
 			$current_user_id = get_current_user_id();
 			
@@ -382,6 +383,7 @@
 		}
 		
 		public function filter_encode_subscription($return_object, $post_id) {
+			echo("\Wprr\RangeHooks::filter_encode_subscription<br />");
 			
 			$subscription = new \WC_Subscription($post_id);
 			

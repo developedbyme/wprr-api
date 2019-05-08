@@ -119,7 +119,11 @@
 		public function filter_woocommerce_current_customer($return_object) {
 			$customer = WC()->customer;
 			
-			$return_object = $customer->get_data();
+			$current_data = $customer->get_data();
+			
+			$return_object['id'] = $current_data['id'];
+			$return_object['isPayingCustomer'] = $current_data['is_paying_customer'];
+			$return_object['contactDetails'] = array('billing' => $current_data['billing'], 'shipping' => $current_data['shipping']);
 			
 			return $return_object;
 		}

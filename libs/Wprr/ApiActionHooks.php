@@ -19,6 +19,7 @@
 			
 			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_add_to_cart'), 11, 2);
+			add_action('wprr/api_action/woocommerce/customer/set-billing-details', array($this, 'hook_woocommerce_customer_set_billing_details'), 10, 2);
 			
 			add_action('wprr/api_action/woocommerce/subscriptions/start-subscription', array($this, 'hook_woocommerce_subscriptions_start_subscription'), 10, 2);
 
@@ -171,6 +172,45 @@
 			
 			\WC_Subscriptions_Manager::activate_subscriptions_for_order($order);
 			do_action('wprr/api_action_part/woocommerce/subscriptions/created_from_order', $subscription_ids, $order, $response_data);
+		}
+		
+		public function hook_woocommerce_customer_set_billing_details($data, &$response_data) {
+			$user_id = $data['userId'];
+			
+			$current_user_id = get_current_user_id();
+			
+			if(!current_user_can('edit_others_posts') && $user_id != $current_user_id) {
+				$response_data["code"] = 'error';
+				$response_data["message"] = 'Not authorized';
+				return;
+			}
+			
+			$customer = new \WC_Customer($user_id);
+			
+			$fields_map = array(
+				'firstName' => 'first_name',
+				'lastName' => 'last_name',
+				'address1' => 'address_1',
+				'address2' => 'address_2',
+				'postcode' => 'postcode',
+				'city' => 'city',
+				'country' => 'country',
+				'phoneNumber' => 'phone',
+			);
+			
+			$updated_fields = array();
+			
+			foreach($fields_map as $key => $value) {
+				if(isset($data[$key])) {
+					$function_name = 'set_billing_'.$value;
+					$customer->$function_name($data[$key]);
+					$updated_fields[] = $value;
+				}
+			}
+			
+			$response_data["updatedFields"] = $updated_fields;
+			
+			$customer->save();
 		}
 		
 		public static function test_import() {

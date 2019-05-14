@@ -751,6 +751,21 @@
 			return $current_post_data;
 		}
 		
+		public function encode_private_post_link($post_id) {
+			//echo('encode_private_post_link');
+			//var_dump($post_id);
+
+			if($post_id === 0) {
+				return null;
+			}
+
+			$current_post_data["id"] = $post_id;
+			$current_post_data["permalink"] = get_permalink($post_id);
+			$current_post_data["title"] = get_the_title($post_id);
+
+			return $current_post_data;
+		}
+		
 		public function encode_post_link_in_language($post_id, $language_code) {
 			//echo('encode_post_link');
 			//var_dump($post_id);
@@ -856,7 +871,7 @@
 			$return_object['name'] = $user->display_name;
 			$return_object['email'] = $user->user_email;
 			
-			$return_object['gravatarHash'] = md5( strtolower( trim( $user->email ) ) );
+			$return_object['gravatarHash'] = md5( strtolower( trim( $user->user_email ) ) );
 
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_user', $end_time-$start_time);

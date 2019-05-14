@@ -128,6 +128,12 @@
 		return $encoder->encode_post_link($post_id);
 	}
 	
+	function wprr_encode_private_post_link($post_id) {
+		$encoder = new \Wprr\WprrEncoder();
+		
+		return $encoder->encode_private_post_link($post_id);
+	}
+	
 	function wprr_encode_post($post) {
 		$encoder = new \Wprr\WprrEncoder();
 		

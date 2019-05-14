@@ -19,6 +19,7 @@
 			
 			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_add_to_cart'), 11, 2);
+			add_action('wprr/api_action/woocommerce/customer/set-billing-details', array($this, 'hook_woocommerce_customer_set_billing_details'), 10, 2);
 			
 			add_action('wprr/api_action/woocommerce/subscriptions/start-subscription', array($this, 'hook_woocommerce_subscriptions_start_subscription'), 10, 2);
 
@@ -58,6 +59,16 @@
 			}
 			
 			$response_data['results'] = $results;
+			
+			$notices = array();
+			$notice_groups = wc_get_notices();
+			foreach($notice_groups as $type => $messages) {
+				foreach($messages as $message) {
+					$notices[] = array('type' => $type, 'message' => $message);
+				}
+			}
+			$response_data['notices'] = $notices;
+			wc_clear_notices();
 		}
 		
 		public function hook_woocommerce_checkout($data, &$response_data) {
@@ -65,17 +76,38 @@
 			
 			WC()->cart->set_session();
 			$cart = WC()->cart;
-			$order_id = WC()->checkout()->create_order(array('customer_id' => get_current_user_id()));
+			
+			$order_data = array();
+			
+			$user_id = get_current_user_id();
+			
+			if($user_id) {
+				$order_data['customer_id'] = $user_id;
+				$customer = new \WC_Customer($user_id);
+				
+				$order_data['billing_address_1'] = $customer->get_billing_address_1();
+				$order_data['billing_address_2'] = $customer->get_billing_address_2();
+				$order_data['billing_postcode'] = $customer->get_billing_postcode();
+				$order_data['billing_city'] = $customer->get_billing_city();
+				$order_data['billing_country'] = $customer->get_billing_country();
+				$order_data['billing_phone'] = $customer->get_billing_phone();
+			}
+			
+			
+			$order_id = WC()->checkout()->create_order($order_data);
 			$order = wc_get_order( $order_id );
-			//update_post_meta($order_id, '_customer_user', get_current_user_id());
 			$order->calculate_totals();
 			
-			$order->set_payment_method('manual'); //MEDEBUG
+			if(isset($data['paymentMethod'])) {
+				$order->set_payment_method($data['paymentMethod']);
+				$order->save();
+			}
+			
 			
 			$response_data['orderId'] = $order_id;
 			
 			//Empty cart
-			WC()->cart->empty_cart();
+			//WC()->cart->empty_cart(); //MEDEBUG: //
 		}
 		
 		//METODO: set payment for order
@@ -122,6 +154,8 @@
 			foreach($subscription_groups as $group_name => $group_data) {
 				$subscription = wcs_create_subscription(array('order_id' => $order_id, 'billing_period' => $group_data['period'], 'billing_interval' => $group_data['interval'], 'start_date' => $start_date));
 				
+				$subscription->set_payment_method($order->get_payment_method());
+				
 				foreach($group_data['items'] as $item_data) {
 					$product = $item_data->get_product();
 					$product_id = $product->get_id();
@@ -140,6 +174,45 @@
 			
 			\WC_Subscriptions_Manager::activate_subscriptions_for_order($order);
 			do_action('wprr/api_action_part/woocommerce/subscriptions/created_from_order', $subscription_ids, $order, $response_data);
+		}
+		
+		public function hook_woocommerce_customer_set_billing_details($data, &$response_data) {
+			$user_id = $data['userId'];
+			
+			$current_user_id = get_current_user_id();
+			
+			if(!current_user_can('edit_others_posts') && $user_id != $current_user_id) {
+				$response_data["code"] = 'error';
+				$response_data["message"] = 'Not authorized';
+				return;
+			}
+			
+			$customer = new \WC_Customer($user_id);
+			
+			$fields_map = array(
+				'firstName' => 'first_name',
+				'lastName' => 'last_name',
+				'address1' => 'address_1',
+				'address2' => 'address_2',
+				'postcode' => 'postcode',
+				'city' => 'city',
+				'country' => 'country',
+				'phoneNumber' => 'phone',
+			);
+			
+			$updated_fields = array();
+			
+			foreach($fields_map as $key => $value) {
+				if(isset($data[$key])) {
+					$function_name = 'set_billing_'.$value;
+					$customer->$function_name($data[$key]);
+					$updated_fields[] = $value;
+				}
+			}
+			
+			$response_data["updatedFields"] = $updated_fields;
+			
+			$customer->save();
 		}
 		
 		public static function test_import() {

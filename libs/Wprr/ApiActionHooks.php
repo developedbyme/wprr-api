@@ -63,6 +63,7 @@
 		public function hook_woocommerce_checkout($data, &$response_data) {
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_checkout<br />");
 			
+			WC()->cart->set_session();
 			$cart = WC()->cart;
 			$order_id = WC()->checkout()->create_order(array('customer_id' => get_current_user_id()));
 			$order = wc_get_order( $order_id );
@@ -82,6 +83,7 @@
 		public function hook_woocommerce_empty_cart($data, &$response_data) {
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_empty_cart<br />");
 			
+			WC()->cart->set_session();
 			WC()->cart->empty_cart();
 		}
 		

@@ -846,7 +846,7 @@
 			$return_object['permalink'] = get_author_posts_url($user->ID);
 			$return_object['name'] = $user->display_name;
 
-			$return_object['gravatarHash'] = md5( strtolower( trim( $user->email ) ) );
+			$return_object['gravatarHash'] = md5( strtolower( trim( $user->user_email ) ) );
 
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_user', $end_time-$start_time);

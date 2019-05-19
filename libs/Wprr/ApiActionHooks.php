@@ -89,6 +89,8 @@
 				$order_data['customer_id'] = $user_id;
 				$customer = new \WC_Customer($user_id);
 				
+				$order_data['billing_first_name'] = $customer->get_billing_first_name();
+				$order_data['billing_last_name'] = $customer->get_billing_last_name();
 				$order_data['billing_address_1'] = $customer->get_billing_address_1();
 				$order_data['billing_address_2'] = $customer->get_billing_address_2();
 				$order_data['billing_postcode'] = $customer->get_billing_postcode();
@@ -107,8 +109,8 @@
 				$order->save();
 			}
 			
-			
 			$response_data['orderId'] = $order_id;
+			do_action('wprr/api_action_part/woocommerce/checkout/order_created', $order_id, $order, $response_data);
 			
 			//Empty cart
 			//WC()->cart->empty_cart(); //MEDEBUG: //

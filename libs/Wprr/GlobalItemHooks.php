@@ -71,6 +71,8 @@
 		public function filter_woocommerce_cart($return_object) {
 			//echo("\Wprr\GlobalItemHooks::filter_woocommerce_cart<br />");
 			
+			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
+			
 			global $woocommerce;
 			
 			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );

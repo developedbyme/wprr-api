@@ -119,6 +119,9 @@
 		}
 		
 		public function filter_woocommerce_current_customer($return_object) {
+			
+			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
+			
 			$customer = WC()->customer;
 			
 			$current_data = $customer->get_data();

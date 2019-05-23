@@ -22,7 +22,9 @@
 			add_action('wprr/api_action/woocommerce/customer/set-billing-details', array($this, 'hook_woocommerce_customer_set_billing_details'), 10, 2);
 			
 			add_action('wprr/api_action/woocommerce/subscriptions/start-subscription', array($this, 'hook_woocommerce_subscriptions_start_subscription'), 10, 2);
-
+			
+			add_action('wprr/api_action/user/set-email', array($this, 'hook_user_set_email'), 10, 2);
+			add_action('wprr/api_action/user/set-password', array($this, 'hook_user_set_password'), 10, 2);
 		}
 
 		public function hook_woocommerce_add_to_cart($data, &$response_data) {
@@ -225,6 +227,61 @@
 			$response_data["updatedFields"] = $updated_fields;
 			
 			$customer->save();
+		}
+		
+		public function hook_user_set_email($data, &$response_data) {
+			//echo("\Wprr\ApiActionHooks::hook_user_set_email<br />");
+			
+			$user_id = (int)$data['userId'];
+			
+			$current_user_id = get_current_user_id();
+			
+			if(!current_user_can('edit_others_posts') && $user_id != $current_user_id) {
+				throw(new \Exception('Not authorized'));
+			}
+			
+			$email = $data['email'];
+			
+			$existing_user = get_user_by('email', $email);
+			if($existing_user) {
+				if($existing_user->ID != $user_id) {
+					throw(new \Exception('Email already taken by user'));
+				}
+				$response_data["id"] = $existing_user->ID;
+			}
+			else {
+				$user_id = wp_update_user(array(
+					'ID' => $user_id,
+					'user_email' => $email
+				));
+				
+				if ( is_wp_error( $user_id ) ) {
+					throw(new \Exception('Could not update user '.$user_id->get_message()));
+				}
+				$response_data["id"] = $user_id;
+			}
+		}
+		
+		public function hook_user_set_password($data, &$response_data) {
+			//echo("\Wprr\ApiActionHooks::hook_user_set_password<br />");
+			
+			$user_id = (int)$data['userId'];
+			
+			$current_user_id = get_current_user_id();
+			
+			if(!current_user_can('edit_others_posts') && $user_id != $current_user_id) {
+				throw(new \Exception('Not authorized'));
+			}
+			
+			$user_id = wp_update_user(array(
+				'ID' => $user_id,
+				'user_pass' => $data['password']
+			));
+			
+			if ( is_wp_error( $user_id ) ) {
+				throw(new \Exception('Could not update user '.$user_id->get_message()));
+			}
+			$response_data["id"] = $user_id;
 		}
 		
 		public static function test_import() {

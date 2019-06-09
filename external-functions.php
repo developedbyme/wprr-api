@@ -1,6 +1,12 @@
 <?php
 	//use \WP_REST_Request;
 	
+	function wprr_get_encoder() {
+		$encoder = new \Wprr\WprrEncoder();
+		
+		return $encoder;
+	}
+	
 	function get_initial_mrouter_data() {
 		$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 

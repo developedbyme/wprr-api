@@ -21,6 +21,7 @@
 			add_filter($prefix.'/woocommerce/cart', array($this, 'filter_woocommerce_cart'), 10, 1);
 			add_filter($prefix.'/woocommerce/gateways', array($this, 'filter_woocommerce_gateways'), 10, 1);
 			add_filter($prefix.'/woocommerce/current-customer', array($this, 'filter_woocommerce_current_customer'), 10, 1);
+			add_filter($prefix.'/woocommerce/customer', array($this, 'filter_woocommerce_customer'), 10, 3);
 			
 		}
 		
@@ -126,7 +127,30 @@
 			
 			$current_data = $customer->get_data();
 			
+			$return_object['id'] = $customer->get_id();
+			$return_object['user'] = wprr_encode_user(get_user_by('id', $customer->get_id()));
+			$return_object['isPayingCustomer'] = $current_data['is_paying_customer'];
+			$return_object['contactDetails'] = array('billing' => $current_data['billing'], 'shipping' => $current_data['shipping']);
+			
+			return $return_object;
+		}
+		
+		public function filter_woocommerce_customer($return_object, $item, $data) {
+			
+			$can_get_private_data = apply_filters(WPRR_DOMAIN.'/current_user_can_get_private_data', current_user_can('edit_others_posts'), $data);
+			if(!$can_get_private_data) {
+				throw(new \Exception("User doesn't have persmission"));
+			}
+			
+			$user_id = (int)$data['id'];
+			$customer = new \WC_Customer($user_id);
+			
+			$current_data = $customer->get_data();
+			
+			$encoder = wprr_get_encoder();
+			
 			$return_object['id'] = $current_data['id'];
+			$return_object['user'] = $encoder->encode_user_with_private_data(get_user_by('id', $user_id));
 			$return_object['isPayingCustomer'] = $current_data['is_paying_customer'];
 			$return_object['contactDetails'] = array('billing' => $current_data['billing'], 'shipping' => $current_data['shipping']);
 			

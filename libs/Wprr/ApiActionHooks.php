@@ -13,6 +13,7 @@
 			//echo("\Wprr\ApiActionHooks::register<br />");
 
 			add_action('wprr/api_action/woocommerce/add-to-cart', array($this, 'hook_woocommerce_add_to_cart'), 10, 2);
+			add_action('wprr/api_action/woocommerce/remove-from-cart', array($this, 'hook_woocommerce_remove_from_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/apply-dicount-code', array($this, 'hook_woocommerce_apply_discount_code'), 10, 2);
 			add_action('wprr/api_action/woocommerce/checkout', array($this, 'hook_woocommerce_checkout'), 10, 2);
 			add_action('wprr/api_action/woocommerce/empty-cart', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
@@ -45,6 +46,19 @@
 			$add_to_cart = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation_data, $item_data);
 			
 			$response_data['addedToCart'] = $add_to_cart;
+		}
+		
+		public function hook_woocommerce_remove_from_cart($data, &$response_data) {
+			//echo("\Wprr\ApiActionHooks::hook_woocommerce_add_to_cart<br />");
+			
+			$this->ensure_wc_has_cart();
+			WC()->cart->set_session();
+			
+			$cart_item_key = $data['key'];
+			
+			$removed = WC()->cart->remove_cart_item($cart_item_key);
+			
+			$response_data['removed'] = $removed;
 		}
 		
 		public function hook_woocommerce_apply_discount_code($data, &$response_data) {

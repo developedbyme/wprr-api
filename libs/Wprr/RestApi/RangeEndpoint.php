@@ -70,32 +70,37 @@
 				$query_args['orderby'] = $data['orderby'];
 			}
 			
-			foreach($selections as $selection) {
-				$filter_name = WPRR_DOMAIN.'/range_query/'.$selection;
+			try {
+				foreach($selections as $selection) {
+					$filter_name = WPRR_DOMAIN.'/range_query/'.$selection;
 				
-				$query_args = apply_filters($filter_name, $query_args, $data);
-			}
-			
-			$posts = get_posts($query_args);
-			foreach($selections as $selection) {
-				$filter_name = WPRR_DOMAIN.'/range_filter/'.$selection;
-				
-				$posts = apply_filters($filter_name, $posts, $data);
-			}
-			
-			$post_links = array();
-			foreach($posts as $post_id) {
-				
-				$encoded_data = array('id' => $post_id);
-				
-				foreach($encodings as $encoding) {
-					$filter_name = WPRR_DOMAIN.'/range_encoding/'.$encoding;
-				
-					$encoded_data = apply_filters($filter_name, $encoded_data, $post_id, $data);
+					$query_args = apply_filters($filter_name, $query_args, $data);
 				}
+			
+				$posts = get_posts($query_args);
+				foreach($selections as $selection) {
+					$filter_name = WPRR_DOMAIN.'/range_filter/'.$selection;
 				
-				$post_links[] = $encoded_data;
-			};
+					$posts = apply_filters($filter_name, $posts, $data);
+				}
+			
+				$post_links = array();
+				foreach($posts as $post_id) {
+				
+					$encoded_data = array('id' => $post_id);
+				
+					foreach($encodings as $encoding) {
+						$filter_name = WPRR_DOMAIN.'/range_encoding/'.$encoding;
+				
+						$encoded_data = apply_filters($filter_name, $encoded_data, $post_id, $data);
+					}
+				
+					$post_links[] = $encoded_data;
+				};
+			}
+			catch(\Exception $exception) {
+				return $this->output_error($exception->getMessage());
+			}
 			
 			return $this->output_success($post_links);
 		}

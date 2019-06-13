@@ -358,14 +358,21 @@
 			return $return_object;
 		}
 		
-		public function filter_query_allOrders($query_args, $data) {
-			
+		protected function verify_orders_permission() {
 			$current_user_id = get_current_user_id();
 			
-			if(!current_user_can('edit_others_posts')) {
-				$query_args['post__in'] = array(0);
-				return $query_args;
+			$can_view_orders = apply_filters(WPRR_DOMAIN.'/current_user_can_get_private_order_data', current_user_can('edit_others_posts'));
+			
+			if(!$can_view_orders) {
+				throw(new \Exception('Not permitted'));
 			}
+			
+			return true;
+		}
+		
+		public function filter_query_allOrders($query_args, $data) {
+			
+			$this->verify_orders_permission();
 			
 			$query_args['post_status'] = array_keys( wc_get_order_statuses() );
 			
@@ -375,12 +382,7 @@
 		public function filter_query_allSubscriptions($query_args, $data) {
 			//echo("\Wprr\RangeHooks::query_allSubscriptions<br />");
 			
-			$current_user_id = get_current_user_id();
-			
-			if(!current_user_can('edit_others_posts')) {
-				$query_args['post__in'] = array(0);
-				return $query_args;
-			}
+			$this->verify_orders_permission();
 			
 			$query_args['post_status'] = array( 'wc-pending', 'wc-active', 'wc-on-hold', 'wc-pending-cancel', 'wc-cancelled', 'wc-expired' );
 			
@@ -390,12 +392,7 @@
 		public function filter_query_activeSubscriptions($query_args, $data) {
 			//echo("\Wprr\RangeHooks::filter_query_activeSubscriptions<br />");
 			
-			$current_user_id = get_current_user_id();
-			
-			if(!current_user_can('edit_others_posts')) {
-				$query_args['post__in'] = array(0);
-				return $query_args;
-			}
+			$this->verify_orders_permission();
 			
 			$query_args['post_status'] = array('wc-active');
 			

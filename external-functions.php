@@ -373,4 +373,8 @@
 		
 		return $return_array;
 	}
+	
+	function wprr_ensure_wc_has_cart() {
+		\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
+	}
 ?>

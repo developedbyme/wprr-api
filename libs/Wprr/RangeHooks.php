@@ -264,6 +264,9 @@
 			foreach($order_statuses as $key => $label) {
 				$query_args['post_status'][] = $key;
 			}
+			
+			$id = $data['id'];
+			
 			$current_user_id = get_current_user_id();
 			$order_user_id = (int)get_post_meta($id, '_customer_user', true);
 			
@@ -272,10 +275,10 @@
 			$can_view_orders = apply_filters(WPRR_DOMAIN.'/current_user_can_get_private_order_data', $is_owner_or_admin);
 			
 			if(!$can_view_orders) {
-				throw(new \Exception('Not permitted'));
+				throw(new \Exception('Not permitted (current user: '.$current_user_id.', order user: '.$order_user_id.')'));
 			}
 			
-			$query_args['post__in'] = array($data['id']);
+			$query_args['post__in'] = array($id);
 			
 			return $query_args;
 		}

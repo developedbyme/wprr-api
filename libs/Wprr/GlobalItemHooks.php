@@ -23,6 +23,7 @@
 			add_filter($prefix.'/woocommerce/current-customer', array($this, 'filter_woocommerce_current_customer'), 10, 1);
 			add_filter($prefix.'/woocommerce/customer', array($this, 'filter_woocommerce_customer'), 10, 3);
 			
+			add_filter($prefix.'/shortcode', array($this, 'filter_shortcode'), 10, 3);
 		}
 		
 		public function filter_wpml_languages($return_object) {
@@ -153,6 +154,14 @@
 			$return_object['user'] = $encoder->encode_user_with_private_data(get_user_by('id', $user_id));
 			$return_object['isPayingCustomer'] = $current_data['is_paying_customer'];
 			$return_object['contactDetails'] = array('billing' => $current_data['billing'], 'shipping' => $current_data['shipping']);
+			
+			return $return_object;
+		}
+		
+		public function filter_shortcode($return_object, $item, $data) {
+			
+			$code = $data['code'];
+			$return_object['renderedHtml'] = do_shortcode($code);
 			
 			return $return_object;
 		}

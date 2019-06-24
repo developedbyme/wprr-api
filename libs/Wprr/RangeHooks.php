@@ -51,6 +51,33 @@
 			return $return_array;
 		}
 		
+		protected function require_paramters($data, $parameters) {
+			$parameters_array = explode(',', $parameters);
+			$is_ok = true;
+			$missing_parameters = array();
+			
+			foreach($parameters_array as $parameter) {
+				if(!isset($data[$parameter])) {
+					$is_ok = false;
+					$missing_parameters[] = $parameter;
+				}
+			}
+			
+			if(!$is_ok) {
+				throw(new \Exception("Missing parameters: ".implode(', ', $missing_parameters)));
+			}
+			
+			return $this;
+		}
+		
+		protected function require_logged_in() {
+			if(!is_user_logged_in()) {
+				throw(new \Exception("Request requires user to be logged in"));
+			}
+			
+			return $this;
+		}
+		
 		protected function register_hook_for_type($type, $hook_name) {
 			
 		}
@@ -68,6 +95,7 @@
 			add_filter(WPRR_DOMAIN.'/range_query/idSelection', array($this, 'filter_query_id_selection'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/myOrders', array($this, 'filter_query_my_orders'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_filter/myOrders', array($this, 'filter_filter_my_orders'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/myOrder', array($this, 'filter_query_my_order'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/inTaxonomy', array($this, 'filter_query_in_taxonomy'), 10, 2);
 			
 			add_filter(WPRR_DOMAIN.'/range_query/allOrders', array($this, 'filter_query_allOrders'), 10, 2);
@@ -103,6 +131,8 @@
 		public function filter_query_id_selection($query_args, $data) {
 			//echo("\Wprr\RangeHooks::filter_query_id_selection<br />");
 			
+			$this->require_paramters($data, 'ids');
+			
 			$query_args['post__in'] = explode(',', $data['ids']);
 			
 			return $query_args;
@@ -110,6 +140,9 @@
 		
 		public function filter_query_in_taxonomy($query_args, $data) {
 			//echo("\Wprr\RangeHooks::filter_query_in_taxonomy<br />");
+			
+			$this->require_paramters($data, 'taxonomy');
+			//METODO: check taxonomy ids
 			
 			$term_ids = $this->get_term_ids($data);
 			
@@ -215,6 +248,39 @@
 			}
 			
 			return $qualified_ids;
+		}
+		
+		public function filter_query_my_order($query_args, $data) {
+			//echo("\Wprr\RangeHooks::filter_query_my_order<br />");
+			
+			$this->require_paramters($data, 'id');
+			$this->require_logged_in();
+			
+			if(!isset($query_args['post_status'])) {
+				$query_args['post_status'] = array('publish');
+			}
+			
+			$order_statuses = wc_get_order_statuses();
+			foreach($order_statuses as $key => $label) {
+				$query_args['post_status'][] = $key;
+			}
+			
+			$id = $data['id'];
+			
+			$current_user_id = get_current_user_id();
+			$order_user_id = (int)get_post_meta($id, '_customer_user', true);
+			
+			$is_owner_or_admin = (current_user_can('edit_others_posts') || ($order_user_id === $current_user_id));
+			
+			$can_view_orders = apply_filters(WPRR_DOMAIN.'/current_user_can_get_private_order_data', $is_owner_or_admin);
+			
+			if(!$can_view_orders) {
+				throw(new \Exception('Not permitted (current user: '.$current_user_id.', order user: '.$order_user_id.')'));
+			}
+			
+			$query_args['post__in'] = array($id);
+			
+			return $query_args;
 		}
 		
 		public function filter_query_attachment_status($query_args, $data) {
@@ -359,6 +425,7 @@
 		}
 		
 		protected function verify_orders_permission() {
+			$this->require_logged_in();
 			$current_user_id = get_current_user_id();
 			
 			$can_view_orders = apply_filters(WPRR_DOMAIN.'/current_user_can_get_private_order_data', current_user_can('edit_others_posts'));

@@ -6,9 +6,17 @@
 
 	// \Wprr\RestApi\Admin\ChangePostEndpoint
 	class ChangePostEndpoint extends EndPoint {
-
+		
+		protected $_return_data;
+		
 		function __construct() {
 			// echo("\Wprr\RestApi\Admin\ChangePostEndpoint::__construct<br />");
+		}
+		
+		public function add_return_data($field, $data) {
+			$this->_return_data[$field] = $data;
+			
+			return $this;
 		}
 
 		public function perform_call($data) {
@@ -21,6 +29,8 @@
 			$post_id = $data['post_id'];
 			
 			$post = get_post($post_id);
+			
+			$this->_return_data = array('id' => $post_id);
 			
 			if($post) {
 				if(isset($data['changes'])) {
@@ -37,7 +47,7 @@
 			}
 
 			
-			return $this->output_success(array('id' => $post_id));
+			return $this->output_success($this->_return_data);
 		}
 
 		public static function test_import() {

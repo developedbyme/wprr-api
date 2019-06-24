@@ -27,7 +27,7 @@
 				$post = get_post($post_id);
 			
 				if($post) {
-					wprr_apply_post_changes($post_id, $batch['changes']);
+					wprr_apply_post_changes($post_id, $batch['changes'], $this);
 				}
 				else {
 					//Log error

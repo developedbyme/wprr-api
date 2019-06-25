@@ -17,7 +17,7 @@
 			
 			$prefix = WPRR_DOMAIN.'/global-item';
 			
-			add_filter($prefix.'/wpml/languages', array($this, 'filter_wpml_languages'), 10, 1);
+			add_filter($prefix.'/wpml/languages', array($this, 'filter_wpml_languages'), 10, 3);
 			add_filter($prefix.'/woocommerce/cart', array($this, 'filter_woocommerce_cart'), 10, 1);
 			add_filter($prefix.'/woocommerce/gateways', array($this, 'filter_woocommerce_gateways'), 10, 1);
 			add_filter($prefix.'/woocommerce/current-customer', array($this, 'filter_woocommerce_current_customer'), 10, 1);
@@ -26,18 +26,32 @@
 			add_filter($prefix.'/shortcode', array($this, 'filter_shortcode'), 10, 3);
 		}
 		
-		public function filter_wpml_languages($return_object) {
+		public function filter_wpml_languages($return_object, $item, $data) {
 			//echo("\Wprr\GlobalItemHooks::filter_wpml_languages<br />");
+			
+			$permalink;
+			if(isset($data['page'])) {
+				$permalink = $data['page'];
+			}
 			
 			$languages = icl_get_languages('skip_missing=0');
 			foreach($languages as $language) {
-				$return_object[] = array(
-					'code' => $language['code'],
+				
+				$code = $language['code'];
+				
+				$encoded_object = array(
+					'code' => $code,
 					'name' => $language['native_name'],
 					'translatedName' => $language['translated_name'],
 					'homeUrl' => $language['url'],
 					'flagUrl' => $language['country_flag_url']
 				);
+				
+				if($permalink) {
+					$encoded_object['pageUrl'] = apply_filters('wpml_permalink', $permalink, $code);
+				}
+				
+				$return_object[] = $encoded_object;
 			}
 			
 			return $return_object;

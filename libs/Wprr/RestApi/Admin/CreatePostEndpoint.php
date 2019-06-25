@@ -27,7 +27,7 @@
 			$post_id = wp_insert_post($insert_arguments);
 			
 			if(isset($data['changes'])) {
-				wprr_apply_post_changes($post_id, $data['changes']);
+				wprr_apply_post_changes($post_id, $data['changes'], $this);
 			}
 			
 			return $this->output_success(array('id' => $post_id));

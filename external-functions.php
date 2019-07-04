@@ -348,7 +348,7 @@
 			}
 			
 			if(has_action($action_path)) {
-				do_action($action_path, $change_data, $post_id);
+				do_action($action_path, $change_data, $post_id, $logger);
 			}
 			else {
 				if($logger) {

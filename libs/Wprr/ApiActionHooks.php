@@ -190,6 +190,14 @@
 					
 					//METODO: add meta
 					
+					$fields_map = array('first_name', 'last_name', 'address_1', 'address_2', 'postcode', 'city', 'country', 'phone');
+			
+					foreach($fields_map as  $value) {
+						$set_function_name = 'set_billing_'.$value;
+						$get_function_name = 'get_billing_'.$value;
+						$subscription->$set_function_name($order->$get_function_name());
+					}
+					
 					$subscription->add_product($product, $item_data->get_quantity(), array());
 				}
 				

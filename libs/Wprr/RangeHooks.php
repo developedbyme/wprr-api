@@ -406,6 +406,8 @@
 			}
 			$return_object['contactDetails'] = array('billing' => $billing_details);
 			
+			$return_object['paymentMethod'] = $order->get_payment_method();
+			
 			$line_items = $order->get_items();
 			
 			$encoded_items = array();

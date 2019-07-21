@@ -398,7 +398,7 @@
 			);
 			$return_object['taxTotals'] = $order->get_tax_totals();
 			
-			$billing_attributes = array('first_name', 'last_name', 'address_1', 'address_2', 'postcode', 'city', 'country', 'email', 'phone');
+			$billing_attributes = array('first_name', 'last_name', 'company', 'address_1', 'address_2', 'postcode', 'city', 'country', 'email', 'phone');
 			$billing_details = array();
 			foreach($billing_attributes as $billing_attribute) {
 				$get_function_name = 'get_billing_'.$billing_attribute;

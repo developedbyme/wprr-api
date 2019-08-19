@@ -108,6 +108,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/status', array($this, 'filter_encode_status'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/translations', array($this, 'filter_encode_translations'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/attachment', array($this, 'filter_encode_attachment'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/preview', array($this, 'filter_encode_preview'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_edit_fields'), 10, 3);
@@ -308,6 +309,17 @@
 			
 			$encoded_data["permalink"] = get_permalink($post_id);
 			$encoded_data["title"] = get_the_title($post_id);
+			
+			return $encoded_data;
+		}
+		
+		public function filter_encode_preview($encoded_data, $post_id, $data) {
+			//echo("\Wprr\RangeHooks::filter_encode_preview<br />");
+			
+			$encoded_data["permalink"] = get_permalink($post_id);
+			$encoded_data["title"] = get_the_title($post_id);
+			$encoded_data["excerpt"] = get_the_excerpt($post_id);
+			$encoded_data["image"] = wprr_encode_post_image($post_id);
 			
 			return $encoded_data;
 		}

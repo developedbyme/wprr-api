@@ -299,6 +299,17 @@
 			return $meta_data;
 		}
 		
+		public function filter_has_permission_for_users($has_permission) {
+			
+			if($has_permission) {
+				return $has_permission;
+			}
+			
+			$has_permission = current_user_can('administrator');
+			
+			return $has_permission;
+		}
+		
 		protected function create_filters() {
 			//echo("\Wprr\Plugin::create_filters<br />");
 			
@@ -314,6 +325,8 @@
 			add_action(WPRR_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'filter_post_meta', array($this, 'filter_acf_post_meta'), 10, 2);
+			
+			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'has_permission_for_users', array($this, 'filter_has_permission_for_users'), 10, 1);
 		}
 		
 		public function hook_prepare_api_request($data) {

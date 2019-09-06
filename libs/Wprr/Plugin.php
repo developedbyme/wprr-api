@@ -300,6 +300,7 @@
 		}
 		
 		public function filter_has_permission_for_users($has_permission) {
+			//echo("\Wprr\Plugin::filter_has_permission_for_users<br />");
 			
 			if($has_permission) {
 				return $has_permission;
@@ -326,7 +327,7 @@
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'filter_post_meta', array($this, 'filter_acf_post_meta'), 10, 2);
 			
-			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'has_permission_for_users', array($this, 'filter_has_permission_for_users'), 10, 1);
+			add_filter(WPRR_DOMAIN.'/'.'has_permission_for_users', array($this, 'filter_has_permission_for_users'), 10, 1);
 		}
 		
 		public function hook_prepare_api_request($data) {

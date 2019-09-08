@@ -140,6 +140,27 @@
 			
 		}
 		
+		public function hook_rest_api_init() {
+			parent::hook_rest_api_init();
+			
+			$post_types_with_taxonomies = apply_filters('wprr/post_types_with_rest_changes', array('post', 'page', 'attachment'));
+			
+			register_rest_field(
+				$post_types_with_taxonomies,
+				'wprr/changes',
+				array(
+					'update_callback' => array($this, 'rest_apply_changes'),
+				)
+			);
+		}
+		
+		public function rest_apply_changes($value, $post, $field_name) {
+			//echo("\Wprr\Plugin::rest_apply_changes<br />");
+			//var_dump($value, $post, $field_name);
+			
+			wprr_apply_post_changes($post->ID, $value);
+		}
+		
 		public function filter_id_check_for_has_permission($has_permission) {
 			//echo("\Wprr\Plugin::filter_id_check_for_has_permission<br />");
 			

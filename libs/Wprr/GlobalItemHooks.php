@@ -24,6 +24,9 @@
 			add_filter($prefix.'/woocommerce/customer', array($this, 'filter_woocommerce_customer'), 10, 3);
 			
 			add_filter($prefix.'/shortcode', array($this, 'filter_shortcode'), 10, 3);
+			add_filter($prefix.'/theme-mods', array($this, 'filter_theme_mods'), 10, 3);
+			add_filter($prefix.'/acf/options', array($this, 'filter_acf_options'), 10, 3);
+			
 		}
 		
 		public function filter_wpml_languages($return_object, $item, $data) {
@@ -176,6 +179,20 @@
 			
 			$code = $data['code'];
 			$return_object['renderedHtml'] = do_shortcode($code);
+			
+			return $return_object;
+		}
+		
+		public function filter_theme_mods($return_object, $item, $data) {
+			$return_object = get_theme_mods();
+			
+			return $return_object;
+		}
+		
+		public function filter_acf_options($return_object, $item, $data) {
+			$encoder = new \Wprr\WprrEncoder();
+			
+			$return_object = $encoder->encode_acf_options();
 			
 			return $return_object;
 		}

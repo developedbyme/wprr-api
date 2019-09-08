@@ -96,6 +96,8 @@
 			$this->create_rest_api_end_point(new \Wprr\RestApi\RangeEndpoint(), 'range/(?P<post_types>[a-z0-9\-\_,]+)/(?P<selections>[a-z0-9\-\_,]+)/(?P<encodings>[a-z0-9\-\_,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			$this->create_rest_api_end_point(new \Wprr\RestApi\RangeItemEndpoint(), 'range-item/(?P<post_types>[a-z0-9\-\_,]+)/(?P<selections>[a-z0-9\-\_,]+)/(?P<encodings>[a-z0-9\-\_,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
+			$this->create_rest_api_end_point(new \Wprr\RestApi\UsersEndpoint(), 'users/(?P<selections>[a-z0-9\-\_,]+)/(?P<encodings>[a-z0-9\-\_,]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			
 			$this->create_rest_api_end_point(new \Wprr\RestApi\GetTermsEndPoint(), 'taxonomy/(?P<taxonomy>[a-z0-9\-\_]+)/terms', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			$this->create_rest_api_end_point(new \Wprr\RestApi\GetTaxonomiesEndPoint(), 'taxonomies', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
@@ -297,6 +299,18 @@
 			return $meta_data;
 		}
 		
+		public function filter_has_permission_for_users($has_permission) {
+			//echo("\Wprr\Plugin::filter_has_permission_for_users<br />");
+			
+			if($has_permission) {
+				return $has_permission;
+			}
+			
+			$has_permission = current_user_can('administrator');
+			
+			return $has_permission;
+		}
+		
 		protected function create_filters() {
 			//echo("\Wprr\Plugin::create_filters<br />");
 			
@@ -312,6 +326,8 @@
 			add_action(WPRR_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'filter_post_meta', array($this, 'filter_acf_post_meta'), 10, 2);
+			
+			add_filter(WPRR_DOMAIN.'/'.'has_permission_for_users', array($this, 'filter_has_permission_for_users'), 10, 1);
 		}
 		
 		public function hook_prepare_api_request($data) {

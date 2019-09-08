@@ -377,4 +377,28 @@
 	function wprr_ensure_wc_has_cart() {
 		\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 	}
+	
+	function wprr_enqueue_admin_data($script_name) {
+		wp_localize_script($script_name, 'wprrAdminData', wprr_get_admin_data());
+	}
+	
+	function wprr_get_admin_data() {
+		$screen = get_current_screen();
+		
+		$localized_data = array(
+			'screen' => $screen,
+			'restApiBaseUrl' => get_home_url().'/wp-json/'
+		);
+	
+		$postData = null;
+		if($screen && $screen->base === 'post') {
+			$postData = mrouter_encode_post(get_post());
+		}
+	
+		$localized_data['postData'] = $postData;
+		
+		$localized_data['taxonomies'] = mrouter_encode_all_taxonomies();
+		
+		return $localized_data;
+	}
 ?>

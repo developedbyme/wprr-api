@@ -22,6 +22,7 @@
 			add_filter($prefix.'/woocommerce/gateways', array($this, 'filter_woocommerce_gateways'), 10, 1);
 			add_filter($prefix.'/woocommerce/current-customer', array($this, 'filter_woocommerce_current_customer'), 10, 1);
 			add_filter($prefix.'/woocommerce/customer', array($this, 'filter_woocommerce_customer'), 10, 3);
+			add_filter($prefix.'/woocommerce/order-statuses', array($this, 'filter_woocommerce_order_statuses'), 10, 1);
 			
 			add_filter($prefix.'/shortcode', array($this, 'filter_shortcode'), 10, 3);
 			add_filter($prefix.'/theme-mods', array($this, 'filter_theme_mods'), 10, 3);
@@ -135,6 +136,21 @@
 			}
 			
 			return $encoded_gateways;
+		}
+		
+		public function filter_woocommerce_order_statuses($return_object) {
+			$statuses = wc_get_order_statuses();
+			
+			$encoded_statuses = array();
+			
+			foreach($statuses as $id => $name) {
+				$encoded_statuses[] = array(
+					'value' => $id,
+					'label' => $name,
+				);
+			}
+			
+			return $encoded_statuses;
 		}
 		
 		public function filter_woocommerce_current_customer($return_object) {

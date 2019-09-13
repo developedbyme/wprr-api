@@ -99,6 +99,8 @@
 			add_filter(WPRR_DOMAIN.'/range_query/inTaxonomy', array($this, 'filter_query_in_taxonomy'), 10, 2);
 			
 			add_filter(WPRR_DOMAIN.'/range_query/allOrders', array($this, 'filter_query_allOrders'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/byOrderStatus', array($this, 'filter_query_byOrderStatus'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/byCompletedDate', array($this, 'filter_query_byCompletedDate'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/allSubscriptions', array($this, 'filter_query_allSubscriptions'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/activeSubscriptions', array($this, 'filter_query_activeSubscriptions'), 10, 2);
 			
@@ -117,6 +119,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/fullPost', array($this, 'filter_encode_full_post'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/order', array($this, 'filter_encode_order'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/orderCompletedDate', array($this, 'filter_encode_orderCompletedDate'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
 			
@@ -440,6 +443,19 @@
 			return $return_object;
 		}
 		
+		public function filter_encode_orderCompletedDate($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_orderCompletedDate<br />");
+			
+			$completed_date = get_post_meta($post_id, '_completed_date', true);
+			
+			if($completed_date) {
+				$return_object['completedDate'] = date('Y-m-d', strtotime($completed_date));
+			}
+			
+			
+			return $return_object;
+		}
+		
 		protected function verify_orders_permission() {
 			$this->require_logged_in();
 			$current_user_id = get_current_user_id();
@@ -458,6 +474,32 @@
 			$this->verify_orders_permission();
 			
 			$query_args['post_status'] = array_keys( wc_get_order_statuses() );
+			
+			return $query_args;
+		}
+		
+		public function filter_query_byOrderStatus($query_args, $data) {
+			
+			$this->verify_orders_permission();
+			
+			$status = $data['status'];
+			$query_args['post_status'] = array($status);
+			
+			return $query_args;
+		}
+		
+		public function filter_query_byCompletedDate($query_args, $data) {
+			
+			if(!isset($query_args['meta_query'])) {
+				$query_args['meta_query'] = array();
+			}
+			
+			$query_args['meta_query'][] = array(
+				'key' => '_completed_date',
+				'value' => array($data['startDate'], $data['endDate']),
+				'compare' => 'BETWEEN',
+				'type' => 'DATE',
+			);
 			
 			return $query_args;
 		}

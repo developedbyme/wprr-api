@@ -17,27 +17,45 @@
 			
 			$prefix = WPRR_DOMAIN.'/global-item';
 			
-			add_filter($prefix.'/wpml/languages', array($this, 'filter_wpml_languages'), 10, 1);
+			add_filter($prefix.'/wpml/languages', array($this, 'filter_wpml_languages'), 10, 3);
 			add_filter($prefix.'/woocommerce/cart', array($this, 'filter_woocommerce_cart'), 10, 1);
 			add_filter($prefix.'/woocommerce/gateways', array($this, 'filter_woocommerce_gateways'), 10, 1);
 			add_filter($prefix.'/woocommerce/current-customer', array($this, 'filter_woocommerce_current_customer'), 10, 1);
 			add_filter($prefix.'/woocommerce/customer', array($this, 'filter_woocommerce_customer'), 10, 3);
+			add_filter($prefix.'/woocommerce/order-statuses', array($this, 'filter_woocommerce_order_statuses'), 10, 1);
 			
 			add_filter($prefix.'/shortcode', array($this, 'filter_shortcode'), 10, 3);
+			add_filter($prefix.'/theme-mods', array($this, 'filter_theme_mods'), 10, 3);
+			add_filter($prefix.'/acf/options', array($this, 'filter_acf_options'), 10, 3);
+			
 		}
 		
-		public function filter_wpml_languages($return_object) {
+		public function filter_wpml_languages($return_object, $item, $data) {
 			//echo("\Wprr\GlobalItemHooks::filter_wpml_languages<br />");
+			
+			$permalink;
+			if(isset($data['page'])) {
+				$permalink = $data['page'];
+			}
 			
 			$languages = icl_get_languages('skip_missing=0');
 			foreach($languages as $language) {
-				$return_object[] = array(
-					'code' => $language['code'],
+				
+				$code = $language['code'];
+				
+				$encoded_object = array(
+					'code' => $code,
 					'name' => $language['native_name'],
 					'translatedName' => $language['translated_name'],
 					'homeUrl' => $language['url'],
 					'flagUrl' => $language['country_flag_url']
 				);
+				
+				if($permalink) {
+					$encoded_object['pageUrl'] = apply_filters('wpml_permalink', $permalink, $code);
+				}
+				
+				$return_object[] = $encoded_object;
 			}
 			
 			return $return_object;
@@ -120,6 +138,21 @@
 			return $encoded_gateways;
 		}
 		
+		public function filter_woocommerce_order_statuses($return_object) {
+			$statuses = wc_get_order_statuses();
+			
+			$encoded_statuses = array();
+			
+			foreach($statuses as $id => $name) {
+				$encoded_statuses[] = array(
+					'value' => $id,
+					'label' => $name,
+				);
+			}
+			
+			return $encoded_statuses;
+		}
+		
 		public function filter_woocommerce_current_customer($return_object) {
 			
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
@@ -162,6 +195,20 @@
 			
 			$code = $data['code'];
 			$return_object['renderedHtml'] = do_shortcode($code);
+			
+			return $return_object;
+		}
+		
+		public function filter_theme_mods($return_object, $item, $data) {
+			$return_object = get_theme_mods();
+			
+			return $return_object;
+		}
+		
+		public function filter_acf_options($return_object, $item, $data) {
+			$encoder = new \Wprr\WprrEncoder();
+			
+			$return_object = $encoder->encode_acf_options();
 			
 			return $return_object;
 		}

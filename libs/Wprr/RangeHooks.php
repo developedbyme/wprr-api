@@ -108,6 +108,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/status', array($this, 'filter_encode_status'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/translations', array($this, 'filter_encode_translations'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/attachment', array($this, 'filter_encode_attachment'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/preview', array($this, 'filter_encode_preview'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_edit_fields'), 10, 3);
@@ -118,6 +119,8 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/order', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
+			
+			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
 		}
 		
 		public function filter_query_standard($query_args, $data) {
@@ -312,6 +315,17 @@
 			return $encoded_data;
 		}
 		
+		public function filter_encode_preview($encoded_data, $post_id, $data) {
+			//echo("\Wprr\RangeHooks::filter_encode_preview<br />");
+			
+			$encoded_data["permalink"] = get_permalink($post_id);
+			$encoded_data["title"] = get_the_title($post_id);
+			$encoded_data["excerpt"] = get_the_excerpt($post_id);
+			$encoded_data["image"] = wprr_encode_post_image($post_id);
+			
+			return $encoded_data;
+		}
+		
 		public function filter_encode_edit_fields($encoded_data, $post_id, $data) {
 			
 			$encoded_data["_thumbnail_id"] = get_post_meta($post_id, '_thumbnail_id', true);
@@ -398,13 +412,15 @@
 			);
 			$return_object['taxTotals'] = $order->get_tax_totals();
 			
-			$billing_attributes = array('first_name', 'last_name', 'address_1', 'address_2', 'postcode', 'city', 'country', 'email', 'phone');
+			$billing_attributes = array('first_name', 'last_name', 'company', 'address_1', 'address_2', 'postcode', 'city', 'country', 'email', 'phone');
 			$billing_details = array();
 			foreach($billing_attributes as $billing_attribute) {
 				$get_function_name = 'get_billing_'.$billing_attribute;
 				$billing_details[$billing_attribute] = $order->$get_function_name();
 			}
 			$return_object['contactDetails'] = array('billing' => $billing_details);
+			
+			$return_object['paymentMethod'] = $order->get_payment_method();
 			
 			$line_items = $order->get_items();
 			
@@ -496,6 +512,21 @@
 				}
 			}
 			$return_object['dates'] = $encoded_dates;
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_user_customer($return_object, $user_id, $data) {
+			
+			$customer = new \WC_Customer($user_id);
+			
+			$current_data = $customer->get_data();
+			
+			$encoder = wprr_get_encoder();
+			
+			$return_object = $encoder->encode_user_with_private_data(get_user_by('id', $user_id));
+			$return_object['isPayingCustomer'] = $current_data['is_paying_customer'];
+			$return_object['contactDetails'] = array('billing' => $current_data['billing'], 'shipping' => $current_data['shipping']);
 			
 			return $return_object;
 		}

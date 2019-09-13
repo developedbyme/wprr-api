@@ -107,6 +107,7 @@
 				
 				$order_data['billing_first_name'] = $customer->get_billing_first_name();
 				$order_data['billing_last_name'] = $customer->get_billing_last_name();
+				$order_data['billing_company'] = $customer->get_billing_company();
 				$order_data['billing_address_1'] = $customer->get_billing_address_1();
 				$order_data['billing_address_2'] = $customer->get_billing_address_2();
 				$order_data['billing_postcode'] = $customer->get_billing_postcode();
@@ -189,6 +190,14 @@
 					$product_id = $product->get_id();
 					
 					//METODO: add meta
+					
+					$fields_map = array('first_name', 'last_name', 'company', 'address_1', 'address_2', 'postcode', 'city', 'country', 'phone');
+					
+					foreach($fields_map as  $value) {
+						$set_function_name = 'set_billing_'.$value;
+						$get_function_name = 'get_billing_'.$value;
+						$subscription->$set_function_name($order->$get_function_name());
+					}
 					
 					$subscription->add_product($product, $item_data->get_quantity(), array());
 				}

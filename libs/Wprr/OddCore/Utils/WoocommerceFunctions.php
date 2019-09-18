@@ -5,6 +5,7 @@
 	class WoocommerceFunctions {
 		
 		public static function ensure_wc_has_cart() {
+			//echo('\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart');
 			
 			if ( null === WC()->cart ) {
 				if ( defined( 'WC_ABSPATH' ) ) {
@@ -12,6 +13,9 @@
 					include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
 					include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
 				}
+				
+				global $woocommerce, $sitepress, $woocommerce_wpml;
+				
 
 				if ( null === WC()->session ) {
 					$session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
@@ -20,9 +24,12 @@
 					if ( false === strpos( $session_class, '\\' ) ) {
 						$session_class = '\\' . $session_class;
 					}
-
+					
 					WC()->session = new $session_class();
 					WC()->session->init();
+					
+					WC()->session->set_customer_session_cookie(true);
+					
 				}
 
 				if ( null === WC()->customer ) {

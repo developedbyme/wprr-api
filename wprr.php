@@ -21,4 +21,10 @@
 	$WprrPlugin = new \Wprr\Plugin();
 
 	require_once(WPRR_DIR."/external-functions.php");
+	
+	add_action('init', function() {
+		if(function_exists('wpml_is_rest_request') && wpml_is_rest_request()) {
+			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
+		}
+	}, 1);
 ?>

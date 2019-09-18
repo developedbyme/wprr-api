@@ -32,7 +32,6 @@
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_add_to_cart<br />");
 			
 			$this->ensure_wc_has_cart();
-			WC()->cart->set_session();
 			
 			$product_id = $data['id'];
 			$quantity = isset($data['quantity']) ? (int)$data['quantity'] : 1;
@@ -144,7 +143,6 @@
 			
 			$this->ensure_wc_has_cart();
 			
-			WC()->cart->set_session();
 			WC()->cart->empty_cart();
 		}
 		

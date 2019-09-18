@@ -29,10 +29,6 @@
 			include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
 			include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
 			wc_load_cart();
-			
-			global $wprr_client_currency;
-			$wprr_client_currency = WC()->session->get('client_currency');
-			var_dump($wprr_client_currency);
 		}
 	}, 1);
 ?>

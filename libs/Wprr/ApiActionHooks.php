@@ -34,21 +34,6 @@
 			$this->ensure_wc_has_cart();
 			WC()->cart->set_session();
 			
-			global $wprr_client_currency;
-			var_dump($wprr_client_currency);
-			
-			global $woocommerce_wpml;
-			if($woocommerce_wpml) {
-				$set_currency = $woocommerce_wpml->multi_currency->get_client_currency();
-				var_dump($set_currency, $wprr_client_currency);
-				if($wprr_client_currency && ($set_currency !== $wprr_client_currency)) {
-					$woocommerce_wpml->multi_currency->set_client_currency($wprr_client_currency);
-				
-					do_action('wcml_switch_currency', $wprr_client_currency);
-				}
-				
-			}
-			
 			$product_id = $data['id'];
 			$quantity = isset($data['quantity']) ? (int)$data['quantity'] : 1;
 			$variation_id = 0;

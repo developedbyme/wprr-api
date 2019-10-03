@@ -33,6 +33,8 @@
 			$this->register_hook_for_type('acf', 'hook_set_acf');
 			$this->register_hook_for_type('wpml/createDuplicates', 'hook_wpml_create_duplicates');
 			$this->register_hook_for_type('wpml/createCopies', 'hook_wpml_create_copies');
+			
+			$this->register_hook_for_type('woocommerce/subscriptions/changeNextPayment', 'hook_woocommerce_subscriptions_changeNextPayment');
 		}
 		
 		protected function update_post_data($post_id, $field, $value) {
@@ -144,7 +146,13 @@
 			}
 		}
 		
-		
+		public function hook_woocommerce_subscriptions_changeNextPayment($data, $post_id) {
+			$subscription = new \WC_Subscription($post_id);
+			
+			$value = $data['value'];
+			
+			$result = $subscription->update_dates(array('next_payment' => $value));
+		}
 		
 		public static function test_import() {
 			echo("Imported \Wprr\ChangePostHooks<br />");

@@ -364,6 +364,11 @@
 					acf_update_setting('current_language', $data['language']);
 				}
 			}
+			
+			$time_zone = get_option('timezone_string');
+			if($time_zone) {
+				date_default_timezone_set($time_zone);
+			}
 		}
 
 		public function hook_admin_enqueue_scripts() {

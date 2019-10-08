@@ -120,6 +120,7 @@
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/order', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/orderCompletedDate', array($this, 'filter_encode_orderCompletedDate'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionForOrder', array($this, 'filter_encode_subscriptionForOrder'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
 			
@@ -452,6 +453,30 @@
 				$return_object['completedDate'] = date('Y-m-d', strtotime($completed_date));
 			}
 			
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_subscriptionForOrder($return_object, $post_id) {
+			$time_zone = get_option('timezone_string');
+			$subscriptions = wcs_get_subscriptions_for_order($post_id, array( 'order_type' => ['parent', 'switch', 'renewal'] ));
+			
+			if($subscriptions && !empty($subscriptions)) {
+				foreach($subscriptions as $subscription) {
+					
+					$subscription_id = $subscription->get_id();
+					
+					$return_object['subscription'] = array(
+						'id' => $subscription_id,
+						'lastPayment' => $subscription->get_date('last_payment', $time_zone),
+						'renewalCycle' => array(
+							'interval' => (float)$subscription->get_billing_interval(),
+							'period' => $subscription->get_billing_period()
+						)
+					);
+					break;
+				}
+			}
 			
 			return $return_object;
 		}

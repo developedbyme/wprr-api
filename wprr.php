@@ -21,4 +21,14 @@
 	$WprrPlugin = new \Wprr\Plugin();
 
 	require_once(WPRR_DIR."/external-functions.php");
+	
+	add_action('woocommerce_init', function() {
+		$need_cart = (array_key_exists( 'rest_route', $_REQUEST ) || false !== strpos( $_SERVER['REQUEST_URI'], 'wp-json' ));
+		
+		if($need_cart) {
+			include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
+			include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
+			wc_load_cart();
+		}
+	}, 1);
 ?>

@@ -5,13 +5,22 @@
 	class WoocommerceFunctions {
 		
 		public static function ensure_wc_has_cart() {
+			//echo('\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart');
 			
+			include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
+			include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
+			wc_load_cart();
+			
+			/*
 			if ( null === WC()->cart ) {
 				if ( defined( 'WC_ABSPATH' ) ) {
 					// WC 3.6+ - Cart and notice functions are not included during a REST request.
 					include_once WC_ABSPATH . 'includes/wc-cart-functions.php';
 					include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
 				}
+				
+				global $woocommerce, $sitepress, $woocommerce_wpml;
+				
 
 				if ( null === WC()->session ) {
 					$session_class = apply_filters( 'woocommerce_session_handler', 'WC_Session_Handler' );
@@ -20,9 +29,11 @@
 					if ( false === strpos( $session_class, '\\' ) ) {
 						$session_class = '\\' . $session_class;
 					}
-
+					
 					WC()->session = new $session_class();
 					WC()->session->init();
+					
+					WC()->session->set_customer_session_cookie(true);
 				}
 
 				if ( null === WC()->customer ) {
@@ -36,6 +47,7 @@
 					WC()->cart->get_cart();
 				}
 			}
+			*/
 		}
 		
 		public static function test_import() {

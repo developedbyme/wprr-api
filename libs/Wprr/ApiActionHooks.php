@@ -93,8 +93,8 @@
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_checkout<br />");
 			
 			$this->ensure_wc_has_cart();
-			
 			WC()->cart->set_session();
+			
 			$cart = WC()->cart;
 			
 			$order_data = array();

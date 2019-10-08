@@ -332,7 +332,8 @@
 		}
 
 		public function hook_init() {
-
+			//echo('\Wprr\OddCore\PluginBase::init<br />');
+			
 			$custom_post_types = $this->get_custom_post_types();
 			foreach($custom_post_types as $custom_post_type) {
 				$custom_post_type->register();
@@ -378,6 +379,7 @@
 
 		public function hook_rest_api_init() {
 			//echo("\Wprr\OddCore\PluginBase::hook_rest_api_init<br />");
+			
 			$api_end_points = $this->get_rest_api_end_points();
 			foreach($api_end_points as $current_end_point) {
 				$current_end_point->register_hooks();

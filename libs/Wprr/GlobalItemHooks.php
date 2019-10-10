@@ -18,7 +18,7 @@
 			$prefix = WPRR_DOMAIN.'/global-item';
 			
 			add_filter($prefix.'/wpml/languages', array($this, 'filter_wpml_languages'), 10, 3);
-			add_filter($prefix.'/woocommerce/cart', array($this, 'filter_woocommerce_cart'), 10, 1);
+			add_filter($prefix.'/woocommerce/cart', array($this, 'filter_woocommerce_cart'), 10, 3);
 			add_filter($prefix.'/woocommerce/gateways', array($this, 'filter_woocommerce_gateways'), 10, 1);
 			add_filter($prefix.'/woocommerce/current-customer', array($this, 'filter_woocommerce_current_customer'), 10, 1);
 			add_filter($prefix.'/woocommerce/customer', array($this, 'filter_woocommerce_customer'), 10, 3);
@@ -88,7 +88,7 @@
 			
 		}
 		
-		public function filter_woocommerce_cart($return_object) {
+		public function filter_woocommerce_cart($return_object, $item, $data) {
 			//echo("\Wprr\GlobalItemHooks::filter_woocommerce_cart<br />");
 			
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
@@ -117,6 +117,18 @@
 				}
 				
 				$return_object['recurring'] = $encoded_recurring_carts;
+			}
+			
+			if(isset($data["sessionVariables"])) {
+				
+				$session_data = array();
+				
+				$session_variable_names = explode(',', $data["sessionVariables"]);
+				foreach($session_variable_names as $session_variable_name) {
+					$session_data[$session_variable_name] = WC()->session->get($session_variable_name);
+				}
+				
+				$return_object['session'] = $session_data;
 			}
 			
 			return $return_object;

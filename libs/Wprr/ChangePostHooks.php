@@ -151,7 +151,8 @@
 			
 			$value = $data['value'];
 			
-			$result = $subscription->update_dates(array('next_payment' => $value));
+			$time_zone = get_option('timezone_string');
+			$result = $subscription->update_dates(array('next_payment' => $value), $time_zone);
 		}
 		
 		public static function test_import() {

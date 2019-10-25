@@ -10,9 +10,16 @@
 	class WprrEncoder {
 
 		protected $_performance = array();
+		protected $_ignore_short_codes = false;
 
 		function __construct() {
-
+			do_action(WPRR_DOMAIN.'/setup_new_encoder', $this);
+		}
+		
+		public function ignore_short_codes($ignore = true) {
+			$this->_ignore_short_codes = $ignore;
+			
+			return $this;
 		}
 
 		protected function _add_performance_data($type, $value) {
@@ -61,7 +68,16 @@
 			$current_post_data["modifiedDate"] = $post->post_modified;
 			$current_post_data["title"] = get_the_title($post_id);
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', $post->post_excerpt);
-			$current_post_data["content"] = apply_filters('the_content', $post->post_content);
+			
+			$post_content = $post->post_content;
+			var_dump($this->_ignore_short_codes);
+			if($this->_ignore_short_codes) {
+				var_dump($post_content);
+				$post_content = strip_shortcodes($post_content);
+				var_dump($post_content);
+			}
+			
+			$current_post_data["content"] = apply_filters('the_content', $post_content);
 
 			$current_post_data["parent"] = $this->encode_post_link($post->post_parent);
 			

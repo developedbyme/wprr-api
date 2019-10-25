@@ -70,11 +70,8 @@
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', $post->post_excerpt);
 			
 			$post_content = $post->post_content;
-			var_dump($this->_ignore_short_codes);
 			if($this->_ignore_short_codes) {
-				var_dump($post_content);
 				$post_content = strip_shortcodes($post_content);
-				var_dump($post_content);
 			}
 			
 			$current_post_data["content"] = apply_filters('the_content', $post_content);

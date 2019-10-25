@@ -120,6 +120,7 @@
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/order', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/orderCompletedDate', array($this, 'filter_encode_orderCompletedDate'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionNextDate', array($this, 'filter_encode_subscriptionNextDate'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionForOrder', array($this, 'filter_encode_subscriptionForOrder'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
@@ -456,6 +457,18 @@
 			
 			return $return_object;
 		}
+		
+		public function filter_encode_subscriptionNextDate($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_subscriptionNextDate<br />");
+			
+			$subscription = new \WC_Subscription($post_id);
+			
+			$return_object['nextDate'] = date('Y-m-d', strtotime($subscription->get_date('next_payment')));
+			
+			return $return_object;
+		}
+		
+		
 		
 		public function filter_encode_subscriptionForOrder($return_object, $post_id) {
 			$time_zone = get_option('timezone_string');

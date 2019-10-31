@@ -646,7 +646,16 @@
 				case "user":
 					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					if($field_value) {
-						$return_object['value'] = $this->encode_user(get_user_by('id', $field_value));
+						if(is_array($field_value)) {
+							$encoded_users = array();
+							foreach($field_value as $user_id) {
+								$encoded_users[] = $this->encode_user(get_user_by('id', $user_id));
+							}
+							$return_object['value'] = $encoded_users;
+						}
+						else {
+							$return_object['value'] = $this->encode_user(get_user_by('id', $field_value));
+						}
 					}
 					else {
 						$return_object['value'] = null;
@@ -846,7 +855,6 @@
 		}
 
 		public function encode_user($user) {
-
 			if(!$user) {
 				return null;
 			}

@@ -29,6 +29,7 @@
 			$this->register_hook_for_type('addTerms', 'hook_add_terms');
 			$this->register_hook_for_type('removeTerms', 'hook_remove_terms');
 			$this->register_hook_for_type('meta', 'hook_set_meta');
+			$this->register_hook_for_type('trash', 'hook_trash');
 			//METODO: remove meta
 			$this->register_hook_for_type('acf', 'hook_set_acf');
 			$this->register_hook_for_type('wpml/createDuplicates', 'hook_wpml_create_duplicates');
@@ -56,6 +57,12 @@
 			wp_update_post(array(
 				'ID' => $post_id
 			));
+		}
+		
+		public function hook_trash($data, $post_id) {
+			//echo("\Wprr\ChangePostHooks::hook_trash<br />");
+			
+			wp_trash_post($post_id);
 		}
 		
 		public function hook_set_status($data, $post_id) {

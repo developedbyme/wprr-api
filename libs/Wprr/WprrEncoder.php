@@ -1016,6 +1016,9 @@
 					
 					$query_data['language'] = ICL_LANGUAGE_CODE;
 				}
+				else {
+					$query_data['language'] = substr(get_locale(), 0, 2);
+				}
 
 				while(have_posts()) {
 					the_post();

@@ -358,10 +358,10 @@
 				
 				if(isset($sitepress)) {
 					$sitepress->switch_lang($data['language']);
-				}
-				
-				if(function_exists('acf_update_setting')) {
-					acf_update_setting('current_language', $data['language']);
+					
+					if(function_exists('acf_update_setting')) {
+						acf_update_setting('current_language', $data['language']);
+					}
 				}
 			}
 			

@@ -871,6 +871,8 @@
 
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_user', $end_time-$start_time);
+			
+			$return_object = apply_filters('wprr/encode_user', $return_object, $user);
 
 			return $return_object;
 		}

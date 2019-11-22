@@ -557,7 +557,7 @@
 			$this->verify_orders_permission();
 			
 			$status = $data['status'];
-			$query_args['post_status'] = array($status);
+			$query_args['post_status'] = explode(',', $status);
 			
 			return $query_args;
 		}

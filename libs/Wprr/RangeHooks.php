@@ -125,6 +125,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionForOrder', array($this, 'filter_encode_subscriptionForOrder'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/usersOtherSubscriptions', array($this, 'filter_encode_usersOtherSubscriptions'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
 		}
@@ -628,6 +629,27 @@
 				}
 			}
 			$return_object['dates'] = $encoded_dates;
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_usersOtherSubscriptions($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_usersOtherSubscriptions<br />");
+			
+			$order = new \WC_Order($post_id);
+			$user = $order->get_user();
+			
+			$encoded_subscriptions = array();
+			
+			$subscriptions = wcs_get_users_subscriptions($user->ID);
+			foreach($subscriptions as $subscription) {
+				$current_id = $subscription->get_id();
+				if($current_id !== $post_id) {
+					$encoded_subscriptions[] = array('id' => $current_id, 'status' => $subscription->get_status());
+				}
+			}
+			
+			$return_object['otherSubscriptions'] = $encoded_subscriptions;
 			
 			return $return_object;
 		}

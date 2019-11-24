@@ -637,6 +637,7 @@
 		public function filter_encode_customerName($return_object, $post_id) {
 			//echo("\Wprr\RangeHooks::filter_encode_customerName<br />");
 			
+			$return_object['userId'] = (int)get_post_meta($post_id, '_customer_user', true);
 			$return_object['firstName'] = get_post_meta($post_id, '_billing_first_name', true);
 			$return_object['lastName'] = get_post_meta($post_id, '_billing_last_name', true);
 			

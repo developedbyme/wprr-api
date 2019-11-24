@@ -68,6 +68,10 @@
 				'suppress_filters' => 0
 			);
 			
+			if(isset($data['startFrom'])) {
+				$query_args['offset'] = (int)$data['startFrom'];
+			}
+			
 			if(isset($data['order'])) {
 				$query_args['order'] = $data['order'];
 			}

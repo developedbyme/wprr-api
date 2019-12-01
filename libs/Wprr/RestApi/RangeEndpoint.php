@@ -56,12 +56,21 @@
 			
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
 			
+			$number_of_items = -1;
+			if(isset($data['maxNumberOfPosts'])) {
+				$number_of_items = (int)$data['maxNumberOfPosts'];
+			}
+			
 			$query_args = array(
 				'post_type' => $post_types,
-				'posts_per_page' => -1,
+				'posts_per_page' => $number_of_items,
 				'fields' => 'ids',
 				'suppress_filters' => 0
 			);
+			
+			if(isset($data['startFrom'])) {
+				$query_args['offset'] = (int)$data['startFrom'];
+			}
 			
 			if(isset($data['order'])) {
 				$query_args['order'] = $data['order'];

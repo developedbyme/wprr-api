@@ -125,6 +125,8 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionForOrder', array($this, 'filter_encode_subscriptionForOrder'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/usersOtherSubscriptions', array($this, 'filter_encode_usersOtherSubscriptions'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/customerName', array($this, 'filter_encode_customerName'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
 		}
@@ -557,7 +559,7 @@
 			$this->verify_orders_permission();
 			
 			$status = $data['status'];
-			$query_args['post_status'] = array($status);
+			$query_args['post_status'] = explode(',', $status);
 			
 			return $query_args;
 		}
@@ -628,6 +630,35 @@
 				}
 			}
 			$return_object['dates'] = $encoded_dates;
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_customerName($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_customerName<br />");
+			
+			$return_object['userId'] = (int)get_post_meta($post_id, '_customer_user', true);
+			$return_object['firstName'] = get_post_meta($post_id, '_billing_first_name', true);
+			$return_object['lastName'] = get_post_meta($post_id, '_billing_last_name', true);
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_usersOtherSubscriptions($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_usersOtherSubscriptions<br />");
+			
+			$user_id = get_post_meta($post_id, '_customer_user', true);
+			
+			$encoded_subscriptions = array();
+			
+			$subscription_ids = \WCS_Customer_Store::instance()->get_users_subscription_ids($user_id);
+			foreach($subscription_ids as $subscription_id) {
+				if($subscription_id !== $post_id) {
+					$encoded_subscriptions[] = array('id' => $subscription_id, 'status' => get_post_status($subscription_id));
+				}
+			}
+			
+			$return_object['otherSubscriptions'] = $encoded_subscriptions;
 			
 			return $return_object;
 		}

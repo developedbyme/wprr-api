@@ -127,6 +127,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/usersOtherSubscriptions', array($this, 'filter_encode_usersOtherSubscriptions'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/customerName', array($this, 'filter_encode_customerName'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionEnd', array($this, 'filter_encode_subscriptionEnd'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
 		}
@@ -643,6 +644,16 @@
 			
 			return $return_object;
 		}
+		
+		public function filter_encode_subscriptionEnd($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_subscriptionEnd<br />");
+			
+			$return_object['end'] = get_post_meta($post_id, '_schedule_end', true);
+			
+			return $return_object;
+		}
+		
+		
 		
 		public function filter_encode_usersOtherSubscriptions($return_object, $post_id) {
 			//echo("\Wprr\RangeHooks::filter_encode_usersOtherSubscriptions<br />");

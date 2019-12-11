@@ -1011,10 +1011,15 @@
 					$current_language = ICL_LANGUAGE_CODE;
 					
 					if(is_singular() && !$sitepress->is_translated_post_type(get_post_type(get_the_ID()))) {
-						global $wprr_stored_cookie_language;
+						if(isset($_GET['lang'])) {
+							$current_language = $_GET['lang'];
+						}
+						else {
+							global $wprr_stored_cookie_language;
 						
-						if($wprr_stored_cookie_language) {
-							$current_language = $wprr_stored_cookie_language;
+							if($wprr_stored_cookie_language) {
+								$current_language = $wprr_stored_cookie_language;
+							}
 						}
 					}
 				

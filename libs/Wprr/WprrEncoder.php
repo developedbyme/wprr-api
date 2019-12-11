@@ -1007,16 +1007,26 @@
 				
 				if(defined('ICL_LANGUAGE_CODE')) {
 					global $sitepress;
+					
+					$current_language = ICL_LANGUAGE_CODE;
+					
+					if(is_singular() && !$sitepress->is_translated_post_type(get_post_type(get_the_ID()))) {
+						global $wprr_stored_cookie_language;
+						
+						if($wprr_stored_cookie_language) {
+							$current_language = $wprr_stored_cookie_language;
+						}
+					}
 				
 					if(isset($sitepress)) {
-						$sitepress->switch_lang(ICL_LANGUAGE_CODE);
+						$sitepress->switch_lang($current_language);
 					}
 				
 					if(function_exists('acf_update_setting')) {
-						acf_update_setting('current_language', ICL_LANGUAGE_CODE);
+						acf_update_setting('current_language', $current_language);
 					}
 					
-					$query_data['language'] = ICL_LANGUAGE_CODE;
+					$query_data['language'] = $current_language;
 				}
 				else {
 					$query_data['language'] = substr(get_locale(), 0, 2);

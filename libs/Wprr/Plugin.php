@@ -348,7 +348,17 @@
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'filter_post_meta', array($this, 'filter_acf_post_meta'), 10, 2);
 			
+			add_action('wpml_before_init', array($this, 'hook_wpml_before_init'));
+			
 			add_filter(WPRR_DOMAIN.'/'.'has_permission_for_users', array($this, 'filter_has_permission_for_users'), 10, 1);
+		}
+		
+		public function hook_wpml_before_init() {
+			global $sitepress, $wprr_stored_cookie_language;
+			
+			if($sitepress) {
+				$wprr_stored_cookie_language = $sitepress->get_language_cookie();
+			}
 		}
 		
 		public function hook_prepare_api_request($data) {

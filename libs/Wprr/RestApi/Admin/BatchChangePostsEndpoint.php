@@ -6,9 +6,17 @@
 
 	// \Wprr\RestApi\Admin\BatchChangePostsEndpoint
 	class BatchChangePostsEndpoint extends EndPoint {
-
+		
+		protected $_return_data;
+		
 		function __construct() {
 			// echo("\Wprr\RestApi\Admin\BatchChangePostsEndpoint::__construct<br />");
+		}
+		
+		public function add_return_data($field, $data) {
+			$this->_return_data[$field] = $data;
+			
+			return $this;
 		}
 
 		public function perform_call($data) {
@@ -34,6 +42,7 @@
 				}
 			}
 			
+			//METODO: handle return data
 			return $this->output_success(array('ids' => $ids_array));
 		}
 

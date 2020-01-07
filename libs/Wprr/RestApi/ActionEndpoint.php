@@ -25,7 +25,12 @@
 			);
 			
 			if($has_action) {
-				do_action_ref_array($hook_name, array($data, &$return_data));
+				try {
+					do_action_ref_array($hook_name, array($data, &$return_data));
+				}
+				catch(\Exception $error) {
+					return $this->output_error($error->getMessage());
+				}
 			}
 			else {
 				return $this->output_error('Action '.$hook_name.' doesn\'t exist');

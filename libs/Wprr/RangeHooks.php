@@ -108,6 +108,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/id', array($this, 'filter_encode_id'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/standard', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/default', array($this, 'filter_encode_standard'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/privateTitle', array($this, 'filter_encode_privateTitle'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/status', array($this, 'filter_encode_status'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/translations', array($this, 'filter_encode_translations'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/attachment', array($this, 'filter_encode_attachment'), 10, 3);
@@ -336,6 +337,14 @@
 			
 			$encoded_data["permalink"] = get_permalink($post_id);
 			$encoded_data["title"] = get_the_title($post_id);
+			
+			return $encoded_data;
+		}
+		
+		public function filter_encode_privateTitle($encoded_data, $post_id, $data) {
+			//echo("\Wprr\RangeHooks::filter_encode_privateTitle<br />");
+			
+			$encoded_data["title"] = get_post($post_id)->post_title;
 			
 			return $encoded_data;
 		}

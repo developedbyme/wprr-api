@@ -783,7 +783,7 @@
 
 			$current_post_data["id"] = $post_id;
 			$current_post_data["permalink"] = get_permalink($post_id);
-			$current_post_data["title"] = get_the_title($post_id);
+			$current_post_data["title"] = get_post($post_id)->post_title;
 
 			return $current_post_data;
 		}

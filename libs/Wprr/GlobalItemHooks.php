@@ -94,7 +94,7 @@
 			
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 			
-			global $woocommerce;
+			global $woocommerce, $sitepress;
 			
 			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
 			
@@ -102,22 +102,24 @@
 			
 			$this->add_cart_data($cart, $return_object);
 			
-			$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $woocommerce->cart);
+			if($sitepress) {
+				$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $woocommerce->cart);
 			
-			if($woocommerce->cart->recurring_carts) {
-				$encoded_recurring_carts = array();
+				if($woocommerce->cart->recurring_carts) {
+					$encoded_recurring_carts = array();
 				
-				foreach($woocommerce->cart->recurring_carts as $key => $recurring_cart) {
-					$current_encoded_cart = array();
-					$this->add_cart_data($recurring_cart, $current_encoded_cart);
-					$encoded_recurring_carts[] = array(
-						'key' => $key,
-						'cart' => $current_encoded_cart,
-						'nextPayment' => $recurring_cart->next_payment_date
-					);
+					foreach($woocommerce->cart->recurring_carts as $key => $recurring_cart) {
+						$current_encoded_cart = array();
+						$this->add_cart_data($recurring_cart, $current_encoded_cart);
+						$encoded_recurring_carts[] = array(
+							'key' => $key,
+							'cart' => $current_encoded_cart,
+							'nextPayment' => $recurring_cart->next_payment_date
+						);
+					}
+				
+					$return_object['recurring'] = $encoded_recurring_carts;
 				}
-				
-				$return_object['recurring'] = $encoded_recurring_carts;
 			}
 			
 			if(isset($data["sessionVariables"])) {

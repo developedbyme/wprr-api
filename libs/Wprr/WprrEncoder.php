@@ -1037,6 +1037,33 @@
 				}
 
 				$template_selection['is_front_page'] = is_front_page();
+				
+				global $woocommerce;
+				if($woocommerce) {
+					$woocommerce_selection = array();
+					
+					$woocommerce_selection['is_account_page'] = is_account_page();
+					$woocommerce_selection['is_add_payment_method_page'] = is_add_payment_method_page();
+					$woocommerce_selection['is_ajax'] = is_ajax();
+					$woocommerce_selection['is_cart'] = is_cart();
+					$woocommerce_selection['is_checkout'] = is_checkout();
+					$woocommerce_selection['is_checkout_pay_page'] = is_checkout_pay_page();
+					$woocommerce_selection['is_edit_account_page'] = is_edit_account_page();
+					$woocommerce_selection['is_filtered'] = is_filtered();
+					$woocommerce_selection['is_lost_password_page'] = is_lost_password_page();
+					$woocommerce_selection['is_order_received_page'] = is_order_received_page();
+					$woocommerce_selection['is_product'] = is_product();
+					$woocommerce_selection['is_product_category'] = is_product_category();
+					$woocommerce_selection['is_product_tag'] = is_product_tag();
+					$woocommerce_selection['is_product_taxonomy'] = is_product_taxonomy();
+					$woocommerce_selection['is_shop'] = is_shop();
+					$woocommerce_selection['is_store_notice_showing'] = is_store_notice_showing();
+					$woocommerce_selection['is_view_order_page'] = is_view_order_page();
+					$woocommerce_selection['is_wc_endpoint_url'] = is_wc_endpoint_url();
+					$woocommerce_selection['is_woocommerce'] = is_woocommerce();
+					
+					$template_selection['woocommerce'] = $woocommerce_selection;
+				}
 
 				$template_selection['post_type'] = ($queried_object instanceof \WP_Post) ? $queried_object->post_type : null;
 				$template_selection['taxonomy'] = ($queried_object instanceof \WP_Term) ? $queried_object->taxonomy : null;

@@ -89,6 +89,7 @@
 			add_filter(WPRR_DOMAIN.'/range_query/default', array($this, 'filter_query_standard'), 10, 2);
 			//add_filter(WPRR_DOMAIN.'/range_selection_has_permission/drafts', array('\Wprr\PermissionFilters', 'waterfall_is_admin'), 10, 1);
 			add_filter(WPRR_DOMAIN.'/range_query/drafts', array($this, 'filter_query_drafts'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/onlyDrafts', array($this, 'filter_query_onlyDrafts'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/privates', array($this, 'filter_query_privates'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/trashed', array($this, 'filter_query_trashed'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/attachmentStatus', array($this, 'filter_query_attachment_status'), 10, 2);
@@ -107,6 +108,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/id', array($this, 'filter_encode_id'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/standard', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/default', array($this, 'filter_encode_standard'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/privateTitle', array($this, 'filter_encode_privateTitle'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/status', array($this, 'filter_encode_status'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/translations', array($this, 'filter_encode_translations'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/attachment', array($this, 'filter_encode_attachment'), 10, 3);
@@ -127,6 +129,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/usersOtherSubscriptions', array($this, 'filter_encode_usersOtherSubscriptions'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/customerName', array($this, 'filter_encode_customerName'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionEnd', array($this, 'filter_encode_subscriptionEnd'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
 		}
@@ -180,6 +183,21 @@
 				$query_args['post_status'] = array('publish');
 			}
 			
+			$query_args['post_status'][] = 'draft';
+			$query_args['post_status'][] = 'pending';
+			
+			return $query_args;
+		}
+		
+		public function filter_query_onlyDrafts($query_args, $data) {
+			//echo("\Wprr\RangeHooks::filter_query_onlyDrafts<br />");
+			
+			if(!current_user_can('edit_others_posts')) {
+				$query_args['post__in'] = array(0);
+				return $query_args;
+			}
+			
+			$query_args['post_status'] = array();
 			$query_args['post_status'][] = 'draft';
 			$query_args['post_status'][] = 'pending';
 			
@@ -319,6 +337,14 @@
 			
 			$encoded_data["permalink"] = get_permalink($post_id);
 			$encoded_data["title"] = get_the_title($post_id);
+			
+			return $encoded_data;
+		}
+		
+		public function filter_encode_privateTitle($encoded_data, $post_id, $data) {
+			//echo("\Wprr\RangeHooks::filter_encode_privateTitle<br />");
+			
+			$encoded_data["title"] = get_post($post_id)->post_title;
 			
 			return $encoded_data;
 		}
@@ -643,6 +669,16 @@
 			
 			return $return_object;
 		}
+		
+		public function filter_encode_subscriptionEnd($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_subscriptionEnd<br />");
+			
+			$return_object['end'] = get_post_meta($post_id, '_schedule_end', true);
+			
+			return $return_object;
+		}
+		
+		
 		
 		public function filter_encode_usersOtherSubscriptions($return_object, $post_id) {
 			//echo("\Wprr\RangeHooks::filter_encode_usersOtherSubscriptions<br />");

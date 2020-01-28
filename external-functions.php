@@ -306,6 +306,17 @@
 		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
 	}
 	
+	function wprr_get_code_for_module_with_custom_data($name, $data, $seo_content = null, $module_data = null) {
+		ob_start();
+		
+		wprr_output_module_with_custom_data($name, $data, $seo_content, $module_data);
+		
+		$return_string = ob_get_contents();
+		ob_clean();
+		
+		return $return_string;
+	}
+	
 	function wprr_output_module_with_custom_data($name, $data, $seo_content = null, $module_data = null) {
 		
 		$element_id = 'wprr-'.sprintf('%04X%04X-%04X-%04X-%04X-%04X%04X%04X', mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(16384, 20479), mt_rand(32768, 49151), mt_rand(0, 65535), mt_rand(0, 65535), mt_rand(0, 65535));

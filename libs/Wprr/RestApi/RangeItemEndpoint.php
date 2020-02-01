@@ -31,6 +31,8 @@
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\RangeItemEndpoint::perform_call<br />");
 			
+			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
+			
 			$post_types = $data['post_types'];
 			if($post_types !== 'any') {
 				$post_types = explode(',', $post_types);

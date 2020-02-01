@@ -14,6 +14,8 @@
 		public function perform_call($data) {
 			// echo("\OddCore\RestApi\ActionEndpoint::perform_call<br />");
 			
+			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
+			
 			$type = $data['action_name'];
 			
 			$hook_name = 'wprr/api_action/'.$type;

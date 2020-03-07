@@ -104,6 +104,7 @@
 			add_filter(WPRR_DOMAIN.'/range_query/byCompletedDate', array($this, 'filter_query_byCompletedDate'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/allSubscriptions', array($this, 'filter_query_allSubscriptions'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/activeSubscriptions', array($this, 'filter_query_activeSubscriptions'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/byProduct', array($this, 'filter_query_byProduct'), 10, 2);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/id', array($this, 'filter_encode_id'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/standard', array($this, 'filter_encode_standard'), 10, 3);
@@ -576,6 +577,20 @@
 			$this->verify_orders_permission();
 			
 			$query_args['post_status'] = array_keys( wc_get_order_statuses() );
+			
+			return $query_args;
+		}
+		
+		public function filter_query_byProduct($query_args, $data) {
+			if(!isset($query_args['meta_query'])) {
+				$query_args['meta_query'] = array();
+			}
+			
+			$query_args['meta_query'][] = array(
+				'key' => 'wprr_product_id',
+				'value' => $data['productId'],
+				'compare' => '=',
+			);
 			
 			return $query_args;
 		}

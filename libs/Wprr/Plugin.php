@@ -436,9 +436,30 @@
 			);
 			*/
 		}
+		
+		public function hook_save_post($post_id, $post, $update) {
+			//echo("hook_save_post<br />");
 
+			if(wp_is_post_revision($post_id)) {
+				return;
+			}
 
+			remove_action('save_post', array($this, 'hook_save_post'));
 
+			parent::hook_save_post($post_id, $post, $update);
+			
+			$post_type = get_post_type($post_id);
+			if(($post_type === 'shop_order' || $post_type === 'shop_subscription') && function_exists('wc_get_order')) {
+				$order = wc_get_order($post_id);
+				$meta_name = 'wprr_product_id';
+				delete_post_meta($post_id, $meta_name);
+				foreach($order->get_items() as $item_id => $item_data) {
+					$current_id = $item_data->get_product_id();
+					add_post_meta($post_id, $meta_name, $current_id);
+				}
+			}
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\Plugin<br />");
 		}

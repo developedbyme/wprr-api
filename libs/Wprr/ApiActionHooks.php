@@ -23,6 +23,8 @@
 			add_action('wprr/api_action/woocommerce/customer/set-billing-details', array($this, 'hook_woocommerce_customer_set_billing_details'), 10, 2);
 			
 			add_action('wprr/api_action/woocommerce/subscriptions/start-subscription', array($this, 'hook_woocommerce_subscriptions_start_subscription'), 10, 2);
+			add_action('wprr/api_action/woocommerce/add-product-meta-links', array($this, 'hook_woocommerce_add_product_meta_links'), 10, 2);
+			
 			
 			add_action('wprr/api_action/user/set-email', array($this, 'hook_user_set_email'), 10, 2);
 			add_action('wprr/api_action/user/set-password', array($this, 'hook_user_set_password'), 10, 2);
@@ -305,6 +307,28 @@
 				throw(new \Exception('Could not update user '.$user_id->get_message()));
 			}
 			$response_data["id"] = $user_id;
+		}
+		
+		protected function _update_product_link($post_id) {
+			$order = wc_get_order($post_id);
+			$meta_name = 'wprr_product_id';
+			delete_post_meta($post_id, $meta_name);
+			foreach($order->get_items() as $item_id => $item_data) {
+				$current_id = $item_data->get_product_id();
+				add_post_meta($post_id, $meta_name, $current_id);
+			}
+		}
+		
+		public function hook_woocommerce_add_product_meta_links($data, &$response_data) {
+			$order_ids = dbm_new_query('shop_subscription')->set_field('post_status', array_keys( wc_get_order_statuses() ))->get_post_ids();
+			foreach($order_ids as $post_id) {
+				$this->_update_product_link($post_id);
+			}
+			
+			$subscription_ids = dbm_new_query('shop_subscription')->set_field('post_status', array( 'wc-pending', 'wc-active', 'wc-on-hold', 'wc-pending-cancel', 'wc-cancelled', 'wc-expired' ))->get_post_ids();
+			foreach($subscription_ids as $post_id) {
+				$this->_update_product_link($post_id);
+			}
 		}
 		
 		public static function test_import() {

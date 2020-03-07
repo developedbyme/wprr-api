@@ -106,7 +106,6 @@
 			$current_end_point = new \Wprr\RestApi\Admin\CreatePostEndpoint();
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('admin/(?P<post_type>[a-z0-9\-\_]+)/create', $api_namespace, 1, 'POST');
-			$current_end_point->set_requiered_capability('edit_others_posts');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
 			$current_end_point = new \Wprr\RestApi\Admin\ChangePostEndpoint();
@@ -343,14 +342,47 @@
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_admin_data', array($this, 'filter_admin_data'), 10, 3);
 			add_filter(M_ROUTER_DATA_DOMAIN.'/'.'configuration_admin_data/should_encode_post', array($this, 'filter_admin_data_should_encode_post'), 10, 2);
 			
+			$prefix = WPRR_DOMAIN.'/';
+			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
-			add_action(WPRR_DOMAIN.'/'.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
+			add_action($prefix.'prepare_api_request', array($this, 'hook_prepare_api_request'), 10, 1);
 			
 			add_action(M_ROUTER_DATA_DOMAIN.'/'.'filter_post_meta', array($this, 'filter_acf_post_meta'), 10, 2);
+			add_action($prefix.'filter_post_meta', array($this, 'filter_acf_post_meta'), 10, 2);
 			
 			add_action('wpml_before_init', array($this, 'hook_wpml_before_init'));
 			
-			add_filter(WPRR_DOMAIN.'/'.'has_permission_for_users', array($this, 'filter_has_permission_for_users'), 10, 1);
+			add_filter($prefix.'has_permission_for_users', array($this, 'filter_has_permission_for_users'), 10, 1);
+			
+			$admin_prefix = $prefix.'admin/';
+			$create_post_prefix = $admin_prefix.'create_post/';
+			
+			add_filter($create_post_prefix.'valid_combination', array($this, 'filter_create_post_valid_combination'), 10, 4);
+			add_filter($create_post_prefix.'insert/draft', array($this, 'filter_create_post_insert_draft'), 10, 3);
+		}
+		
+		public function filter_create_post_valid_combination($is_valid, $post_type, $data_type, $creation_method) {
+			
+			if(!post_type_exists($post_type)) {
+				return false;
+			}
+			if(!has_filter('wprr/admin/create_post/insert/'.$creation_method)) {
+				return false;
+			}
+			
+			return $is_valid;
+		}
+		
+		public function filter_create_post_insert_draft($post_id, $title, $post_type) {
+			$insert_arguments = array(
+				'post_title' => $title,
+				'post_status' => 'draft',
+				'post_type' => $post_type,
+			);
+			
+			$post_id = wp_insert_post($insert_arguments);
+			
+			return $post_id;
 		}
 		
 		public function hook_wpml_before_init() {
@@ -378,6 +410,10 @@
 			$time_zone = get_option('timezone_string');
 			if($time_zone) {
 				date_default_timezone_set($time_zone);
+			}
+			
+			if(isset($data["asUser"]) && current_user_can('administrator')) {
+				wp_set_current_user($data["asUser"]);
 			}
 		}
 

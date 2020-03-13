@@ -25,7 +25,7 @@
 			add_action('wprr/api_action/woocommerce/subscriptions/start-subscription', array($this, 'hook_woocommerce_subscriptions_start_subscription'), 10, 2);
 			add_action('wprr/api_action/woocommerce/add-product-meta-links', array($this, 'hook_woocommerce_add_product_meta_links'), 10, 2);
 			
-			
+			add_action('wprr/api_action/user/test-nonce', array($this, 'hook_user_test_nonce'), 10, 2);
 			add_action('wprr/api_action/user/set-email', array($this, 'hook_user_set_email'), 10, 2);
 			add_action('wprr/api_action/user/set-password', array($this, 'hook_user_set_password'), 10, 2);
 		}
@@ -285,6 +285,18 @@
 				}
 				$response_data["id"] = $user_id;
 			}
+		}
+		
+		public function hook_user_test_nonce($data, &$response_data) {
+			//echo("\Wprr\ApiActionHooks::hook_user_test_nonce<br />");
+			
+			$current_user_id = get_current_user_id();
+			
+			if(!$current_user_id) {
+				throw(new \Exception('No user'));
+			}
+			
+			$response_data["id"] = $current_user_id;
 		}
 		
 		public function hook_user_set_password($data, &$response_data) {

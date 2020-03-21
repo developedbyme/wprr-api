@@ -354,7 +354,6 @@
 			$valid_paths = array();
 			foreach($paths as $path) {
 				$valid = apply_filters('wprr/initial-load-cache/can-store-path', true, $path);
-				var_dump($valid);
 				if($valid) {
 					$valid_paths[] = $path;
 				}

@@ -34,7 +34,7 @@
 		public function filter_wpml_languages($return_object, $item, $data) {
 			//echo("\Wprr\GlobalItemHooks::filter_wpml_languages<br />");
 			
-			$permalink;
+			$permalink = null;
 			if(isset($data['page'])) {
 				$permalink = $data['page'];
 			}

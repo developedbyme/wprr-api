@@ -345,8 +345,49 @@
 		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), null, $module_data, $classes);
 	}
 	
+	function wprr_get_preloaded_data_for_url($url) {
+		
+		$return_array = array();
+		
+		$salt = apply_filters('wprr/initial-load-cache/salt', 'wvIUIAULTxKicDpbkzyPpVi5wskSe6Yxy0Uq4wCqbAui1wVKAKmsVhN7JOhGbFQohVs9pnpQoS1dWGkL');
+		
+		$upload_dir = wp_upload_dir(null, false);
+		$path = $upload_dir['basedir'].'/wprr-initial-load-cache/'.md5($url.$salt).'.json';
+		
+		if(file_exists($path)) {
+			
+			$api_calls = json_decode(file_get_contents($path), true);
+			
+			if($api_calls) {
+				$rest_server = rest_get_server();
+			
+				foreach($api_calls as $api_call) {
+					$current_url = $api_call;
+					$api_request = \WP_REST_Request::from_url($current_url);
+					
+					$start_time_part = microtime(true);
+					$api_response = $rest_server->dispatch($api_request);
+					$end_time_part = microtime(true);
+					
+					//METODO: check for ok response
+					$return_array[$current_url] = array(
+						'status' => 1,
+						'performance' => $end_time_part-$start_time_part,
+						'data' => $api_response->data['data']
+					);
+				}
+			}
+		}
+		
+		return $return_array;
+	}
+	
 	function wprr_output_module_with_seo_content($name, $seo_path, $module_data = null, $classes = null) {
-		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path), $module_data, $classes);
+		
+		$configuration_data = wprr_get_configuration_data();
+		$configuration_data['preloadedData'] = wprr_get_preloaded_data_for_url(home_url($seo_path));
+		
+		wprr_output_module_with_custom_data($name, $configuration_data, wprr_get_rendered_content($seo_path), $module_data, $classes);
 	}
 	
 	function wprr_apply_post_changes($post_id, $changes, $logger = null) {

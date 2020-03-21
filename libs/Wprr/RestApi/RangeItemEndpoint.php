@@ -103,7 +103,7 @@
 				foreach($encodings as $encoding) {
 					$filter_name = WPRR_DOMAIN.'/range_group_encoding/'.$encoding;
 					
-					$post_links = apply_filters($filter_name, $post_links, $post_id, $data);
+					$post_links = apply_filters($filter_name, $post_links, $data);
 				}
 			
 				if(count($post_links) === 0) {

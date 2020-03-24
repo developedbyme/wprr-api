@@ -31,6 +31,8 @@
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\RangeEndpoint::perform_call<br />");
 			
+			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
+			
 			$post_types = $data['post_types'];
 			if($post_types !== 'any') {
 				$post_types = explode(',', $post_types);
@@ -56,12 +58,21 @@
 			
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
 			
+			$number_of_items = -1;
+			if(isset($data['maxNumberOfPosts'])) {
+				$number_of_items = (int)$data['maxNumberOfPosts'];
+			}
+			
 			$query_args = array(
 				'post_type' => $post_types,
-				'posts_per_page' => -1,
+				'posts_per_page' => $number_of_items,
 				'fields' => 'ids',
 				'suppress_filters' => 0
 			);
+			
+			if(isset($data['startFrom'])) {
+				$query_args['offset'] = (int)$data['startFrom'];
+			}
 			
 			if(isset($data['order'])) {
 				$query_args['order'] = $data['order'];
@@ -97,6 +108,12 @@
 				
 					$post_links[] = $encoded_data;
 				};
+				
+				foreach($encodings as $encoding) {
+					$filter_name = WPRR_DOMAIN.'/range_group_encoding/'.$encoding;
+					
+					$post_links = apply_filters($filter_name, $post_links, $data);
+				}
 			}
 			catch(\Exception $exception) {
 				return $this->output_error($exception->getMessage());

@@ -27,13 +27,14 @@
 			add_filter($prefix.'/shortcode', array($this, 'filter_shortcode'), 10, 3);
 			add_filter($prefix.'/theme-mods', array($this, 'filter_theme_mods'), 10, 3);
 			add_filter($prefix.'/acf/options', array($this, 'filter_acf_options'), 10, 3);
+			add_filter($prefix.'/oembed', array($this, 'filter_oembed'), 10, 3);
 			
 		}
 		
 		public function filter_wpml_languages($return_object, $item, $data) {
 			//echo("\Wprr\GlobalItemHooks::filter_wpml_languages<br />");
 			
-			$permalink;
+			$permalink = null;
 			if(isset($data['page'])) {
 				$permalink = $data['page'];
 			}
@@ -93,7 +94,7 @@
 			
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 			
-			global $woocommerce;
+			global $woocommerce, $sitepress;
 			
 			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
 			
@@ -101,22 +102,24 @@
 			
 			$this->add_cart_data($cart, $return_object);
 			
-			$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $woocommerce->cart);
+			if($sitepress) {
+				$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $woocommerce->cart);
 			
-			if($woocommerce->cart->recurring_carts) {
-				$encoded_recurring_carts = array();
+				if($woocommerce->cart->recurring_carts) {
+					$encoded_recurring_carts = array();
 				
-				foreach($woocommerce->cart->recurring_carts as $key => $recurring_cart) {
-					$current_encoded_cart = array();
-					$this->add_cart_data($recurring_cart, $current_encoded_cart);
-					$encoded_recurring_carts[] = array(
-						'key' => $key,
-						'cart' => $current_encoded_cart,
-						'nextPayment' => $recurring_cart->next_payment_date
-					);
+					foreach($woocommerce->cart->recurring_carts as $key => $recurring_cart) {
+						$current_encoded_cart = array();
+						$this->add_cart_data($recurring_cart, $current_encoded_cart);
+						$encoded_recurring_carts[] = array(
+							'key' => $key,
+							'cart' => $current_encoded_cart,
+							'nextPayment' => $recurring_cart->next_payment_date
+						);
+					}
+				
+					$return_object['recurring'] = $encoded_recurring_carts;
 				}
-				
-				$return_object['recurring'] = $encoded_recurring_carts;
 			}
 			
 			if(isset($data["sessionVariables"])) {
@@ -221,6 +224,16 @@
 			$encoder = new \Wprr\WprrEncoder();
 			
 			$return_object = $encoder->encode_acf_options();
+			
+			return $return_object;
+		}
+		
+		public function filter_oembed($return_object, $item, $data) {
+			$encoder = new \Wprr\WprrEncoder();
+			
+			$url = $data['url'];
+			
+			$return_object['renderedHtml'] = wp_oembed_get($url);
 			
 			return $return_object;
 		}

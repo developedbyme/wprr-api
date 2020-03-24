@@ -10,9 +10,16 @@
 	class WprrEncoder {
 
 		protected $_performance = array();
+		protected $_ignore_short_codes = false;
 
 		function __construct() {
-
+			do_action(WPRR_DOMAIN.'/setup_new_encoder', $this);
+		}
+		
+		public function ignore_short_codes($ignore = true) {
+			$this->_ignore_short_codes = $ignore;
+			
+			return $this;
 		}
 
 		protected function _add_performance_data($type, $value) {
@@ -61,7 +68,13 @@
 			$current_post_data["modifiedDate"] = $post->post_modified;
 			$current_post_data["title"] = get_the_title($post_id);
 			$current_post_data["excerpt"] = apply_filters('the_excerpt', $post->post_excerpt);
-			$current_post_data["content"] = apply_filters('the_content', $post->post_content);
+			
+			$post_content = $post->post_content;
+			if($this->_ignore_short_codes) {
+				$post_content = strip_shortcodes($post_content);
+			}
+			
+			$current_post_data["content"] = apply_filters('the_content', $post_content);
 
 			$current_post_data["parent"] = $this->encode_post_link($post->post_parent);
 			
@@ -633,7 +646,16 @@
 				case "user":
 					$field_value = $this->_get_field_value($field, $post_id, $type, $override_value);
 					if($field_value) {
-						$return_object['value'] = $this->encode_user(get_user_by('id', $field_value));
+						if(is_array($field_value)) {
+							$encoded_users = array();
+							foreach($field_value as $user_id) {
+								$encoded_users[] = $this->encode_user(get_user_by('id', $user_id));
+							}
+							$return_object['value'] = $encoded_users;
+						}
+						else {
+							$return_object['value'] = $this->encode_user(get_user_by('id', $field_value));
+						}
 					}
 					else {
 						$return_object['value'] = null;
@@ -761,7 +783,7 @@
 
 			$current_post_data["id"] = $post_id;
 			$current_post_data["permalink"] = get_permalink($post_id);
-			$current_post_data["title"] = get_the_title($post_id);
+			$current_post_data["title"] = get_post($post_id)->post_title;
 
 			return $current_post_data;
 		}
@@ -833,7 +855,6 @@
 		}
 
 		public function encode_user($user) {
-
 			if(!$user) {
 				return null;
 			}
@@ -850,6 +871,8 @@
 
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_user', $end_time-$start_time);
+			
+			$return_object = apply_filters('wprr/encode_user', $return_object, $user);
 
 			return $return_object;
 		}
@@ -984,16 +1007,34 @@
 				
 				if(defined('ICL_LANGUAGE_CODE')) {
 					global $sitepress;
+					
+					$current_language = ICL_LANGUAGE_CODE;
+					
+					if(is_singular() && !$sitepress->is_translated_post_type(get_post_type(get_the_ID()))) {
+						if(isset($_GET['lang'])) {
+							$current_language = $_GET['lang'];
+						}
+						else {
+							global $wprr_stored_cookie_language;
+						
+							if($wprr_stored_cookie_language) {
+								$current_language = $wprr_stored_cookie_language;
+							}
+						}
+					}
 				
 					if(isset($sitepress)) {
-						$sitepress->switch_lang(ICL_LANGUAGE_CODE);
+						$sitepress->switch_lang($current_language);
 					}
 				
 					if(function_exists('acf_update_setting')) {
-						acf_update_setting('current_language', ICL_LANGUAGE_CODE);
+						acf_update_setting('current_language', $current_language);
 					}
 					
-					$query_data['language'] = ICL_LANGUAGE_CODE;
+					$query_data['language'] = $current_language;
+				}
+				else {
+					$query_data['language'] = substr(get_locale(), 0, 2);
 				}
 
 				while(have_posts()) {
@@ -1011,6 +1052,33 @@
 				}
 
 				$template_selection['is_front_page'] = is_front_page();
+				
+				global $woocommerce;
+				if($woocommerce) {
+					$woocommerce_selection = array();
+					
+					$woocommerce_selection['is_account_page'] = is_account_page();
+					$woocommerce_selection['is_add_payment_method_page'] = is_add_payment_method_page();
+					$woocommerce_selection['is_ajax'] = is_ajax();
+					$woocommerce_selection['is_cart'] = is_cart();
+					$woocommerce_selection['is_checkout'] = is_checkout();
+					$woocommerce_selection['is_checkout_pay_page'] = is_checkout_pay_page();
+					$woocommerce_selection['is_edit_account_page'] = is_edit_account_page();
+					$woocommerce_selection['is_filtered'] = is_filtered();
+					$woocommerce_selection['is_lost_password_page'] = is_lost_password_page();
+					$woocommerce_selection['is_order_received_page'] = is_order_received_page();
+					$woocommerce_selection['is_product'] = is_product();
+					$woocommerce_selection['is_product_category'] = is_product_category();
+					$woocommerce_selection['is_product_tag'] = is_product_tag();
+					$woocommerce_selection['is_product_taxonomy'] = is_product_taxonomy();
+					$woocommerce_selection['is_shop'] = is_shop();
+					$woocommerce_selection['is_store_notice_showing'] = is_store_notice_showing();
+					$woocommerce_selection['is_view_order_page'] = is_view_order_page();
+					$woocommerce_selection['is_wc_endpoint_url'] = is_wc_endpoint_url();
+					$woocommerce_selection['is_woocommerce'] = is_woocommerce();
+					
+					$template_selection['woocommerce'] = $woocommerce_selection;
+				}
 
 				$template_selection['post_type'] = ($queried_object instanceof \WP_Post) ? $queried_object->post_type : null;
 				$template_selection['taxonomy'] = ($queried_object instanceof \WP_Term) ? $queried_object->taxonomy : null;

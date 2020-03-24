@@ -89,6 +89,7 @@
 			add_filter(WPRR_DOMAIN.'/range_query/default', array($this, 'filter_query_standard'), 10, 2);
 			//add_filter(WPRR_DOMAIN.'/range_selection_has_permission/drafts', array('\Wprr\PermissionFilters', 'waterfall_is_admin'), 10, 1);
 			add_filter(WPRR_DOMAIN.'/range_query/drafts', array($this, 'filter_query_drafts'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/onlyDrafts', array($this, 'filter_query_onlyDrafts'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/privates', array($this, 'filter_query_privates'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/trashed', array($this, 'filter_query_trashed'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/attachmentStatus', array($this, 'filter_query_attachment_status'), 10, 2);
@@ -103,14 +104,17 @@
 			add_filter(WPRR_DOMAIN.'/range_query/byCompletedDate', array($this, 'filter_query_byCompletedDate'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/allSubscriptions', array($this, 'filter_query_allSubscriptions'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/activeSubscriptions', array($this, 'filter_query_activeSubscriptions'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/byProduct', array($this, 'filter_query_byProduct'), 10, 2);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/id', array($this, 'filter_encode_id'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/standard', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/default', array($this, 'filter_encode_standard'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/privateTitle', array($this, 'filter_encode_privateTitle'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/status', array($this, 'filter_encode_status'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/translations', array($this, 'filter_encode_translations'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/attachment', array($this, 'filter_encode_attachment'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/preview', array($this, 'filter_encode_preview'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/rawTextsForTranslation', array($this, 'filter_encode_rawTextsForTranslation'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_standard'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/editFields', array($this, 'filter_encode_edit_fields'), 10, 3);
@@ -124,6 +128,9 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionForOrder', array($this, 'filter_encode_subscriptionForOrder'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_order'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscription', array($this, 'filter_encode_subscription'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/usersOtherSubscriptions', array($this, 'filter_encode_usersOtherSubscriptions'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/customerName', array($this, 'filter_encode_customerName'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionEnd', array($this, 'filter_encode_subscriptionEnd'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
 		}
@@ -177,6 +184,21 @@
 				$query_args['post_status'] = array('publish');
 			}
 			
+			$query_args['post_status'][] = 'draft';
+			$query_args['post_status'][] = 'pending';
+			
+			return $query_args;
+		}
+		
+		public function filter_query_onlyDrafts($query_args, $data) {
+			//echo("\Wprr\RangeHooks::filter_query_onlyDrafts<br />");
+			
+			if(!current_user_can('edit_others_posts')) {
+				$query_args['post__in'] = array(0);
+				return $query_args;
+			}
+			
+			$query_args['post_status'] = array();
 			$query_args['post_status'][] = 'draft';
 			$query_args['post_status'][] = 'pending';
 			
@@ -320,6 +342,14 @@
 			return $encoded_data;
 		}
 		
+		public function filter_encode_privateTitle($encoded_data, $post_id, $data) {
+			//echo("\Wprr\RangeHooks::filter_encode_privateTitle<br />");
+			
+			$encoded_data["title"] = get_post($post_id)->post_title;
+			
+			return $encoded_data;
+		}
+		
 		public function filter_encode_preview($encoded_data, $post_id, $data) {
 			//echo("\Wprr\RangeHooks::filter_encode_preview<br />");
 			
@@ -388,6 +418,41 @@
 				}
 				
 				$encoded_data["languages"] = $return_langauges;
+			}
+			
+			return $encoded_data;
+		}
+		
+		public function filter_encode_rawTextsForTranslation($encoded_data, $post_id, $data) {
+			//echo("\Wprr\RangeHooks::filter_encode_rawTextsForTranslation<br />");
+			
+			global $sitepress;
+			
+			if($sitepress) {
+				
+				$post = get_post($post_id);
+				
+				$t_post_id = $sitepress->get_element_trid($post_id, 'post_'.($post->post_type) );
+				$translations = $sitepress->get_element_translations($t_post_id, 'post_'.($post->post_type), false, true);
+				
+				$return_langauges = array();
+				
+				$wprr_encoder = new \Wprr\WprrEncoder();
+				
+				foreach($translations as $language_code => $translation) {
+					
+					$translated_post = get_post($translation->element_id);
+					
+					$current_translation = array(
+						'language' => $language_code,
+						'title' => $translated_post->post_title,
+						'content' => $translated_post->post_content
+					);
+					
+					$return_langauges[] = $current_translation;
+				}
+				
+				$encoded_data["rawTranslations"] = $return_langauges;
 			}
 			
 			return $encoded_data;
@@ -516,12 +581,26 @@
 			return $query_args;
 		}
 		
+		public function filter_query_byProduct($query_args, $data) {
+			if(!isset($query_args['meta_query'])) {
+				$query_args['meta_query'] = array();
+			}
+			
+			$query_args['meta_query'][] = array(
+				'key' => 'wprr_product_id',
+				'value' => $data['productId'],
+				'compare' => '=',
+			);
+			
+			return $query_args;
+		}
+		
 		public function filter_query_byOrderStatus($query_args, $data) {
 			
 			$this->verify_orders_permission();
 			
 			$status = $data['status'];
-			$query_args['post_status'] = array($status);
+			$query_args['post_status'] = explode(',', $status);
 			
 			return $query_args;
 		}
@@ -592,6 +671,45 @@
 				}
 			}
 			$return_object['dates'] = $encoded_dates;
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_customerName($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_customerName<br />");
+			
+			$return_object['userId'] = (int)get_post_meta($post_id, '_customer_user', true);
+			$return_object['firstName'] = get_post_meta($post_id, '_billing_first_name', true);
+			$return_object['lastName'] = get_post_meta($post_id, '_billing_last_name', true);
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_subscriptionEnd($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_subscriptionEnd<br />");
+			
+			$return_object['end'] = get_post_meta($post_id, '_schedule_end', true);
+			
+			return $return_object;
+		}
+		
+		
+		
+		public function filter_encode_usersOtherSubscriptions($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_usersOtherSubscriptions<br />");
+			
+			$user_id = get_post_meta($post_id, '_customer_user', true);
+			
+			$encoded_subscriptions = array();
+			
+			$subscription_ids = \WCS_Customer_Store::instance()->get_users_subscription_ids($user_id);
+			foreach($subscription_ids as $subscription_id) {
+				if($subscription_id !== $post_id) {
+					$encoded_subscriptions[] = array('id' => $subscription_id, 'status' => get_post_status($subscription_id));
+				}
+			}
+			
+			$return_object['otherSubscriptions'] = $encoded_subscriptions;
 			
 			return $return_object;
 		}

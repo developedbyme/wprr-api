@@ -72,7 +72,7 @@
 			$results = array();
 			
 			foreach($codes as $code) {
-				$result = WC()->cart->add_discount( sanitize_text_field( $code ) );
+				$result = WC()->cart->add_discount($code);
 				$results[] = array('code' => $code, 'result' => $result);
 			}
 			

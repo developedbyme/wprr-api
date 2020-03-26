@@ -102,7 +102,7 @@
 			
 			$this->add_cart_data($cart, $return_object);
 			
-			if($sitepress) {
+			if(class_exists("WC_Subscriptions_Cart")) {
 				$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $woocommerce->cart);
 			
 				if($woocommerce->cart->recurring_carts) {

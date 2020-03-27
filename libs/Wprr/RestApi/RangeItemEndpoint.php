@@ -56,12 +56,6 @@
 				return $this->output_error('Access denied');
 			}
 			
-			//MENOTE: this is a test to see if it doesn't clear cache
-			if(function_exists('wc_maybe_define_constant')) {
-				wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
-				\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
-			}
-			
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
 			
 			$query_args = array(

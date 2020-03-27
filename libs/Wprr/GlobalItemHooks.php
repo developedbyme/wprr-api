@@ -92,13 +92,10 @@
 		public function filter_woocommerce_cart($return_object, $item, $data) {
 			//echo("\Wprr\GlobalItemHooks::filter_woocommerce_cart<br />");
 			
+			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 			
-			global $woocommerce, $sitepress;
-			
-			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
-			
-			$cart = $woocommerce->cart;
+			$cart = WC()->cart;
 			
 			$this->add_cart_data($cart, $return_object);
 			

@@ -22,6 +22,7 @@
 
 	require_once(WPRR_DIR."/external-functions.php");
 	
+	/*
 	add_action('woocommerce_init', function() {
 		$need_cart = (array_key_exists( 'rest_route', $_REQUEST ) || false !== strpos( $_SERVER['REQUEST_URI'], 'wp-json' ));
 		
@@ -31,4 +32,5 @@
 			wc_load_cart();
 		}
 	}, 1);
+	*/
 ?>

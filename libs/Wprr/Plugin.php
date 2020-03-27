@@ -395,14 +395,23 @@
 		
 		public function hook_prepare_api_request($data) {
 			
-			if(isset($data['language'])) {
-				global $sitepress;
+			global $sitepress;
+			
+			if(isset($sitepress)) {
 				
-				if(isset($sitepress)) {
-					$sitepress->switch_lang($data['language']);
-					
+				$language = null;
+				if(isset($data['language'])) {
+					$language = $data['language'];
+				}
+				else if(isset($_COOKIE['wp-wpml_current_language'])) {
+					$language = $_COOKIE['wp-wpml_current_language'];
+				}
+				
+				if($language) {
+					$sitepress->switch_lang($language);
+				
 					if(function_exists('acf_update_setting')) {
-						acf_update_setting('current_language', $data['language']);
+						acf_update_setting('current_language', $language);
 					}
 				}
 			}

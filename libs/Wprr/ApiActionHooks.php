@@ -69,14 +69,13 @@
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_apply_discount_code<br />");
 			
 			$this->ensure_wc_has_cart();
-			WC()->cart->set_session();
 			
 			$codes = explode(',', $data['code']);
 			
 			$results = array();
 			
 			foreach($codes as $code) {
-				$result = WC()->cart->add_discount($code);
+				$result = WC()->cart->apply_coupon($code);
 				$results[] = array('code' => $code, 'result' => $result);
 			}
 			
@@ -91,6 +90,9 @@
 			}
 			$response_data['notices'] = $notices;
 			wc_clear_notices();
+			
+			WC()->cart->set_session();
+			
 		}
 		
 		public function hook_woocommerce_checkout($data, &$response_data) {
@@ -140,6 +142,7 @@
 		//METODO: set payment for order
 		
 		protected function ensure_wc_has_cart() {
+			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 		}
 		

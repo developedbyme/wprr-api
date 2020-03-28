@@ -66,15 +66,15 @@
 			
 			$encoded_items = array();
 			
+			global $woocommerce_wpml;
+			if($woocommerce_wpml && isset($woocommerce_wpml->multi_currency)) {
+				//MENOTE: get_client_currency is called before prepare_api_request and the currency is then cached, this will reset the cache and get the correct value the next time get_client_currency is called (within get_woocommerce_currency).
+				$woocommerce_wpml->multi_currency->set_client_currency(null);
+			}
+			
 			$return_object['coupons'] = $cart->get_applied_coupons();
 			$return_object['totals'] = $cart->get_totals();
-			$client_currency = WC()->session->get('client_currency');
-			if($client_currency) {
-				$return_object['currency'] = $client_currency;
-			}
-			else {
-				$return_object['currency'] = get_woocommerce_currency();
-			}
+			$return_object['currency'] = get_woocommerce_currency();
 			
 			
 			$items = $cart->get_cart();

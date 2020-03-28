@@ -68,7 +68,7 @@
 			
 			$return_object['coupons'] = $cart->get_applied_coupons();
 			$return_object['totals'] = $cart->get_totals();
-			$return_object['currency'] = get_option('woocommerce_currency');
+			$return_object['currency'] = get_woocommerce_currency();
 			
 			$items = $cart->get_cart();
 			foreach($items as $key => $cart_item) {

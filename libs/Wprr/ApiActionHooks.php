@@ -15,6 +15,7 @@
 			add_action('wprr/api_action/woocommerce/add-to-cart', array($this, 'hook_woocommerce_add_to_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/remove-from-cart', array($this, 'hook_woocommerce_remove_from_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/apply-dicount-code', array($this, 'hook_woocommerce_apply_discount_code'), 10, 2);
+			add_action('wprr/api_action/woocommerce/apply-discount-code', array($this, 'hook_woocommerce_apply_discount_code'), 10, 2);
 			add_action('wprr/api_action/woocommerce/checkout', array($this, 'hook_woocommerce_checkout'), 10, 2);
 			add_action('wprr/api_action/woocommerce/empty-cart', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
 			

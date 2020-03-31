@@ -27,6 +27,8 @@
 			);
 			
 			if($has_action) {
+				do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
+				
 				try {
 					do_action_ref_array($hook_name, array($data, &$return_data));
 				}

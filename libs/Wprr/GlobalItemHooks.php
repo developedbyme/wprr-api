@@ -66,9 +66,16 @@
 			
 			$encoded_items = array();
 			
+			global $woocommerce_wpml;
+			if($woocommerce_wpml && isset($woocommerce_wpml->multi_currency)) {
+				//MENOTE: get_client_currency is called before prepare_api_request and the currency is then cached, this will reset the cache and get the correct value the next time get_client_currency is called (within get_woocommerce_currency).
+				$woocommerce_wpml->multi_currency->set_client_currency(null);
+			}
+			
 			$return_object['coupons'] = $cart->get_applied_coupons();
 			$return_object['totals'] = $cart->get_totals();
-			$return_object['currency'] = get_option('woocommerce_currency');
+			$return_object['currency'] = get_woocommerce_currency();
+			
 			
 			$items = $cart->get_cart();
 			foreach($items as $key => $cart_item) {
@@ -92,17 +99,14 @@
 		public function filter_woocommerce_cart($return_object, $item, $data) {
 			//echo("\Wprr\GlobalItemHooks::filter_woocommerce_cart<br />");
 			
+			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 			
-			global $woocommerce, $sitepress;
-			
-			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
-			
-			$cart = $woocommerce->cart;
+			$cart = WC()->cart;
 			
 			$this->add_cart_data($cart, $return_object);
 			
-			if($sitepress) {
+			if(class_exists("WC_Subscriptions_Cart")) {
 				$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $woocommerce->cart);
 			
 				if($woocommerce->cart->recurring_carts) {

@@ -458,4 +458,13 @@
 		
 		return $localized_data;
 	}
+	
+	function wprr_get_id_in_current_language($id) {
+		global $sitepress;
+		if($sitepress) {
+			$id = apply_filters('wpml_object_id', $id, 'post', true, $sitepress->get_current_language());
+		}
+		
+		return $id;
+	}
 ?>

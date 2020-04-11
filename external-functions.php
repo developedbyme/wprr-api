@@ -467,4 +467,14 @@
 		
 		return $id;
 	}
+	
+	function wprr_get_current_langauge() {
+		global $sitepress;
+		
+		if(isset($sitepress)) {
+			return $sitepress->get_current_language();
+		}
+		
+		return substr(get_locale(), 0, 2);
+	}
 ?>

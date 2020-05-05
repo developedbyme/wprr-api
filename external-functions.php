@@ -191,6 +191,23 @@
 		return $encoder->encode_term($term);
 	}
 	
+	function wprr_encode_term_by_id($term_id, $taxonomy) {
+		$encoder = new \Wprr\WprrEncoder();
+		
+		return $encoder->encode_term(get_term_by('id', $term_id, $taxonomy));
+	}
+	
+	function wprr_encode_terms_by_id($term_ids, $taxonomy) {
+		$encoder = new \Wprr\WprrEncoder();
+		
+		$return_array = array();
+		foreach($term_ids as $term_id) {
+			$return_array[] = $encoder->encode_term(get_term_by('id', $term_id, $taxonomy));
+		}
+		
+		return $return_array;
+	}
+	
 	function wprr_encode_user($user) {
 		$encoder = new \Wprr\WprrEncoder();
 		

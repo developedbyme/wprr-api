@@ -724,7 +724,8 @@
 			$return_object['isInStock'] = $product->is_in_stock();
 			
 			$return_object['rating'] = array(
-				'count' => $product->get_rating_counts(),
+				'count' => $product->get_rating_count(),
+				'totals' => $product->get_rating_counts(),
 				'average' => $product->get_average_rating(),
 				'reviews' => $product->get_review_count()
 			);

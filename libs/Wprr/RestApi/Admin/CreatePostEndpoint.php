@@ -14,6 +14,7 @@
 		public function perform_call($data) {
 			// echo("\Wprr\RestApi\Admin\CreatePostEndpoint::perform_call<br />");
 			
+			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
 			
 			$post_type = sanitize_text_field($data['post_type']);
@@ -38,7 +39,12 @@
 			
 			$title = sanitize_text_field($data['title']);
 			
-			$post_id = apply_filters('wprr/admin/create_post/insert/'.$creation_method, 0, $title, $post_type, $data_type, $data);
+			try {
+				$post_id = apply_filters('wprr/admin/create_post/insert/'.$creation_method, 0, $title, $post_type, $data_type, $data);
+			}
+			catch(\Exception $exception) {
+				return $this->output_error($exception->getMessage());
+			}
 			if(!$post_id) {
 				return $this->output_error('No post created');
 			}

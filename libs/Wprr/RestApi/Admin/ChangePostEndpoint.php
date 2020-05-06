@@ -24,6 +24,7 @@
 
 			//METODO Add security.
 			
+			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
 
 			$post_id = $data['post_id'];

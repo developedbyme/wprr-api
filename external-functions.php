@@ -191,6 +191,23 @@
 		return $encoder->encode_term($term);
 	}
 	
+	function wprr_encode_term_by_id($term_id, $taxonomy) {
+		$encoder = new \Wprr\WprrEncoder();
+		
+		return $encoder->encode_term(get_term_by('id', $term_id, $taxonomy));
+	}
+	
+	function wprr_encode_terms_by_id($term_ids, $taxonomy) {
+		$encoder = new \Wprr\WprrEncoder();
+		
+		$return_array = array();
+		foreach($term_ids as $term_id) {
+			$return_array[] = $encoder->encode_term(get_term_by('id', $term_id, $taxonomy));
+		}
+		
+		return $return_array;
+	}
+	
 	function wprr_encode_user($user) {
 		$encoder = new \Wprr\WprrEncoder();
 		
@@ -345,8 +362,49 @@
 		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), null, $module_data, $classes);
 	}
 	
+	function wprr_get_preloaded_data_for_url($url) {
+		
+		$return_array = array();
+		
+		$salt = apply_filters('wprr/initial-load-cache/salt', 'wvIUIAULTxKicDpbkzyPpVi5wskSe6Yxy0Uq4wCqbAui1wVKAKmsVhN7JOhGbFQohVs9pnpQoS1dWGkL');
+		
+		$upload_dir = wp_upload_dir(null, false);
+		$path = $upload_dir['basedir'].'/wprr-initial-load-cache/'.md5($url.$salt).'.json';
+		
+		if(file_exists($path)) {
+			
+			$api_calls = json_decode(file_get_contents($path), true);
+			
+			if($api_calls) {
+				$rest_server = rest_get_server();
+			
+				foreach($api_calls as $api_call) {
+					$current_url = $api_call;
+					$api_request = \WP_REST_Request::from_url($current_url);
+					
+					$start_time_part = microtime(true);
+					$api_response = $rest_server->dispatch($api_request);
+					$end_time_part = microtime(true);
+					
+					//METODO: check for ok response
+					$return_array[$current_url] = array(
+						'status' => 1,
+						'performance' => $end_time_part-$start_time_part,
+						'data' => $api_response->data['data']
+					);
+				}
+			}
+		}
+		
+		return $return_array;
+	}
+	
 	function wprr_output_module_with_seo_content($name, $seo_path, $module_data = null, $classes = null) {
-		wprr_output_module_with_custom_data($name, wprr_get_configuration_data(), wprr_get_rendered_content($seo_path), $module_data, $classes);
+		
+		$configuration_data = wprr_get_configuration_data();
+		$configuration_data['preloadedData'] = wprr_get_preloaded_data_for_url(home_url($seo_path));
+		
+		wprr_output_module_with_custom_data($name, $configuration_data, wprr_get_rendered_content($seo_path), $module_data, $classes);
 	}
 	
 	function wprr_apply_post_changes($post_id, $changes, $logger = null) {
@@ -416,5 +474,24 @@
 		$localized_data['taxonomies'] = mrouter_encode_all_taxonomies();
 		
 		return $localized_data;
+	}
+	
+	function wprr_get_id_in_current_language($id) {
+		global $sitepress;
+		if($sitepress) {
+			$id = apply_filters('wpml_object_id', $id, 'post', true, $sitepress->get_current_language());
+		}
+		
+		return $id;
+	}
+	
+	function wprr_get_current_langauge() {
+		global $sitepress;
+		
+		if(isset($sitepress)) {
+			return $sitepress->get_current_language();
+		}
+		
+		return substr(get_locale(), 0, 2);
 	}
 ?>

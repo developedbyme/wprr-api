@@ -58,11 +58,16 @@
 			
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
 			
+			$suppress_filters = 0;
+			if(isset($data['suppressFilters'])) {
+				$suppress_filters = (int)$data['suppressFilters'];
+			}
+			
 			$query_args = array(
 				'post_type' => $post_types,
 				'posts_per_page' => 1,
 				'fields' => 'ids',
-				'suppress_filters' => 0
+				'suppress_filters' => $suppress_filters
 			);
 			
 			if(isset($data['order'])) {

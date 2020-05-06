@@ -131,6 +131,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/usersOtherSubscriptions', array($this, 'filter_encode_usersOtherSubscriptions'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/customerName', array($this, 'filter_encode_customerName'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionEnd', array($this, 'filter_encode_subscriptionEnd'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/product', array($this, 'filter_encode_product'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
 		}
@@ -693,7 +694,44 @@
 			return $return_object;
 		}
 		
-		
+		public function filter_encode_product($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_product<br />");
+			
+			$product = wc_get_product($post_id);
+			$return_object['price'] = $product->get_price('raw');
+			$return_object['regularPrice'] = $product->get_regular_price('raw');
+			$return_object['currency'] = get_woocommerce_currency();
+			$return_object['description'] = $product->get_description();
+			$return_object['shortDescription'] = $product->get_short_description();
+			
+			global $woocommerce_wpml;
+			if(isset($woocommerce_wpml) && $woocommerce_wpml->multi_currency) {
+				
+				$currencies = $woocommerce_wpml->multi_currency->get_currencies('include_default = true');
+				
+				$return_object['currency'] = $woocommerce_wpml->multi_currency->get_client_currency(); 
+				
+				$currency_prices = array();
+				foreach($currencies as $currency_id => $currency) {
+					$currency_prices[$currency_id] = (float)$woocommerce_wpml->multi_currency->prices->get_product_price_in_currency($post_id, $currency_id);
+				}
+				$return_object['currencyPrices'] = $currency_prices;
+			}
+			
+			$return_object['isPurchasable'] = $product->is_purchasable();
+			$return_object['isOnSale'] = $product->is_on_sale();
+			$return_object['isFeatured'] = $product->is_featured();
+			$return_object['isInStock'] = $product->is_in_stock();
+			
+			$return_object['rating'] = array(
+				'count' => $product->get_rating_count(),
+				'totals' => $product->get_rating_counts(),
+				'average' => $product->get_average_rating(),
+				'reviews' => $product->get_review_count()
+			);
+			
+			return $return_object;
+		}
 		
 		public function filter_encode_usersOtherSubscriptions($return_object, $post_id) {
 			//echo("\Wprr\RangeHooks::filter_encode_usersOtherSubscriptions<br />");

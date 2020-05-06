@@ -62,12 +62,16 @@
 			if(isset($data['maxNumberOfPosts'])) {
 				$number_of_items = (int)$data['maxNumberOfPosts'];
 			}
+			$suppress_filters = 0;
+			if(isset($data['suppressFilters'])) {
+				$suppress_filters = (int)$data['suppressFilters'];
+			}
 			
 			$query_args = array(
 				'post_type' => $post_types,
 				'posts_per_page' => $number_of_items,
 				'fields' => 'ids',
-				'suppress_filters' => 0
+				'suppress_filters' => $suppress_filters
 			);
 			
 			if(isset($data['startFrom'])) {

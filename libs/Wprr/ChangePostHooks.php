@@ -24,6 +24,7 @@
 			$this->register_hook_for_type('status', 'hook_set_status');
 			$this->register_hook_for_type('content', 'hook_set_content');
 			$this->register_hook_for_type('slug', 'hook_set_slug');
+			$this->register_hook_for_type('setSlugPath', 'hook_set_setSlugPath');
 			$this->register_hook_for_type('title', 'hook_set_title');
 			$this->register_hook_for_type('terms', 'hook_set_terms');
 			$this->register_hook_for_type('addTerms', 'hook_add_terms');
@@ -81,6 +82,46 @@
 			//echo("\Wprr\ChangePostHooks::hook_set_content<br />");
 			
 			$this->update_post_data($post_id, 'post_name', $data['value']);
+		}
+		
+		protected function ensure_path_exists($path_array) {
+			//echo("\Wprr\ChangePostHooks::ensure_path_exists<br />");
+			
+			$parent = 0;
+			
+			if(!empty($path_array)) {
+				foreach($path_array as $path_part) {
+					$exisiting_parent_id = dbm_new_query('page')->set_field('post_status', array('publish', 'draft', 'future', 'private'))->set_field('post_parent', $parent)->set_field('name', $path_part)->get_post_id();
+					if(!$exisiting_parent_id) {
+						$exisiting_parent_id = wp_insert_post(array(
+							'post_title' => $path_part,
+							'post_name' => $path_part,
+							'post_parent' => $parent,
+							'post_status' => 'publish',
+							'post_type' => 'page'
+						));
+					}
+					$parent = $exisiting_parent_id;
+				}
+			}
+			
+			return $parent;
+		}
+		
+		public function hook_set_setSlugPath($data, $post_id) {
+			//echo("\Wprr\ChangePostHooks::hook_set_setSlugPath<br />");
+			
+			$path = explode('/', $data['value']);
+			$post_name = array_pop($path);
+			
+			
+			$parent = $this->ensure_path_exists($path);
+			
+			wp_update_post(array(
+				'ID' => $post_id,
+				'post_name' => $post_name,
+				'post_parent' => $parent
+			));
 		}
 		
 		public function hook_set_title($data, $post_id) {

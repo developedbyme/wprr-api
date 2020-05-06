@@ -15,6 +15,7 @@
 			add_action('wprr/api_action/woocommerce/add-to-cart', array($this, 'hook_woocommerce_add_to_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/remove-from-cart', array($this, 'hook_woocommerce_remove_from_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/apply-dicount-code', array($this, 'hook_woocommerce_apply_discount_code'), 10, 2);
+			add_action('wprr/api_action/woocommerce/apply-discount-code', array($this, 'hook_woocommerce_apply_discount_code'), 10, 2);
 			add_action('wprr/api_action/woocommerce/checkout', array($this, 'hook_woocommerce_checkout'), 10, 2);
 			add_action('wprr/api_action/woocommerce/empty-cart', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
 			
@@ -28,6 +29,8 @@
 			add_action('wprr/api_action/user/test-nonce', array($this, 'hook_user_test_nonce'), 10, 2);
 			add_action('wprr/api_action/user/set-email', array($this, 'hook_user_set_email'), 10, 2);
 			add_action('wprr/api_action/user/set-password', array($this, 'hook_user_set_password'), 10, 2);
+			
+			add_action('wprr/api_action/wprr/save-initial-load-cache', array($this, 'hook_wprr_save_initial_load_cache'), 10, 2);
 		}
 
 		public function hook_woocommerce_add_to_cart($data, &$response_data) {
@@ -67,14 +70,13 @@
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_apply_discount_code<br />");
 			
 			$this->ensure_wc_has_cart();
-			WC()->cart->set_session();
 			
 			$codes = explode(',', $data['code']);
 			
 			$results = array();
 			
 			foreach($codes as $code) {
-				$result = WC()->cart->add_discount( sanitize_text_field( $code ) );
+				$result = WC()->cart->apply_coupon($code);
 				$results[] = array('code' => $code, 'result' => $result);
 			}
 			
@@ -89,6 +91,9 @@
 			}
 			$response_data['notices'] = $notices;
 			wc_clear_notices();
+			
+			WC()->cart->set_session();
+			
 		}
 		
 		public function hook_woocommerce_checkout($data, &$response_data) {
@@ -138,6 +143,7 @@
 		//METODO: set payment for order
 		
 		protected function ensure_wc_has_cart() {
+			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 		}
 		
@@ -341,6 +347,35 @@
 			foreach($subscription_ids as $post_id) {
 				$this->_update_product_link($post_id);
 			}
+		}
+		
+		public function hook_wprr_save_initial_load_cache($data, &$response_data) {
+			$upload_dir = wp_upload_dir(null, false);
+			
+			$paths = $data['paths'];
+			$permalink = $data['permalink'];
+			
+			$valid_paths = array();
+			foreach($paths as $path) {
+				$valid = apply_filters('wprr/initial-load-cache/can-store-path', true, $path);
+				if($valid) {
+					$valid_paths[] = $path;
+				}
+			}
+			
+			$salt = apply_filters('wprr/initial-load-cache/salt', 'wvIUIAULTxKicDpbkzyPpVi5wskSe6Yxy0Uq4wCqbAui1wVKAKmsVhN7JOhGbFQohVs9pnpQoS1dWGkL');
+			
+			$upload_path = $upload_dir['basedir'].'/wprr-initial-load-cache/'.md5($permalink.$salt).'.json';
+			
+			$parent_directory = dirname($upload_path);
+		
+			if (!file_exists($parent_directory)) {
+				mkdir($parent_directory, 0755, true);
+			}
+			
+			$file = fopen($upload_path, 'w');
+			fwrite($file, json_encode($valid_paths));
+			fclose($file);
 		}
 		
 		public static function test_import() {

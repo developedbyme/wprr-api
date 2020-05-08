@@ -191,6 +191,11 @@
 			foreach($subscription_groups as $group_name => $group_data) {
 				$subscription = wcs_create_subscription(array('order_id' => $order_id, 'billing_period' => $group_data['period'], 'billing_interval' => $group_data['interval'], 'start_date' => $start_date));
 				
+				if(is_wp_error($subscription)) {
+					$error = $subscription;
+					throw(new \Exception($error->get_error_message()));
+				}
+				
 				$subscription->set_payment_method($order->get_payment_method());
 				
 				foreach($group_data['items'] as $item_data) {

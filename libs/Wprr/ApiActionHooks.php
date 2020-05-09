@@ -212,8 +212,12 @@
 						$subscription->$set_function_name($order->$get_function_name());
 					}
 					
+					//METODO: copy over shipping
+					
 					$subscription->add_product($product, $item_data->get_quantity(), array());
 				}
+				
+				//METODO: copy over discount codes
 				
 				$subscription->calculate_totals();
 				$subscription->save();

@@ -324,12 +324,16 @@
 	}
 	
 	function wprr_get_code_for_module_with_custom_data($name, $data, $seo_content = null, $module_data = null, $classes = null) {
-		ob_start();
+		
+		$started = ob_start();
+		if(!$started) {
+			throw(new \Exception('Couldn\'t start buffer'));
+		}
 		
 		wprr_output_module_with_custom_data($name, $data, $seo_content, $module_data, $classes);
 		
 		$return_string = ob_get_contents();
-		ob_clean();
+		ob_end_clean();
 		
 		return $return_string;
 	}

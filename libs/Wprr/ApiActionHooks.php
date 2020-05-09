@@ -25,6 +25,7 @@
 			
 			add_action('wprr/api_action/woocommerce/subscriptions/start-subscription', array($this, 'hook_woocommerce_subscriptions_start_subscription'), 10, 2);
 			add_action('wprr/api_action/woocommerce/add-product-meta-links', array($this, 'hook_woocommerce_add_product_meta_links'), 10, 2);
+			add_action('wprr/api_action/woocommerce/add-product-review', array($this, 'hook_woocommerce_add_product_review'), 10, 2);
 			
 			add_action('wprr/api_action/user/test-nonce', array($this, 'hook_user_test_nonce'), 10, 2);
 			add_action('wprr/api_action/user/set-email', array($this, 'hook_user_set_email'), 10, 2);
@@ -267,6 +268,43 @@
 			$response_data["updatedFields"] = $updated_fields;
 			
 			$customer->save();
+		}
+		
+		public function hook_woocommerce_add_product_review($data, &$response_data) {
+			
+			$user_id = (int)$data['userId'];
+			
+			$current_user_id = get_current_user_id();
+			
+			if(!current_user_can('edit_others_posts') && $user_id != $current_user_id) {
+				throw(new \Exception('Not authorized'));
+			}
+			
+			$product_id = $data['productId'];
+			//METODO: check that it is a product
+			$review = isset($data['review']) ? sanitize_text_field($data['review']) : '';
+			
+			
+			$user_data = get_userdata($user_id);
+			
+			$comment_id = wp_insert_comment(array(
+				'comment_post_ID'      => $product_id,
+				'comment_author'       => $user_data->display_name,
+				'comment_author_email' => $user_data->email,
+				'comment_author_url'   => '',
+				'comment_content'      => $review,
+				'comment_type'         => '',
+				'comment_parent'       => 0,
+				'user_id'              => $user_id,
+				'comment_author_IP'    => $_SERVER['HTTP_CLIENT_IP'],
+				'comment_agent'        => $_SERVER['HTTP_USER_AGENT'],
+				'comment_date'         => date('Y-m-d H:i:s'),
+				'comment_approved'     => 1,
+			));
+			
+			update_comment_meta($comment_id, 'rating', $data['rating']);
+			
+			$response_data['id'] = $comment_id;
 		}
 		
 		public function hook_user_set_email($data, &$response_data) {

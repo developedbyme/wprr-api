@@ -9,7 +9,7 @@
 	
 	function get_initial_mrouter_data() {
 		$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-
+		
 		$initial_mrouter_data = array();
 		$initial_mrouter_data['data'] = array();
 		
@@ -18,7 +18,6 @@
 			'status' => 1,
 			'data' => $current_data['data']
 		);
-		
 		
 		$api_calls = null;
 		

@@ -730,6 +730,17 @@
 				'reviews' => $product->get_review_count()
 			);
 			
+			$all_languages_average = get_post_meta($post_id, '_wcml_average_rating', true);
+			if($all_languages_average) {
+				$return_object['rating']['average'] = $all_languages_average;
+			}
+			
+			$all_languages_reviews = (int)get_post_meta($post_id, '_wcml_review_count', true);
+			if($all_languages_reviews) {
+				$return_object['rating']['count'] = $all_languages_reviews;
+				$return_object['rating']['reviews'] = $all_languages_reviews;
+			}
+			
 			return $return_object;
 		}
 		

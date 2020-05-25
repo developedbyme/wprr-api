@@ -94,6 +94,8 @@
 			add_filter(WPRR_DOMAIN.'/range_query/trashed', array($this, 'filter_query_trashed'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/attachmentStatus', array($this, 'filter_query_attachment_status'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/idSelection', array($this, 'filter_query_id_selection'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/idSelectionWithTranslation', array($this, 'filter_query_idSelectionWithTranslation'), 10, 2);
+			
 			add_filter(WPRR_DOMAIN.'/range_query/myOrders', array($this, 'filter_query_my_orders'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_filter/myOrders', array($this, 'filter_filter_my_orders'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/myOrder', array($this, 'filter_query_my_order'), 10, 2);
@@ -151,8 +153,32 @@
 			
 			$query_args['post__in'] = explode(',', $data['ids']);
 			
+			
+			
 			return $query_args;
 		}
+		
+		public function filter_query_idSelectionWithTranslation($query_args, $data) {
+			//echo("\Wprr\RangeHooks::filter_query_idSelectionWithTranslation<br />");
+			
+			$this->require_paramters($data, 'ids');
+			
+			global $sitepress;
+			
+			$translated_ids = array();
+			$ids = explode(',', $data['ids']);
+			foreach($ids as $id) {
+				if($sitepress) {
+					$id = apply_filters('wpml_object_id', $id, $query_args['post_type'], true, $sitepress->get_current_language());
+				}
+				$translated_ids[] = $id;
+			}
+			
+			$query_args['post__in'] = $translated_ids;
+			
+			return $query_args;
+		}
+		
 		
 		public function filter_query_in_taxonomy($query_args, $data) {
 			//echo("\Wprr\RangeHooks::filter_query_in_taxonomy<br />");

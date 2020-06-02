@@ -22,15 +22,23 @@
 			
 			$taxonomy = $data['taxonomy'];
 			
+			$internal_terms = apply_filters('wprr/taxonomy/'.$taxonomy.'/internal_terms', array());
+			
+			$include_link = false;
+			if(isset($data['includeLink'])) {
+				$include_link = ($data['includeLink'] === "1");
+			}
+			
 			$terms = get_terms(array(
 				'taxonomy' => $taxonomy,
-				'hide_empty' => false
+				'hide_empty' => false,
+				'exclude_tree' => $internal_terms
 			));
 			
 			$encoder = new \Wprr\WprrEncoder();
 			
 			foreach($terms as $term) {
-				$return_array[] = $encoder->encode_term_link($term);
+				$return_array[] = $encoder->encode_term_link($term, $include_link);
 			};
 			
 			return $this->output_success($return_array);

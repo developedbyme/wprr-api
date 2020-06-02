@@ -832,15 +832,16 @@
 			return $return_object;
 		}
 		
-		public function encode_term_link($term) {
-
+		public function encode_term_link($term, $include_link = true) {
+			
 			$start_time = microtime(true);
-
+			
 			$return_object = array();
-
-			$queried_object = get_queried_object();
+			
 			$return_object['id'] = $term->term_id;
-			$return_object['permalink'] = get_term_link($term);
+			if($include_link) {
+				$return_object['permalink'] = get_term_link($term);
+			}
 			$return_object['name'] = $term->name;
 			$return_object['slug'] = $term->slug;
 			$return_object['taxonomy'] = $term->taxonomy;

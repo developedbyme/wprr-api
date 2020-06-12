@@ -255,6 +255,7 @@
 			$user_data['data'] = $encoder->encode_user_with_private_data($user);
 			$user_data['roles'] = $user->roles;
 			$user_data['restNonce'] = wp_create_nonce('wp_rest');
+			$user_data['restNonceGeneratedAt'] = time();
 			
 			return $user_data;
 		}

@@ -26,7 +26,12 @@
 			
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
 			
-			$return_object = apply_filters($filter_name, array(), $data['item'], $data);
+			try {
+				$return_object = apply_filters($filter_name, array(), $data['item'], $data);
+			}
+			catch(\Exception $exception) {
+				return $this->output_error($exception->getMessage());
+			}
 			
 			return $this->output_success($return_object);
 		}

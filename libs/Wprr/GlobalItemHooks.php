@@ -236,8 +236,23 @@
 			$encoder = new \Wprr\WprrEncoder();
 			
 			$url = $data['url'];
+			$args = null;
+			if(isset($data['args'])) {
+				$args = array();
+				$parameters = explode(",", $data['args']);
+				foreach($parameters as $parameter) {
+					$temp_array = explode(":", $parameter);
+					$args[$temp_array[0]] = $temp_array[1];
+				}
+			}
 			
-			$return_object['renderedHtml'] = wp_oembed_get($url);
+			$html = wp_oembed_get($url, $args);
+			
+			if(isset($data['autoplay']) && $data['autoplay'] === "youtube") {
+				$html = preg_replace("/(src=\"[^\"]*)(\")/", "$1&autoplay=1$2", $html);
+			}
+			
+			$return_object['renderedHtml'] = $html;
 			
 			return $return_object;
 		}

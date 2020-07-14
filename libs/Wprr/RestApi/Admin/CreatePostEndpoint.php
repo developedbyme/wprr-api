@@ -6,9 +6,17 @@
 
 	// \Wprr\RestApi\Admin\CreatePostEndpoint
 	class CreatePostEndpoint extends EndPoint {
-
+		
+		protected $_return_data;
+		
 		function __construct() {
 			// echo("\Wprr\RestApi\Admin\CreatePostEndpoint::__construct<br />");
+		}
+		
+		public function add_return_data($field, $data) {
+			$this->_return_data[$field] = $data;
+			
+			return $this;
 		}
 
 		public function perform_call($data) {
@@ -16,6 +24,8 @@
 			
 			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
+			
+			$this->_return_data = array('id' => $post_id);
 			
 			$post_type = sanitize_text_field($data['post_type']);
 			
@@ -61,7 +71,10 @@
 				}
 			}
 			
-			return $this->output_success(array('id' => $post_id, 'logs' => $this->_logs));
+			$this->add_return_data('id', $post_id);
+			$this->add_return_data('logs', $this->_logs);
+			
+			return $this->output_success($this->_return_data);
 		}
 
 		public static function test_import() {

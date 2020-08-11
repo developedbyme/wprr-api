@@ -31,6 +31,8 @@
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\RangeEndpoint::perform_call<br />");
 			
+			wprr_performance_tracker()->start_meassure('API call');
+			
 			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
 			
 			$post_types = $data['post_types'];
@@ -122,6 +124,8 @@
 			catch(\Exception $exception) {
 				return $this->output_error($exception->getMessage());
 			}
+			
+			wprr_performance_tracker()->stop_meassure('API call');
 			
 			return $this->output_success($post_links);
 		}

@@ -20,6 +20,9 @@
 	
 	$WprrPlugin = new \Wprr\Plugin();
 	
+	global $WprrPerformanceTracker;
+	$WprrPerformanceTracker = new \Wprr\PerformanceTracker();
+	
 	require_once(WPRR_DIR."/external-functions.php");
 	
 ?>

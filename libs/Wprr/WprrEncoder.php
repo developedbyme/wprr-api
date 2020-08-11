@@ -11,6 +11,7 @@
 
 		protected $_performance = array();
 		protected $_ignore_short_codes = false;
+		protected $_encoded_terms = array();
 
 		function __construct() {
 			do_action(WPRR_DOMAIN.'/setup_new_encoder', $this);
@@ -808,13 +809,19 @@
 			if(!$term) {
 				return null;
 			}
+			
+			$id = $term->term_id;
+			if(isset($this->_encoded_terms[$id])) {
+				return $this->_encoded_terms[$id];
+			}
 
 			$start_time = microtime(true);
+			wprr_performance_tracker()->start_meassure('WprrEncoder encode_term');
 
 			$return_object = array();
 
 			$queried_object = get_queried_object();
-			$return_object['id'] = $term->term_id;
+			$return_object['id'] = $id;
 			$return_object['permalink'] = get_term_link($term);
 			$return_object['name'] = $term->name;
 			$return_object['slug'] = $term->slug;
@@ -825,9 +832,12 @@
 			$return_object["meta"] = get_term_meta($term->term_id);
 			
 			$return_object = apply_filters('m_router_data/encode_term', $return_object, $term->term_id, $term, $this);
-
+			$this->_encoded_terms[$id] = $return_object;
+			
+			wprr_performance_tracker()->stop_meassure('WprrEncoder encode_term');
 			$end_time = microtime(true);
 			$this->_add_performance_data('encode_term', $end_time-$start_time);
+			
 
 			return $return_object;
 		}

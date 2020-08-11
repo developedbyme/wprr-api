@@ -254,6 +254,7 @@
 		public function filter_query_privates($query_args, $data) {
 			//echo("\Wprr\RangeHooks::filter_query_privates<br />");
 			
+			/*
 			if(!current_user_can('read_private_posts')) {
 				
 				throw(new \Exception('User doesn\'t have permission to read private posts'));
@@ -261,6 +262,7 @@
 				$query_args['post__in'] = array(0);
 				return $query_args;
 			}
+			*/
 			
 			if(!isset($query_args['post_status'])) {
 				$query_args['post_status'] = array('publish');

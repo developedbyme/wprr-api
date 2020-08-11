@@ -61,6 +61,10 @@
 				$return_data['logs'] = $this->_logs;
 			}
 			
+			if(apply_filters('wprr/expose_performance', true)) {
+				$return_data['performance'] = wprr_performance_tracker()->get_stats();
+			}
+			
 			$return_response = new WP_REST_Response($return_data);
 			
 			foreach($this->_headers as $key => $value) {

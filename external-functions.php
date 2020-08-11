@@ -1,10 +1,17 @@
 <?php
 	//use \WP_REST_Request;
 	
+	global $WprrDefaultEncoder;
+	$WprrDefaultEncoder = new \Wprr\WprrEncoder();
+	
 	function wprr_get_encoder() {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder;
+		global $WprrDefaultEncoder;
+		return $WprrDefaultEncoder;
+	}
+	
+	function wprr_performance_tracker() {
+		global $WprrPerformanceTracker;
+		return $WprrPerformanceTracker;
 	}
 	
 	function get_initial_mrouter_data() {
@@ -114,9 +121,7 @@
 	}
 	
 	function mrouter_encode() {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode();
+		return wprr_get_encoder()->encode();
 	}
 	
 	function mrouter_encode_post_link($post_id) {
@@ -128,27 +133,19 @@
 	}
 	
 	function wprr_encode_post_link($post_id) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_post_link($post_id);
+		return wprr_get_encoder()->encode_post_link($post_id);
 	}
 	
 	function wprr_encode_private_post_link($post_id) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_private_post_link($post_id);
+		return wprr_get_encoder()->encode_private_post_link($post_id);
 	}
 	
 	function wprr_encode_post($post) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_post($post);
+		return wprr_get_encoder()->encode_post($post);
 	}
 	
 	function wprr_encode_image($post) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_image($post);
+		return wprr_get_encoder()->encode_image($post);
 	}
 	
 	function mrouter_encode_image($post) {
@@ -156,7 +153,7 @@
 	}
 	
 	function wprr_encode_post_image($post_id) {
-		$encoder = new \Wprr\WprrEncoder();
+		$encoder = wprr_get_encoder();
 		
 		$media_post_id = get_post_thumbnail_id($post_id);
 		if($media_post_id) {
@@ -169,15 +166,11 @@
 	}
 	
 	function mrouter_encode_acf_field($field_object, $post_id) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_acf_field($field_object, $post_id);
+		return wprr_get_encoder()->encode_acf_field($field_object, $post_id);
 	}
 	
 	function mrouter_encode_post_acf_field($field_name, $post_id) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_post_acf_field($field_name, $post_id);
+		return wprr_get_encoder()->encode_post_acf_field($field_name, $post_id);
 	}
 	
 	function mrouter_encode_term($term) {
@@ -185,19 +178,15 @@
 	}
 	
 	function wprr_encode_term($term) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_term($term);
+		return wprr_get_encoder()->encode_term($term);
 	}
 	
 	function wprr_encode_term_by_id($term_id, $taxonomy) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_term(get_term_by('id', $term_id, $taxonomy));
+		return wprr_get_encoder()->encode_term(get_term_by('id', $term_id, $taxonomy));
 	}
 	
 	function wprr_encode_terms_by_id($term_ids, $taxonomy) {
-		$encoder = new \Wprr\WprrEncoder();
+		$encoder = wprr_get_encoder();
 		
 		$return_array = array();
 		foreach($term_ids as $term_id) {
@@ -208,15 +197,13 @@
 	}
 	
 	function wprr_encode_user($user) {
-		$encoder = new \Wprr\WprrEncoder();
-		
-		return $encoder->encode_user($user);
+		return wprr_get_encoder()->encode_user($user);
 	}
 	
 	function mrouter_encode_all_taxonomies() {
 		
 		$return_object = array();
-		$encoder = new \Wprr\WprrEncoder();
+		$encoder = wprr_get_encoder();
 		
 		$taxonomies = get_taxonomies(); 
 		foreach($taxonomies as $taxonomy) {

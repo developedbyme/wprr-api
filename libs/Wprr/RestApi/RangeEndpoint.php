@@ -93,14 +93,19 @@
 				
 					$query_args = apply_filters($filter_name, $query_args, $data);
 				}
-			
+				wprr_performance_tracker()->start_meassure('RangeEndpoint perform_call query');
 				$posts = get_posts($query_args);
+				wprr_performance_tracker()->stop_meassure('RangeEndpoint perform_call query');
+				
+				wprr_performance_tracker()->start_meassure('RangeEndpoint perform_call selection');
 				foreach($selections as $selection) {
 					$filter_name = WPRR_DOMAIN.'/range_filter/'.$selection;
 				
 					$posts = apply_filters($filter_name, $posts, $data);
 				}
-			
+				wprr_performance_tracker()->stop_meassure('RangeEndpoint perform_call selection');
+				
+				wprr_performance_tracker()->start_meassure('RangeEndpoint perform_call encoding');
 				$post_links = array();
 				foreach($posts as $post_id) {
 				
@@ -114,12 +119,15 @@
 				
 					$post_links[] = $encoded_data;
 				};
+				wprr_performance_tracker()->stop_meassure('RangeEndpoint perform_call encoding');
 				
+				wprr_performance_tracker()->start_meassure('RangeEndpoint perform_call group encoding');
 				foreach($encodings as $encoding) {
 					$filter_name = WPRR_DOMAIN.'/range_group_encoding/'.$encoding;
 					
 					$post_links = apply_filters($filter_name, $post_links, $data);
 				}
+				wprr_performance_tracker()->stop_meassure('RangeEndpoint perform_call group encoding');
 			}
 			catch(\Exception $exception) {
 				return $this->output_error($exception->getMessage());

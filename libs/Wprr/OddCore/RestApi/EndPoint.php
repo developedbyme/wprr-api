@@ -106,6 +106,9 @@
 			if($this->_requiered_capability) {
 				$options['permission_callback'] = array($this, 'hook_check_permission');
 			}
+			else {
+				$options['permission_callback'] = '__return_true';
+			}
 			
 			register_rest_route(
 				$this->_namespace.'/v'.$this->_version,

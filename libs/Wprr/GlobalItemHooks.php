@@ -107,12 +107,12 @@
 			$this->add_cart_data($cart, $return_object);
 			
 			if(class_exists("WC_Subscriptions_Cart")) {
-				$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $woocommerce->cart);
+				$recurring_total = \WC_Subscriptions_Cart::calculate_subscription_totals(0, $cart);
 			
-				if($woocommerce->cart->recurring_carts) {
+				if($cart->recurring_carts) {
 					$encoded_recurring_carts = array();
 				
-					foreach($woocommerce->cart->recurring_carts as $key => $recurring_cart) {
+					foreach($cart->recurring_carts as $key => $recurring_cart) {
 						$current_encoded_cart = array();
 						$this->add_cart_data($recurring_cart, $current_encoded_cart);
 						$encoded_recurring_carts[] = array(

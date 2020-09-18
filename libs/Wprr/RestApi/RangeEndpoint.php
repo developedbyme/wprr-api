@@ -33,61 +33,61 @@
 			
 			wprr_performance_tracker()->start_meassure('API call');
 			
-			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
-			
-			$post_types = $data['post_types'];
-			if($post_types !== 'any') {
-				$post_types = explode(',', $post_types);
-			}
-			else {
-				$post_types = get_post_types(array(), 'names');
-			}
-			
-			$selections = $this->get_filters(explode(',', $data['selections']), 'selection', $data);
-			$encodings = $this->get_filters(explode(',', $data['encodings']), 'encoding', $data);
-			
-			$general_has_permission_filter_name = WPRR_DOMAIN.'/range_has_permission';
-			
-			$has_permission = apply_filters($general_has_permission_filter_name, true, $data);
-			foreach($post_types as $post_type) {
-				$specific_has_permission_filter_name = WPRR_DOMAIN.'/range_has_permission_'.$post_type;
-				$has_permission = apply_filters($specific_has_permission_filter_name, $has_permission, $data);	
-			}
-			
-			if(!$has_permission) {
-				return $this->output_error('Access denied');
-			}
-			
-			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
-			
-			$number_of_items = -1;
-			if(isset($data['maxNumberOfPosts'])) {
-				$number_of_items = (int)$data['maxNumberOfPosts'];
-			}
-			$suppress_filters = 0;
-			if(isset($data['suppressFilters'])) {
-				$suppress_filters = (int)$data['suppressFilters'];
-			}
-			
-			$query_args = array(
-				'post_type' => $post_types,
-				'posts_per_page' => $number_of_items,
-				'fields' => 'ids',
-				'suppress_filters' => $suppress_filters
-			);
-			
-			if(isset($data['startFrom'])) {
-				$query_args['offset'] = (int)$data['startFrom'];
-			}
-			
-			if(isset($data['order'])) {
-				$query_args['order'] = $data['order'];
-			}
-			if(isset($data['orderby'])) {
-				$query_args['orderby'] = $data['orderby'];
-			}
-			
 			try {
+				do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
+			
+				$post_types = $data['post_types'];
+				if($post_types !== 'any') {
+					$post_types = explode(',', $post_types);
+				}
+				else {
+					$post_types = get_post_types(array(), 'names');
+				}
+			
+				$selections = $this->get_filters(explode(',', $data['selections']), 'selection', $data);
+				$encodings = $this->get_filters(explode(',', $data['encodings']), 'encoding', $data);
+			
+				$general_has_permission_filter_name = WPRR_DOMAIN.'/range_has_permission';
+			
+				$has_permission = apply_filters($general_has_permission_filter_name, true, $data);
+				foreach($post_types as $post_type) {
+					$specific_has_permission_filter_name = WPRR_DOMAIN.'/range_has_permission_'.$post_type;
+					$has_permission = apply_filters($specific_has_permission_filter_name, $has_permission, $data);	
+				}
+			
+				if(!$has_permission) {
+					return $this->output_error('Access denied');
+				}
+			
+				do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
+			
+				$number_of_items = -1;
+				if(isset($data['maxNumberOfPosts'])) {
+					$number_of_items = (int)$data['maxNumberOfPosts'];
+				}
+				$suppress_filters = 0;
+				if(isset($data['suppressFilters'])) {
+					$suppress_filters = (int)$data['suppressFilters'];
+				}
+			
+				$query_args = array(
+					'post_type' => $post_types,
+					'posts_per_page' => $number_of_items,
+					'fields' => 'ids',
+					'suppress_filters' => $suppress_filters
+				);
+			
+				if(isset($data['startFrom'])) {
+					$query_args['offset'] = (int)$data['startFrom'];
+				}
+			
+				if(isset($data['order'])) {
+					$query_args['order'] = $data['order'];
+				}
+				if(isset($data['orderby'])) {
+					$query_args['orderby'] = $data['orderby'];
+				}
+				
 				foreach($selections as $selection) {
 					$filter_name = WPRR_DOMAIN.'/range_query/'.$selection;
 				

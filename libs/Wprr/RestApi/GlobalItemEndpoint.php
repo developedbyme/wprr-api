@@ -16,17 +16,17 @@
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\GlobalItemEndpoint::perform_call<br />");
 			
-			$filter_name = WPRR_DOMAIN.'/global-item/'.$data['item'];
-			
-			if(!has_filter($filter_name)) {
-				return $this->output_error('No global item '.$data['item']);
-			}
-			
-			$return_array = array();
-			
-			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
-			
 			try {
+				$filter_name = WPRR_DOMAIN.'/global-item/'.$data['item'];
+			
+				if(!has_filter($filter_name)) {
+					return $this->output_error('No global item '.$data['item']);
+				}
+			
+				$return_array = array();
+			
+				do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
+				
 				$return_object = apply_filters($filter_name, array(), $data['item'], $data);
 			}
 			catch(\Exception $exception) {

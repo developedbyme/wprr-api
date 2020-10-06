@@ -203,8 +203,7 @@
 			//echo("\Wprr\RangeHooks::filter_query_drafts<br />");
 			
 			if(!current_user_can('edit_others_posts')) {
-				$query_args['post__in'] = array(0);
-				return $query_args;
+				throw(new \Exception("User not permitted to read drafts"));
 			}
 			
 			if(!isset($query_args['post_status'])) {
@@ -221,8 +220,7 @@
 			//echo("\Wprr\RangeHooks::filter_query_onlyDrafts<br />");
 			
 			if(!current_user_can('edit_others_posts')) {
-				$query_args['post__in'] = array(0);
-				return $query_args;
+				throw(new \Exception("User not permitted to read drafts"));
 			}
 			
 			$query_args['post_status'] = array();

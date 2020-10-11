@@ -169,7 +169,7 @@
 			$ids = explode(',', $data['ids']);
 			foreach($ids as $id) {
 				if($sitepress) {
-					$id = apply_filters('wpml_object_id', $id, $query_args['post_type'], true, $sitepress->get_current_language());
+					$id = apply_filters('wpml_object_id', $id, 'post', true, $sitepress->get_current_language());
 				}
 				$translated_ids[] = $id;
 			}

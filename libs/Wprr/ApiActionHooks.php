@@ -13,6 +13,7 @@
 			//echo("\Wprr\ApiActionHooks::register<br />");
 
 			add_action('wprr/api_action/woocommerce/add-to-cart', array($this, 'hook_woocommerce_add_to_cart'), 10, 2);
+			add_action('wprr/api_action/woocommerce/add-to-cart-with-multiple-items', array($this, 'hook_woocommerce_add_multiple_items_to_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/remove-from-cart', array($this, 'hook_woocommerce_remove_from_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/apply-dicount-code', array($this, 'hook_woocommerce_apply_discount_code'), 10, 2);
 			add_action('wprr/api_action/woocommerce/apply-discount-code', array($this, 'hook_woocommerce_apply_discount_code'), 10, 2);
@@ -21,6 +22,8 @@
 			
 			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_add_to_cart'), 11, 2);
+			add_action('wprr/api_action/woocommerce/set-cart-with-multiple-items', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
+			add_action('wprr/api_action/woocommerce/set-cart-with-multiple-items', array($this, 'hook_woocommerce_add_multiple_items_to_cart'), 11, 2);
 			add_action('wprr/api_action/woocommerce/customer/set-billing-details', array($this, 'hook_woocommerce_customer_set_billing_details'), 10, 2);
 			
 			add_action('wprr/api_action/woocommerce/subscriptions/start-subscription', array($this, 'hook_woocommerce_subscriptions_start_subscription'), 10, 2);
@@ -33,12 +36,10 @@
 			
 			add_action('wprr/api_action/wprr/save-initial-load-cache', array($this, 'hook_wprr_save_initial_load_cache'), 10, 2);
 		}
-
-		public function hook_woocommerce_add_to_cart($data, &$response_data) {
-			//echo("\Wprr\ApiActionHooks::hook_woocommerce_add_to_cart<br />");
-			
-			$this->ensure_wc_has_cart();
-			WC()->cart->set_session();
+		
+		public function add_item_to_cart($data) {
+			//echo("add_item_to_cart");
+			//var_dump($data);
 			
 			$product_id = $data['id'];
 			$quantity = isset($data['quantity']) ? (int)$data['quantity'] : 1;
@@ -51,7 +52,38 @@
 			
 			$add_to_cart = WC()->cart->add_to_cart($product_id, $quantity, $variation_id, $variation_data, $item_data);
 			
-			$response_data['addedToCart'] = $add_to_cart;
+			return $add_to_cart;
+		}
+
+		public function hook_woocommerce_add_to_cart($data, &$response_data) {
+			//echo("\Wprr\ApiActionHooks::hook_woocommerce_add_to_cart<br />");
+			
+			$this->ensure_wc_has_cart();
+			WC()->cart->set_session();
+			
+			$response_data['addedToCart'] = $this->add_item_to_cart($data);
+		}
+		
+		public function hook_woocommerce_add_multiple_items_to_cart($data, &$response_data) {
+			//echo("\Wprr\ApiActionHooks::hook_woocommerce_add_multiple_items_to_cart<br />");
+			
+			$this->ensure_wc_has_cart();
+			WC()->cart->set_session();
+			
+			$return_data = array();
+			
+			foreach($data['items'] as $item) {
+				$return_data[] = $this->add_item_to_cart($item);
+			}
+			
+			if(isset($data['sessionVariables'])) {
+				foreach($data['sessionVariables'] as $key => $value) {
+					WC()->session->set($key, $value);
+				}
+			}
+			
+			
+			$response_data['addedToCart'] = $return_data;
 		}
 		
 		public function hook_woocommerce_remove_from_cart($data, &$response_data) {

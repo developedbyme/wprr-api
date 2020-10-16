@@ -80,11 +80,14 @@
 			$items = $cart->get_cart();
 			foreach($items as $key => $cart_item) {
 				
+				$product = $cart_item['data'];
+				
 				$encoded_item = array(
 					'key' => $key,
 					'quantity' => $cart_item['quantity'],
 					'product' => mrouter_encode_post_link($cart_item['product_id']),
-					'total' => $cart_item['line_total']
+					'total' => $cart_item['line_total'],
+					'regularPrice' => (float)$product->get_regular_price('raw')
 				);
 				
 				$encoded_item = apply_filters(WPRR_DOMAIN.'/global-item/woocommerce/cart/meta', $encoded_item, $key, $cart_item);

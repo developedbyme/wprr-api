@@ -200,6 +200,42 @@
 		return wprr_get_encoder()->encode_user($user);
 	}
 	
+	function wprr_encode_range_item($type, $encoded_object, $id, $request_data = null) {
+		$encoded_object = apply_filters('wprr/range_encoding/'.$type, $encoded_object, $id, $request_data);
+		
+		return $encoded_object;
+	}
+	
+	function wprr_encode_range_item_from_id($id, $types, $request_data = null) {
+		$types = explode(',', $types);
+		
+		$encoded_object = array('id' => $id);
+		
+		foreach($types as $type) {
+			$encoded_object = wprr_encode_range_item($type, $encoded_object, $id, $request_data);
+		}
+		
+		return $encoded_object;
+	}
+	
+	function wprr_encode_range_items_from_ids($ids, $types, $request_data = null) {
+		$return_array = array();
+		
+		$types = explode(',', $types);
+		
+		foreach($ids as $id) {
+			$encoded_object = array('id' => $id);
+			
+			foreach($types as $type) {
+				$encoded_object = wprr_encode_range_item($type, $encoded_object, $id, $request_data);
+			}
+			
+			$return_array[] = $encoded_object;
+		}
+		
+		return $return_array;
+	}
+	
 	function mrouter_encode_all_taxonomies() {
 		
 		$return_object = array();

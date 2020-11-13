@@ -137,6 +137,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/product', array($this, 'filter_encode_product'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/user_encoding/default', array($this, 'filter_encode_user_default'), 10, 3);
 		}
 		
 		public function filter_query_standard($query_args, $data) {
@@ -819,6 +820,15 @@
 			$return_object = $encoder->encode_user_with_private_data(get_user_by('id', $user_id));
 			$return_object['isPayingCustomer'] = $current_data['is_paying_customer'];
 			$return_object['contactDetails'] = array('billing' => $current_data['billing'], 'shipping' => $current_data['shipping']);
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_user_default($return_object, $user_id, $data) {
+			
+			$encoder = wprr_get_encoder();
+			
+			$return_object = $encoder->encode_user_with_private_data(get_user_by('id', $user_id));
 			
 			return $return_object;
 		}

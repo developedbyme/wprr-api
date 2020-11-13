@@ -36,7 +36,7 @@
 			
 			$general_has_permission_filter_name = WPRR_DOMAIN.'/has_permission_for_users';
 			
-			$has_permission = apply_filters($general_has_permission_filter_name, false, $data);
+			$has_permission = apply_filters($general_has_permission_filter_name, current_user_can('list_users'), $data);
 			
 			if(!$has_permission) {
 				return $this->output_error('Access denied');

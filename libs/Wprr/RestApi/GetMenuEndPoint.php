@@ -49,27 +49,37 @@
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\GetMenuEndPoint::perform_call<br />");
 			
+			wprr_performance_tracker()->start_meassure('GetMenuEndPoint perform_call');
+			
 			$return_array = array();
 			
 			do_action(M_ROUTER_DATA_DOMAIN.'/prepare_api_request', $data);
 			
 			// Get the menu data from WP
 			$menu_name = sanitize_text_field( $data["location"] );
+			wprr_performance_tracker()->start_meassure('GetMenuEndPoint get_nav_menu_locations');
 			$locations = get_nav_menu_locations();
+			wprr_performance_tracker()->stop_meassure('GetMenuEndPoint get_nav_menu_locations');
 			
 			if(!isset($locations[$menu_name])) {
 				return $this->output_error("No menu for that location");
 			}
 			
+			wprr_performance_tracker()->start_meassure('GetMenuEndPoint wp_get_nav_menu_items');
 			$menu_id = $locations[$menu_name];
 			$menu_items = wp_get_nav_menu_items($menu_id);
+			wprr_performance_tracker()->stop_meassure('GetMenuEndPoint wp_get_nav_menu_items');
 			
+			$return_array = array();
 			if($menu_items) {
+				wprr_performance_tracker()->start_meassure('GetMenuEndPoint encode');
 				$return_array = $this->encode_children($menu_items);
-				return $this->output_success($return_array);
+				wprr_performance_tracker()->stop_meassure('GetMenuEndPoint encode');
 			}
 			
-			return $this->output_success(array());
+			wprr_performance_tracker()->stop_meassure('GetMenuEndPoint perform_call');
+			
+			return $this->output_success($return_array);
 		}
 		
 		public static function test_import() {

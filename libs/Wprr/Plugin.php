@@ -396,6 +396,8 @@
 		
 		public function hook_prepare_api_request($data) {
 			
+			wprr_performance_tracker()->start_meassure('Plugin(wprr-api) hook_prepare_api_request');
+			
 			global $sitepress;
 			
 			if(isset($sitepress)) {
@@ -425,6 +427,8 @@
 			if(isset($data["asUser"]) && current_user_can('administrator')) {
 				wp_set_current_user($data["asUser"]);
 			}
+			
+			wprr_performance_tracker()->stop_meassure('Plugin(wprr-api) hook_prepare_api_request');
 		}
 
 		public function hook_admin_enqueue_scripts() {

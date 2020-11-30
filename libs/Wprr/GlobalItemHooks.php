@@ -66,12 +66,6 @@
 			
 			$encoded_items = array();
 			
-			global $woocommerce_wpml;
-			if($woocommerce_wpml && isset($woocommerce_wpml->multi_currency)) {
-				//MENOTE: get_client_currency is called before prepare_api_request and the currency is then cached, this will reset the cache and get the correct value the next time get_client_currency is called (within get_woocommerce_currency).
-				$woocommerce_wpml->multi_currency->set_client_currency(null);
-			}
-			
 			$return_object['coupons'] = $cart->get_applied_coupons();
 			$return_object['totals'] = $cart->get_totals();
 			$return_object['currency'] = get_woocommerce_currency();
@@ -103,6 +97,16 @@
 			//echo("\Wprr\GlobalItemHooks::filter_woocommerce_cart<br />");
 			
 			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
+			//MENOTE: $woocommerce_wpml->multi_currency->set_client_currency requires a cart and ensure_wc_has_cart needs to have set_client_currency set, that is why it ensures twice
+			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
+			
+			global $woocommerce_wpml;
+			if($woocommerce_wpml && isset($woocommerce_wpml->multi_currency)) {
+				//MENOTE: get_client_currency is called before prepare_api_request and the currency is then cached, this will reset the cache and get the correct value the next time get_client_currency is called (within get_woocommerce_currency).
+				$woocommerce_wpml->multi_currency->set_client_currency(null);
+			}
+			
+			//MENOTE: $woocommerce_wpml->multi_currency->set_client_currency requires a cart and ensure_wc_has_cart needs to have set_client_currency set, that is why it ensures twice
 			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 			
 			$cart = WC()->cart;

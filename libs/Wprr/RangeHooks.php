@@ -744,6 +744,11 @@
 			//echo("\Wprr\RangeHooks::filter_encode_product<br />");
 			
 			$product = wc_get_product($post_id);
+			
+			if(!$product) {
+				return $return_object;
+			}
+			
 			$return_object['price'] = $product->get_price('raw');
 			$return_object['regularPrice'] = $product->get_regular_price('raw');
 			$return_object['currency'] = get_woocommerce_currency();

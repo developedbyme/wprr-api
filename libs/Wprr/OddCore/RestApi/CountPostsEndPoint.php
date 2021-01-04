@@ -10,6 +10,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\CountPostsEndPoint::__construct<br />");
 			
+			parent::__construct();
 		}
 		
 		public function perform_call($data) {

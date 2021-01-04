@@ -10,7 +10,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\UsersEndpoint::__construct<br />");
 			
-			
+			parent::__construct();
 		}
 		
 		protected function get_filters($names, $data) {

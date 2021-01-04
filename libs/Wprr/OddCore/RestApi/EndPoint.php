@@ -19,7 +19,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\EndPoint::__construct<br />");
 			
-			
+			$this->add_headers(array('Cache-Control' => 'no-cache'));
 		}
 		
 		public function add_log($log_text) {
@@ -28,6 +28,7 @@
 		}
 		
 		public function add_headers($headers) {
+			//echo("\OddCore\RestApi\EndPoint::add_headers<br />");
 			
 			foreach($headers as $key => $value) {
 				$this->_headers[$key] = $value;

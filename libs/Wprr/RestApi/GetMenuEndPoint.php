@@ -10,7 +10,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\GetMenuEndPoint::__construct<br />");
 			
-			
+			parent::__construct();
 		}
 		
 		protected function encode_menu_item($menu_item, $all_items) {

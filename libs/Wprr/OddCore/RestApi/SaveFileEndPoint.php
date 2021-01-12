@@ -12,7 +12,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\SaveFileEndPoint::__construct<br />");
 			
-			
+			parent::__construct();
 		}
 		
 		public function set_base_path($path) {

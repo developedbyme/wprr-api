@@ -10,7 +10,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\RemoveTermFromPostEndPoint::__construct<br />");
 			
-			
+			parent::__construct();
 		}
 		
 		public function perform_call($data) {

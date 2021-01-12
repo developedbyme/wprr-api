@@ -10,7 +10,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\RangeItemEndpoint::__construct<br />");
 			
-			
+			parent::__construct();
 		}
 		
 		protected function get_filters($names, $type, $data) {

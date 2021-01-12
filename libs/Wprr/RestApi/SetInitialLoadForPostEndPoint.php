@@ -9,6 +9,8 @@
 
 		function __construct() {
 			// echo("\OddCore\RestApi\SetInitialLoadForPostEndPoint::__construct<br />");
+			
+			parent::__construct();
 		}
 		
 		protected function create_folders_and_save_file($full_path, $content) {

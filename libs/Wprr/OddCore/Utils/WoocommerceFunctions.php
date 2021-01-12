@@ -11,6 +11,7 @@
 			include_once WC_ABSPATH . 'includes/wc-notice-functions.php';
 			wc_load_cart();
 			WC()->cart->get_cart();
+			WC()->cart->calculate_totals();
 		}
 		
 		public static function test_import() {

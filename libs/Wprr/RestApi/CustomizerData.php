@@ -10,7 +10,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\CustomizerData::__construct<br />");
 
-
+			parent::__construct();
 		}
 
 		public function perform_call($data) {

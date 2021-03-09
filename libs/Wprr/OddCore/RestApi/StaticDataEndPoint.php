@@ -11,6 +11,7 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\StaticDataEndPoint::__construct<br />");
 			
+			parent::__construct();
 		}
 		
 		public function set_data($data) {

@@ -9,6 +9,8 @@
 
 		function __construct() {
 			// echo("\OddCore\RestApi\SetMetadataEndpoint::__construct<br />");
+			
+			parent::__construct();
 		}
 
 		public function perform_call($data) {

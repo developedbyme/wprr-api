@@ -11,6 +11,8 @@
 		
 		function __construct() {
 			// echo("\Wprr\RestApi\Admin\ChangePostEndpoint::__construct<br />");
+			
+			parent::__construct();
 		}
 		
 		public function add_return_data($field, $data) {

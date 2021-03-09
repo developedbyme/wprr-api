@@ -752,8 +752,8 @@
 			$return_object['price'] = $product->get_price('raw');
 			$return_object['regularPrice'] = $product->get_regular_price('raw');
 			$return_object['currency'] = get_woocommerce_currency();
-			$return_object['description'] = $product->get_description();
-			$return_object['shortDescription'] = $product->get_short_description();
+			$return_object['description'] = apply_filters('the_content', $product->get_description());
+			$return_object['shortDescription'] = apply_filters('the_content', $product->get_short_description());
 			
 			global $woocommerce_wpml;
 			if(isset($woocommerce_wpml) && $woocommerce_wpml->multi_currency) {

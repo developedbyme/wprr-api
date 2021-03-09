@@ -12,6 +12,8 @@
 		function __construct() {
 			//echo("\OddCore\RestApi\GetTermsEndPoint::__construct<br />");
 			
+			parent::__construct();
+			
 			$this->set_arguments(array("post_type" => "post", "post_status" => "publish"));
 		}
 		

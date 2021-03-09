@@ -22,8 +22,12 @@
 			
 			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_add_to_cart'), 11, 2);
+			add_action('wprr/api_action/woocommerce/set-cart', array($this, 'hook_woocommerce_apply_discount_code_if_set'), 11, 2);
+			
 			add_action('wprr/api_action/woocommerce/set-cart-with-multiple-items', array($this, 'hook_woocommerce_empty_cart'), 10, 2);
 			add_action('wprr/api_action/woocommerce/set-cart-with-multiple-items', array($this, 'hook_woocommerce_add_multiple_items_to_cart'), 11, 2);
+			add_action('wprr/api_action/woocommerce/set-cart-with-multiple-items', array($this, 'hook_woocommerce_apply_discount_code_if_set'), 11, 2);
+			
 			add_action('wprr/api_action/woocommerce/customer/set-billing-details', array($this, 'hook_woocommerce_customer_set_billing_details'), 10, 2);
 			
 			add_action('wprr/api_action/woocommerce/subscriptions/start-subscription', array($this, 'hook_woocommerce_subscriptions_start_subscription'), 10, 2);
@@ -97,6 +101,12 @@
 			$removed = WC()->cart->remove_cart_item($cart_item_key);
 			
 			$response_data['removed'] = $removed;
+		}
+		
+		public function hook_woocommerce_apply_discount_code_if_set($data, &$response_data) {
+			if(isset($data['code'])) {
+				$this->hook_woocommerce_apply_discount_code($data, $response_data);
+			}
 		}
 		
 		public function hook_woocommerce_apply_discount_code($data, &$response_data) {

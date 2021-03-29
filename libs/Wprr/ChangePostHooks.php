@@ -30,8 +30,8 @@
 			$this->register_hook_for_type('addTerms', 'hook_add_terms');
 			$this->register_hook_for_type('removeTerms', 'hook_remove_terms');
 			$this->register_hook_for_type('meta', 'hook_set_meta');
+			$this->register_hook_for_type('removeMeta', 'hook_removeMeta');
 			$this->register_hook_for_type('trash', 'hook_trash');
-			//METODO: remove meta
 			$this->register_hook_for_type('acf', 'hook_set_acf');
 			$this->register_hook_for_type('wpml/createDuplicates', 'hook_wpml_create_duplicates');
 			$this->register_hook_for_type('wpml/createCopies', 'hook_wpml_create_copies');
@@ -170,6 +170,15 @@
 			
 			$value = $data['value'];
 			update_post_meta($post_id, $data['field'], $value);
+		}
+		
+		public function hook_removeMeta($data, $post_id, $logger) {
+			//echo("\Wprr\ChangePostHooks::hook_removeMeta<br />");
+			
+			if($data['field']) {
+				delete_post_meta($post_id, $data['field']);
+			}
+			
 		}
 		
 		public function hook_set_acf($data, $post_id, $logger) {

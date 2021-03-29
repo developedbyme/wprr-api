@@ -182,6 +182,7 @@
 			$start_time_part = microtime(true);
 			
 			$add_ons = apply_filters('m_router_data/encode_post_add_ons', array(), $post_id, $post, $this);
+			$add_ons = apply_filters('wprr/encode_post_add_ons', $add_ons, $post_id, $post, $this);
 			
 			$current_post_data["addOns"] = $add_ons;
 			

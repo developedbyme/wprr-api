@@ -522,7 +522,7 @@
 			$return_object['currency'] = $order->get_currency();
 			$return_object['date'] = $order->get_date_created()->date('Y-m-d H:i:s');
 			$return_object['user'] = wprr_encode_user($order->get_user());
-			$return_object['coupons'] = $order->get_used_coupons();
+			$return_object['coupons'] = $order->get_coupon_codes();
 			$return_object['totals'] = array(
 				'total' => $order->get_total(),
 				'discount_total' => $order->get_discount_total()

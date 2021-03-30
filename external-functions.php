@@ -528,4 +528,20 @@
 		
 		return $encoded_data;
 	}
+	
+	function wprr_encode_item_as_by_id($encoding, $post_id) {
+		$current_data = array('id' => $post_id);
+		return wprr_encode_item_as($encoding, $current_data, $post_id);
+	}
+	
+	function wprr_encode_items_as_by_id($encoding, $post_ids) {
+		
+		$return_array = array();
+		
+		foreach($post_ids as $post_id) {
+			$return_array[] = wprr_encode_item_as_by_id($encoding, $post_id);
+		}
+		
+		return $return_array;
+	}
 ?>

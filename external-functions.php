@@ -522,9 +522,14 @@
 	}
 	
 	function wprr_encode_item_as($encoding, $encoded_data, $post_id) {
-		$filter_name = WPRR_DOMAIN.'/range_encoding/'.$encoding;
 		
-		$encoded_data = apply_filters($filter_name, $encoded_data, $post_id, null);
+		$encodings = explode(',', $encoding);
+		
+		foreach($encodings as $current_encoding) {
+			$filter_name = WPRR_DOMAIN.'/range_encoding/'.$current_encoding;
+		
+			$encoded_data = apply_filters($filter_name, $encoded_data, $post_id, null);
+		}
 		
 		return $encoded_data;
 	}

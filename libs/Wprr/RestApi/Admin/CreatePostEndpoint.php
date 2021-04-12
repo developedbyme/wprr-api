@@ -51,6 +51,10 @@
 			
 			$title = sanitize_text_field($data['title']);
 			
+			if(!has_filter('wprr/admin/create_post/insert/'.$creation_method)) {
+				return $this->output_error('No creation type '.$creation_method);
+			}
+			
 			try {
 				$post_id = apply_filters('wprr/admin/create_post/insert/'.$creation_method, 0, $title, $post_type, $data_type, $data);
 			}

@@ -516,7 +516,14 @@
 		public function filter_encode_order($return_object, $post_id) {
 			//echo("\Wprr\RangeHooks::filter_encode_order<br />");
 			
-			$order = new \WC_Order($post_id);
+			try {
+				$order = new \WC_Order($post_id);
+			}
+			catch(\exception $exception) {
+				$return_object['status'] = "invalid";
+				
+				return $return_object;
+			}
 			
 			$return_object['status'] = $order->get_status();
 			$return_object['currency'] = $order->get_currency();

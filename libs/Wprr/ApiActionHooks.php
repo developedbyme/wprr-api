@@ -258,9 +258,26 @@
 					$subscription->$set_function_name($order->$get_function_name());
 				}
 				
-				//METODO: copy over shipping
+				$fields_map = array('first_name', 'last_name', 'company', 'address_1', 'address_2', 'postcode', 'city', 'country');
 				
-				//METODO: copy over discount codes
+				foreach($fields_map as  $value) {
+					$set_function_name = 'set_shipping_'.$value;
+					$get_function_name = 'get_shipping_'.$value;
+					$subscription->$set_function_name($order->$get_function_name());
+				}
+				
+				$coupon_items   = $order->get_items( 'coupon' );
+				
+				foreach($coupon_items as $coupon_item) {
+					$coupon = new \WC_Coupon( $coupon_item->get_name() );
+					if($coupon->get_id() > 0) {
+						$coupon_type = $coupon->get_discount_type();
+						if(in_array($coupon_type, array('recurring_percent', 'recurring_fee'))) {
+							$subscription->apply_coupon($coupon);
+						}
+					}
+				}
+				
 				
 				$subscription->calculate_totals();
 				$subscription->save();

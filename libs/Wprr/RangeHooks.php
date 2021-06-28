@@ -108,6 +108,7 @@
 			add_filter(WPRR_DOMAIN.'/range_query/allSubscriptions', array($this, 'filter_query_allSubscriptions'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/activeSubscriptions', array($this, 'filter_query_activeSubscriptions'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/byProduct', array($this, 'filter_query_byProduct'), 10, 2);
+			add_filter(WPRR_DOMAIN.'/range_query/subscriptionActiveDuring', array($this, 'filter_query_subscriptionActiveDuring'), 10, 2);
 			
 			add_filter(WPRR_DOMAIN.'/range_encoding/id', array($this, 'filter_encode_id'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/standard', array($this, 'filter_encode_standard'), 10, 3);
@@ -134,6 +135,8 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/usersOtherSubscriptions', array($this, 'filter_encode_usersOtherSubscriptions'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/customerName', array($this, 'filter_encode_customerName'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionEnd', array($this, 'filter_encode_subscriptionEnd'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionDuration', array($this, 'filter_encode_subscriptionDuration'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionDates', array($this, 'filter_encode_subscriptionDates'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/product', array($this, 'filter_encode_product'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
@@ -614,6 +617,7 @@
 		}
 		
 		protected function verify_orders_permission() {
+			
 			$this->require_logged_in();
 			$current_user_id = get_current_user_id();
 			
@@ -673,6 +677,19 @@
 			);
 			
 			return $query_args;
+		}
+		
+		public function filter_query_subscriptionActiveDuring($query_args, $data) {
+			$main_query = dbm_new_query($query_args);
+			
+			$statuses = array( 'wc-pending', 'wc-active', 'wc-on-hold', 'wc-pending-cancel', 'wc-cancelled', 'wc-expired' );
+			
+			$active_ids = dbm_new_query('shop_subscription')->set_argument('post_status', $statuses)->add_meta_query('_schedule_start', $data['endDate'], '<', 'DATE')->add_meta_query('_schedule_end', '0', '=')->get_post_ids();
+			$ended_ids = dbm_new_query('shop_subscription')->set_argument('post_status', $statuses)->add_meta_query('_schedule_start', $data['endDate'], '<', 'DATE')->add_meta_query('_schedule_end', $data['startDate'], '>', 'DATE')->get_post_ids();
+			
+			$ids = array_unique(array_merge($active_ids, $ended_ids));
+			
+			return $main_query->include_only($ids)->get_query_args();
 		}
 		
 		public function filter_query_allSubscriptions($query_args, $data) {
@@ -735,6 +752,33 @@
 			$return_object['userId'] = (int)get_post_meta($post_id, '_customer_user', true);
 			$return_object['firstName'] = get_post_meta($post_id, '_billing_first_name', true);
 			$return_object['lastName'] = get_post_meta($post_id, '_billing_last_name', true);
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_subscriptionDates($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_subscriptionDates<br />");
+			
+			$subscription = new \WC_Subscription($post_id);
+			
+			$date_types = array('start', 'trial_end', 'next_payment', 'last_payment', 'end');
+			$encoded_dates = array();
+			foreach($date_types as $date_type) {
+				$encoded_dates[$date_type] = $subscription->get_date($date_type);
+				if($encoded_dates[$date_type] === 0) {
+					$encoded_dates[$date_type] = null;
+				}
+			}
+			$return_object['dates'] = $encoded_dates;
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_subscriptionDuration($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_subscriptionDuration<br />");
+			
+			$return_object['start'] = get_post_meta($post_id, '_schedule_start', true);
+			$return_object['end'] = get_post_meta($post_id, '_schedule_end', true);
 			
 			return $return_object;
 		}

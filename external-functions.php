@@ -549,4 +549,10 @@
 		
 		return $return_array;
 	}
+	
+	function wprr_get_combination_id(...$ids) {
+		natsort($ids);
+		
+		return implode('-', $ids);
+	}
 ?>

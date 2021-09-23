@@ -138,6 +138,7 @@
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionDuration', array($this, 'filter_encode_subscriptionDuration'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/subscriptionDates', array($this, 'filter_encode_subscriptionDates'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/range_encoding/product', array($this, 'filter_encode_product'), 10, 3);
+			add_filter(WPRR_DOMAIN.'/range_encoding/productPrice', array($this, 'filter_encode_productPrice'), 10, 3);
 			
 			add_filter(WPRR_DOMAIN.'/user_encoding/customer', array($this, 'filter_encode_user_customer'), 10, 3);
 			add_filter(WPRR_DOMAIN.'/user_encoding/default', array($this, 'filter_encode_user_default'), 10, 3);
@@ -787,6 +788,15 @@
 			//echo("\Wprr\RangeHooks::filter_encode_subscriptionEnd<br />");
 			
 			$return_object['end'] = get_post_meta($post_id, '_schedule_end', true);
+			
+			return $return_object;
+		}
+		
+		public function filter_encode_productPrice($return_object, $post_id) {
+			//echo("\Wprr\RangeHooks::filter_encode_productPrice<br />");
+			
+			$return_object['price'] = get_post_meta($post_id, '_price', true);
+			$return_object['regularPrice'] = get_post_meta($post_id, '_regular_price', true);
 			
 			return $return_object;
 		}

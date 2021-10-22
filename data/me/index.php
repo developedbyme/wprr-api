@@ -1,0 +1,75 @@
+<?php
+	
+	error_reporting(E_ALL);
+	
+	require_once("../../setup.php");
+	require_once("../settings.php");
+	
+	$cookie_hash = 'wordpress_logged_in_' . md5( SITE_URL );
+	$cookie = $_COOKIE[ $cookie_hash ];
+	
+	if($cookie) {
+		$cookie_parts = explode( '|', $cookie );
+		
+		if(count($cookie_parts) >= 4) {
+			$user_login = $cookie_parts[0];
+			$expiration = 1*$cookie_parts[1];
+			$token = $cookie_parts[2];
+			$hmac = $cookie_parts[3];
+	
+			if($expiration > time()) {
+		
+				$db = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+				mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+		
+				$result = $db->query('SELECT ID, user_pass, user_email, display_name FROM wp_users WHERE user_login = "'.$db->real_escape_string($user_login).'" LIMIT 1');
+		
+				$user_data = $result->fetch_assoc();
+				$user_data['id'] = (int)$user_data['ID'];
+				unset($user_data['ID']);
+				$user_data['user_login'] = $user_login;
+		
+				$pass_frag = substr( $user_data['user_pass'], 8, 4 );
+		
+				$hash_key = $user_login . '|' . $pass_frag . '|' . $expiration . '|' . $token;
+				$key = hash_hmac( 'md5', $hash_key, LOGGED_IN_KEY.LOGGED_IN_SALT );
+		
+				$hash = hash_hmac('sha256', $user_login . '|' . $expiration . '|' . $token, $key );
+		
+				if($hash === $hmac) {
+					$hashed_token = hash( 'sha256', $token );
+			
+					$result = $db->query('SELECT meta_value FROM wp_usermeta WHERE user_id = '.$user_data['id'].' AND meta_key = "session_tokens" LIMIT 1');
+			
+					$session_tokens = unserialize($result->fetch_assoc()['meta_value']);
+					if(isset($session_tokens[$hashed_token])) {
+				
+						$action = 'wp_rest';
+						$i = ceil( time() / ( NONCE_LIFE / 2 ) );
+				
+						$rest_hash = hash_hmac('md5', $i . '|' . $action . '|' . $user_data['id'] . '|' . $token, NONCE_KEY.NONCE_SALT );
+						$rest_nonce = substr($rest_hash, -12, 10 );
+				
+						unset($user_data['user_pass']);
+						$reposonse = array(
+							'data' => array(
+								'user' => $user_data,
+								'restNonce' => $rest_nonce
+							)
+						);
+				
+						header('Content-Type: application/json; charset=utf-8');
+						header('Cache-Control: no-cache, no-store, must-revalidate');
+						header('Pragma: no-cache');
+						header('Expires: 0');
+						
+						echo(json_encode($reposonse));
+						die();
+					}
+				}
+			}
+		}
+	}
+	
+	
+?>

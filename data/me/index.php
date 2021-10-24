@@ -5,6 +5,9 @@
 	require_once("../../setup.php");
 	require_once("../settings.php");
 	
+	global $wprr_data_api;
+	$db = $wprr_data_api->database();
+	
 	$cookie_hash = 'wordpress_logged_in_' . md5( SITE_URL );
 	$cookie = $_COOKIE[ $cookie_hash ];
 	
@@ -19,12 +22,8 @@
 	
 			if($expiration > time()) {
 		
-				$db = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-				mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-		
-				$result = $db->query('SELECT ID, user_pass, user_email, display_name FROM wp_users WHERE user_login = "'.$db->real_escape_string($user_login).'" LIMIT 1');
-		
-				$user_data = $result->fetch_assoc();
+				$user_data = $db->query_first('SELECT ID, user_pass, user_email, display_name FROM wp_users WHERE user_login = "'.$db->escape($user_login).'" LIMIT 1');
+				
 				$user_data['id'] = (int)$user_data['ID'];
 				unset($user_data['ID']);
 				$user_data['user_login'] = $user_login;
@@ -39,9 +38,8 @@
 				if($hash === $hmac) {
 					$hashed_token = hash( 'sha256', $token );
 			
-					$result = $db->query('SELECT meta_value FROM wp_usermeta WHERE user_id = '.$user_data['id'].' AND meta_key = "session_tokens" LIMIT 1');
-			
-					$session_tokens = unserialize($result->fetch_assoc()['meta_value']);
+					$session_tokens = unserialize($db->query_first('SELECT meta_value FROM wp_usermeta WHERE user_id = '.$user_data['id'].' AND meta_key = "session_tokens" LIMIT 1')['meta_value']);
+					
 					if(isset($session_tokens[$hashed_token])) {
 				
 						$action = 'wp_rest';

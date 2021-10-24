@@ -5,27 +5,24 @@
 	require_once("../../setup.php");
 	require_once("../settings.php");
 	
-	$db = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-	mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+	global $wprr_data_api;
+	$db = $wprr_data_api->database();
 
-	$result = $db->query('SELECT term_taxonomy_id as id, term_id, parent FROM wp_term_taxonomy WHERE taxonomy = "dbm_type"');
+	$terms = $db->query('SELECT term_taxonomy_id as id, term_id, parent FROM wp_term_taxonomy WHERE taxonomy = "dbm_type"');
 
-	$terms = $result->fetch_all(MYSQLI_ASSOC);
+	//$terms = $result->fetch_all(MYSQLI_ASSOC);
 	
 	$term_ids = array_map(function($item) {
 		return (int)$item['term_id'];
 	}, $terms);
 	
-	$result = $db->query('SELECT term_id as id, name, slug FROM wp_terms WHERE term_id IN ('.implode(',', $term_ids).')');
-	
-	$term_names = $result->fetch_all(MYSQLI_ASSOC);
+	$term_names = $db->query('SELECT term_id as id, name, slug FROM wp_terms WHERE term_id IN ('.implode(',', $term_ids).')');
 	
 	foreach($term_names as $term) {
 		if($term['slug'] === 'facility') {
 			
 			$query = 'SELECT object_id as id FROM wp_term_relationships WHERE term_taxonomy_id = "'.$term['id'].'"';
-			$result = $db->query($query);
-			$posts = $result->fetch_all(MYSQLI_ASSOC);
+			$posts = $db->query($query);
 			
 			$reposonse = array(
 				'data' => array(

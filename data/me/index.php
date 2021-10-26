@@ -1,8 +1,5 @@
 <?php
-	require_once("../setup-end-point.php");
-	
-	require_once("../../setup.php");
-	require_once("../settings.php");
+	require_once("../setup-endpoint.php");
 	
 	global $wprr_data_api;
 	$user = $wprr_data_api->user();

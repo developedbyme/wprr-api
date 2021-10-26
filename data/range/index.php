@@ -1,5 +1,5 @@
 <?php
-	require_once("../setup-end-point.php");
+	require_once("../setup-endpoint.php");
 	
 	global $wprr_data_api;
 	$db = $wprr_data_api->database();

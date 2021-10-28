@@ -122,11 +122,13 @@
 			
 			$encoded_item = $encoded_data->get_item($id);
 			
-			$encoded_item->data['id'] = $term->get_id();
-			$encoded_item->data['slug'] = $term->get_slug();
-			$encoded_item->data['name'] = $term->get_name();
-			$encoded_item->data['path'] = $term->get_path();
-			$encoded_data->add_object_to_range($id, 'taxonomyTerm');
+			if(!$encoded_data->has_encoded_object($id, 'taxonomyTerm')) {
+				$encoded_item->data['id'] = $term->get_id();
+				$encoded_item->data['slug'] = $term->get_slug();
+				$encoded_item->data['name'] = $term->get_name();
+				$encoded_item->data['path'] = $term->get_path();
+				$encoded_data->add_object_to_range($id, 'taxonomyTerm');
+			}
 			
 			return $id;
 		}

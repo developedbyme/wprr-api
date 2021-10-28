@@ -7,6 +7,8 @@
 		protected $_database = null;
 		protected $_user = null;
 		protected $_output = null;
+		protected $_range = null;
+		protected $_wordpress = null;
 
 		function __construct() {
 			
@@ -34,6 +36,22 @@
 			}
 			
 			return $this->_output;
+		}
+		
+		public function range() {
+			if(!$this->_range) {
+				$this->_range = new \Wprr\DataApi\Data\Range\RangeController();
+			}
+			
+			return $this->_range;
+		}
+		
+		public function wordpress() {
+			if(!$this->_wordpress) {
+				$this->_wordpress = new \Wprr\DataApi\WordPress\WordPress();
+			}
+			
+			return $this->_wordpress;
 		}
 
 		public static function test_import() {

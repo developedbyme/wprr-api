@@ -5,6 +5,7 @@
 	class WordPress {
 		
 		protected $_taxonomies = array();
+		protected $_posts = array();
 
 		function __construct() {
 			
@@ -18,6 +19,16 @@
 			}
 			
 			return $this->_taxonomies[$name];
+		}
+		
+		public function get_post($id) {
+			if(!isset($this->_posts[$id])) {
+				$new_post = new \Wprr\DataApi\WordPress\Post();
+				$new_post->setup($id);
+				$this->_posts[$id] = $new_post;
+			}
+			
+			return $this->_posts[$id];
 		}
 
 		public static function test_import() {

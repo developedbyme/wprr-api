@@ -11,7 +11,7 @@
 	$selections = $_GET['select'];
 	$ids = $wprr_data_api->range()->select($selections, $data);
 	
-	$encodings = $_GET['encodings'];
+	$encodings = $_GET['encode'];
 	$result = $wprr_data_api->range()->encode_range($ids, $encodings, $data);
 
 	$wprr_data_api->output()->output_api_repsponse($result);

@@ -38,20 +38,21 @@
 		
 		public function prepare_item($id) {
 			if(!isset($this->_encoded_items[$id])) {
-				$this->_encoded_items[$id] = array('id' => $id);
+				$this->_encoded_items[$id] = \Wprr\DataApi\Data\Range\EncodedData\EncodedItem::create($id);
 			}
 			
 			return $this->_encoded_items[$id];
 		}
 		
 		public function get_item($id) {
+			$this->prepare_item($id);
 			return $this->_encoded_items[$id];
 		}
 		
 		public function get_result() {
 			$return_data = array();
 			$return_data['encodings'] = $this->_encoded_ranges;
-			$return_data['items'] = $this->_encoded_items;
+			$return_data['items'] = array_map(function($item) {return $item->data;}, $this->_encoded_items);
 			
 			return $return_data;
 		}

@@ -85,7 +85,7 @@
 			
 			$encoded_data = $this->get_encoded_data();
 			$return_data = $encoded_data->get_result();
-			$return_data['mainRange'] = $ids;
+			$return_data['ids'] = $ids;
 			
 			return $return_data; 
 		}
@@ -105,6 +105,12 @@
 			}
 			
 			return $id;
+		}
+		
+		public function get_encoded_object($id) {
+			$encoded_data = $this->get_encoded_data();
+			
+			return $encoded_data->get_item($id);
 		}
 
 		public static function test_import() {

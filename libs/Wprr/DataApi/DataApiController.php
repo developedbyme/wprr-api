@@ -16,7 +16,7 @@
 		
 		public function database() {
 			if(!$this->_database) {
-				$this->_database = new \Wprr\DataApi\DataBase();
+				$this->_database = new \Wprr\DataApi\Database();
 			}
 			
 			return $this->_database;

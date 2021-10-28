@@ -158,10 +158,10 @@
 			$parent_path = '';
 			$parent = $this->get_parent();
 			if($parent) {
-				$parent_path = $parent->get_link().'/';
+				$parent_path = $parent->get_link();
 			}
 			
-			return $parent_path.$this->get_slug();
+			return $parent_path.$this->get_slug().'/';
 		}
 		
 		public function get_slug() {

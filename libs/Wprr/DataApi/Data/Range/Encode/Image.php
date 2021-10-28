@@ -19,10 +19,14 @@
 			
 			$metadata = $post->get_meta('_wp_attachment_metadata');
 			
+			$path_parts = explode("/", $metadata['file']);
+			array_pop($path_parts);
+			$folder = implode("/", $path_parts);
+			
 			$encoded_sizes = array();
 			$encoded_sizes['full'] = array('url' => UPLOAD_URL.'/'.$metadata['file'], 'width' => $metadata['width'], 'height' => $metadata['height']);
 			foreach($metadata['sizes'] as $name => $size_data) {
-				$encoded_sizes[$name] = array('url' => UPLOAD_URL.'/'.$size_data['file'], 'width' => $size_data['width'], 'height' => $size_data['height']);
+				$encoded_sizes[$name] = array('url' => UPLOAD_URL.'/'.$folder.'/'.$size_data['file'], 'width' => $size_data['width'], 'height' => $size_data['height']);
 			}
 			$encoded_data->data['sizes'] = $encoded_sizes;
 			$encoded_data->data['alt'] = $post->get_meta('_wp_attachment_image_alt');

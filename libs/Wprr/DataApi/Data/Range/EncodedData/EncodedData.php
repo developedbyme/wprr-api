@@ -26,7 +26,7 @@
 		public function has_encoded_object($id, $type) {
 			$range = &$this->get_encoded_range($type);
 			
-			return in_array($range, $id);
+			return in_array($id, $range);
 		}
 		
 		public function add_object_to_range($id, $type) {

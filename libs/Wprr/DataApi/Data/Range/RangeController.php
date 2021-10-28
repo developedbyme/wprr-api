@@ -91,6 +91,8 @@
 		}
 		
 		public function encode_object_as($id, $encoding_type) {
+			//var_dump("encode_object_as");
+			
 			if(!isset($this->_encoding[$encoding_type])) {
 				//METODO: throw
 			}
@@ -111,6 +113,31 @@
 			$encoded_data = $this->get_encoded_data();
 			
 			return $encoded_data->get_item($id);
+		}
+		
+		public function encode_term($term) {
+			$encoded_data = $this->get_encoded_data();
+			
+			$id = $term->get_identifier();
+			
+			$encoded_item = $encoded_data->get_item($id);
+			
+			$encoded_item->data['id'] = $term->get_id();
+			$encoded_item->data['slug'] = $term->get_slug();
+			$encoded_item->data['name'] = $term->get_name();
+			$encoded_item->data['path'] = $term->get_path();
+			$encoded_data->add_object_to_range($id, 'taxonomyTerm');
+			
+			return $id;
+		}
+		
+		public function encode_terms($terms) {
+			$identifiers = array();
+			foreach($terms as $term) {
+				$identifiers[] = $this->encode_term($term);
+			}
+			
+			return $identifiers;
 		}
 
 		public static function test_import() {

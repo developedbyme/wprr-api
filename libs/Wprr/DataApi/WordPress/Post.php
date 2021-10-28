@@ -21,6 +21,10 @@
 			return $this;
 		}
 		
+		public function get_id() {
+			return $this->_id;
+		}
+		
 		public function get_database_data() {
 			if(!$this->_database_data) {
 				global $wprr_data_api;
@@ -72,7 +76,16 @@
 				
 				foreach($meta_data as $meta_data_row) {
 					if($meta_data_row['meta_key'] === $name) {
-						$selected_meta[] = $meta_data_row['meta_value'];
+						$value = $meta_data_row['meta_value'];
+						
+						if($value[1] === ":") {
+							$unserialize_value = unserialize($value);
+							if($unserialize_value !== false) {
+								$value = $unserialize_value;
+							}
+						}
+						
+						$selected_meta[] = $value;
 					}
 				}
 				
@@ -100,6 +113,61 @@
 			}
 			
 			return $this->_taxonomy_terms[$taxonomy_name];
+		}
+		
+		public function get_active_taxonomy_names() {
+			global $wprr_data_api;
+			
+			$terms_data = $this->get_database_taxonomy_terms();
+			$taxonomy_names = array();
+			
+			foreach($terms_data as $terms_data_row) {
+				$current_name = $terms_data_row['taxonomy'];
+				if(!in_array($current_name, $taxonomy_names)) {
+					$taxonomy_names[] = $current_name;
+				}
+			}
+			
+			return $taxonomy_names;
+		}
+		
+		public function get_featured_image() {
+			$image_id = (int)$this->get_meta('_thumbnail_id');
+			if(!$image_id) {
+				return null;
+			}
+			
+			global $wprr_data_api;
+			return $wprr_data_api->wordpress()->get_post($image_id);
+		}
+		
+		public function get_parent() {
+			$data = $this->get_database_data();
+			$parent_id = (int)$data['post_parent'];
+			
+			if(!$parent_id) {
+				return null;
+			}
+			
+			global $wprr_data_api;
+			return $wprr_data_api->wordpress()->get_post($parent_id);
+		}
+		
+		public function get_link() {
+			
+			$parent_path = '';
+			$parent = $this->get_parent();
+			if($parent) {
+				$parent_path = $parent->get_link().'/';
+			}
+			
+			return $parent_path.$this->get_slug();
+		}
+		
+		public function get_slug() {
+			$data = $this->get_database_data();
+			
+			return $data['post_name'];
 		}
 
 		public static function test_import() {

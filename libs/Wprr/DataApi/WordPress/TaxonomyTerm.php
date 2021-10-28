@@ -21,12 +21,24 @@
 			return $this;
 		}
 		
+		public function get_id() {
+			return $this->_data['id'];
+		}
+		
 		public function get_path() {
 			return $this->_path;
 		}
 		
 		public function get_identifier() {
 			return $this->_taxonomy->get_name().':'.$this->get_path();
+		}
+		
+		public function get_slug() {
+			return $this->_data['slug'];
+		}
+		
+		public function get_name() {
+			return $this->_data['name'];
 		}
 		
 		public function get_ids() {

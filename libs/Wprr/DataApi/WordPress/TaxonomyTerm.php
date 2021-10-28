@@ -41,6 +41,19 @@
 			return $this->_data['name'];
 		}
 		
+		public function get_taxonomy() {
+			return $this->_taxonomy;
+		}
+		
+		public function get_parent() {
+			$parent_id = $this->_data['parent'];
+			if($parent_id) {
+				return $this->get_taxonomy()->get_term_by_id($parent_id);
+			}
+			
+			return null;
+		}
+		
 		public function get_ids() {
 			
 			if($this->_ids === null) {

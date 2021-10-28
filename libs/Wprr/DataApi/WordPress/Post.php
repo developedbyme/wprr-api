@@ -115,6 +115,18 @@
 			return $this->_taxonomy_terms[$taxonomy_name];
 		}
 		
+		public function get_single_term_in($group_term) {
+			$taxonomy_name = $group_term->get_taxonomy()->get_name();
+			$terms = $this->get_taxonomy_terms($taxonomy_name);
+			foreach($terms as $term) {
+				if($term->get_parent() === $group_term) {
+					return $term;
+				}
+			}
+			
+			return null;
+		}
+		
 		public function get_active_taxonomy_names() {
 			global $wprr_data_api;
 			

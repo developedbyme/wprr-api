@@ -9,6 +9,7 @@
 		protected $_database_meta = null;
 		protected $_meta = array();
 		protected $_database_taxonomy_terms = null;
+		protected $_taxonomy_terms = array();
 		
 		function __construct() {
 			
@@ -44,6 +45,18 @@
 			return $this->_database_meta;
 		}
 		
+		public function get_database_taxonomy_terms() {
+			if(!$this->_database_taxonomy_terms) {
+				global $wprr_data_api;
+				$db = $wprr_data_api->database();
+				
+				$query = 'SELECT wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id = "'.$this->_id.'"';
+				$this->_database_taxonomy_terms = $db->query($query);
+			}
+			
+			return $this->_database_taxonomy_terms;
+		}
+		
 		public function get_post_title() {
 			
 			$data = $this->get_database_data();
@@ -67,6 +80,26 @@
 			}
 			
 			return $this->_meta[$name][0];
+		}
+		
+		public function get_taxonomy_terms($taxonomy_name) {
+			if(!isset($this->_taxonomy_terms[$taxonomy_name])) {
+				global $wprr_data_api;
+				
+				$terms_data = $this->get_database_taxonomy_terms();
+				
+				$selected_terms = array();
+				foreach($terms_data as $terms_data_row) {
+					if($terms_data_row['taxonomy'] === $taxonomy_name) {
+						$term_id = (int)$terms_data_row['term_taxonomy_id'];
+						$selected_terms[] = $wprr_data_api->wordpress()->get_taxonomy($taxonomy_name)->get_term_by_id($term_id);
+					}
+				}
+				
+				$this->_taxonomy_terms[$taxonomy_name] = $selected_terms;
+			}
+			
+			return $this->_taxonomy_terms[$taxonomy_name];
 		}
 
 		public static function test_import() {

@@ -21,6 +21,14 @@
 			return $this;
 		}
 		
+		public function get_path() {
+			return $this->_path;
+		}
+		
+		public function get_identifier() {
+			return $this->_taxonomy->get_name().':'.$this->get_path();
+		}
+		
 		public function get_ids() {
 			
 			if($this->_ids === null) {

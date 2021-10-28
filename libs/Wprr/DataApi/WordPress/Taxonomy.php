@@ -7,6 +7,7 @@
 		protected $_name = null;
 		protected $_term_data = null;
 		protected $_terms = array();
+		protected $_term_ids_map = array();
 
 		function __construct() {
 			
@@ -16,6 +17,10 @@
 			$this->_name = $name;
 			
 			return $this;
+		}
+		
+		public function get_name() {
+			return $this->_name;
 		}
 		
 		protected function get_term_data() {
@@ -64,6 +69,18 @@
 			return null;
 		}
 		
+		protected function get_term_data_by_id($id) {
+			$term_data = $this->get_term_data();
+			
+			foreach($term_data as $term_id => $term) {
+				if($term_id === $id) {
+					return $term;
+				}
+			}
+			
+			return null;
+		}
+		
 		protected function prepare_term($path) {
 			if(!isset($this->_terms[$path])) {
 				
@@ -82,6 +99,7 @@
 					$taxonomy_term = new \Wprr\DataApi\WordPress\TaxonomyTerm();
 					$taxonomy_term->setup($path, $term_data, $this);
 					$this->_terms[$path] = $taxonomy_term;
+					$this->_term_ids_map[$term_data['id']] = $path;
 				}
 				else {
 					$this->_terms[$path] = null;
@@ -89,9 +107,43 @@
 			}
 		}
 		
+		protected function get_path_from_id($id) {
+			
+			$path = array();
+			
+			while($term_data = $this->get_term_data_by_id($id)) {
+				$path[] = $term_data['slug'];
+				
+				$id = $term_data['parent'];
+				if($id === 0) {
+					break;
+				}
+			}
+			
+			if(empty($path)) {
+				return null;
+			}
+			
+			return implode('/', array_reverse($path));
+		}
+		
 		public function get_term($path) {
 			$this->prepare_term($path);
 			return $this->_terms[$path];
+		}
+		
+		public function get_term_by_id($id) {
+			//var_dump("get_term_by_id");
+			
+			if(!isset($this->_term_ids_map[$id])) {
+				$this->_term_ids_map[$id] = $this->get_path_from_id($id);
+			}
+			
+			if(!$this->_term_ids_map[$id]) {
+				return null;
+			}
+			
+			return $this->get_term($this->_term_ids_map[$id]);
 		}
 
 		public static function test_import() {

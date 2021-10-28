@@ -20,6 +20,7 @@
 			
 			$encoded_data->data['meta'] = $post->get_meta('lagerkungen_facility_name');
 			
+			$encoded_data->data['terms'] = array_map(function($item) {return $item->get_identifier();}, $post->get_taxonomy_terms('dbm_type'));
 			//var_dump($encoded_data);
 		}
 

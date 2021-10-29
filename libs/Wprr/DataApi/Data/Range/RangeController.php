@@ -53,7 +53,7 @@
 			$types = explode(',', $selections);
 			foreach($types as $type) {
 				if(!isset($this->_selections[$type])) {
-					//METODO: throw
+					throw(new \Exception('Select '.$type.' doesn\'t exist'));
 				}
 			
 				$selections = $this->_selections[$type];
@@ -94,7 +94,7 @@
 			//var_dump("encode_object_as");
 			
 			if(!isset($this->_encoding[$encoding_type])) {
-				//METODO: throw
+				throw(new \Exception('Encode '.$encoding_type.' doesn\'t exist'));
 			}
 			
 			$encoded_data = $this->get_encoded_data();

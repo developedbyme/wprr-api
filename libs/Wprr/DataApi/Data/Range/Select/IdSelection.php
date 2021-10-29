@@ -16,7 +16,7 @@
 			$has_query = false;
 			
 			if(!isset($data['ids'])) {
-				//METODO: throw
+				throw(new \Exception('No ids specified'));
 			}
 			
 			$ids = array_map(function($value) {return (int)$value;}, explode(',', $data['ids']));

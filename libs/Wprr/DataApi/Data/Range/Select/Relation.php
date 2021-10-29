@@ -30,7 +30,7 @@
 			}
 			
 			if(!$has_query) {
-				$query->include_only(array());
+				throw(new \Exception('No type or relation set for relation selection'));
 			}
 		}
 		

@@ -191,6 +191,7 @@
 			$paths['site'] = get_site_url();
 			$paths['theme'] = get_stylesheet_directory_uri();
 			$paths['rest'] = rest_url();
+			$paths['wprrData'] = WPRR_URL.'/data';
 			
 			$paths['login'] = wp_login_url();
 			$paths['logout'] = html_entity_decode(wp_logout_url());

@@ -18,9 +18,6 @@
 			
 			$encoded_data->data['title'] = $post->get_post_title();
 			
-			//$encoded_data->data['meta'] = $post->get_meta('lagerkungen_facility_name');
-			
-			
 		}
 
 		public static function test_import() {

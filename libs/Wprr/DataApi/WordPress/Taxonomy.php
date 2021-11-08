@@ -28,7 +28,8 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$terms_array = $db->query('SELECT term_taxonomy_id as id, term_id as termId, parent FROM wp_term_taxonomy WHERE taxonomy = "'.$db->escape($this->_name).'"');
+				$query = 'SELECT term_taxonomy_id as id, term_id as termId, parent FROM wp_term_taxonomy WHERE taxonomy = "'.$db->escape($this->_name).'"';
+				$terms_array = $db->query($query);
 				
 				$terms = array();
 				$term_map = array();
@@ -44,7 +45,8 @@
 					$terms[$term['id']] = $term;
 				}
 				
-				$term_names = $db->query('SELECT term_id as id, name, slug FROM wp_terms WHERE term_id IN ('.implode(',', $term_ids).')');
+				$query = 'SELECT term_id as id, name, slug FROM wp_terms WHERE term_id IN ('.implode(',', $term_ids).')';
+				$term_names = $db->query($query);
 				
 				foreach($term_names as $term_name) {
 					$terms[$term_map[$term_name['id']]]['name'] = $term_name['name'];

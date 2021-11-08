@@ -68,6 +68,12 @@
 			return $data['post_title'];
 		}
 		
+		public function get_data($field) {
+			$data = $this->get_database_data();
+			
+			return $data[$field];
+		}
+		
 		public function get_meta($name) {
 			if(!isset($this->_meta[$name])) {
 				$meta_data = $this->get_database_meta_data();

@@ -90,11 +90,23 @@
 			return $return_data; 
 		}
 		
+		public function encode_objects_as($ids, $encoding_type) {
+			foreach($ids as $id) {
+				$this->encode_object_as($id, $encoding_type);
+			}
+			
+			return $ids;
+		}
+		
 		public function encode_object_as($id, $encoding_type) {
 			//var_dump("encode_object_as");
 			
 			if(!isset($this->_encoding[$encoding_type])) {
 				throw(new \Exception('Encode '.$encoding_type.' doesn\'t exist'));
+			}
+			
+			if(!$id) {
+				return $id;
 			}
 			
 			$encoded_data = $this->get_encoded_data();

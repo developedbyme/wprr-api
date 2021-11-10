@@ -11,6 +11,9 @@
 		protected $_database_taxonomy_terms = null;
 		protected $_taxonomy_terms = array();
 		
+		protected $_incomingRelations = null;
+		protected $_outgoingRelations = null;
+		
 		function __construct() {
 			
 		}
@@ -62,10 +65,11 @@
 		}
 		
 		public function get_post_title() {
-			
-			$data = $this->get_database_data();
-			
-			return $data['post_title'];
+			return $this->get_data('post_title');
+		}
+		
+		public function get_post_content() {
+			return $this->get_data('post_content');
 		}
 		
 		public function get_data($field) {
@@ -133,6 +137,33 @@
 			return null;
 		}
 		
+		public function get_terms_in($group_term) {
+			
+			$return_array = array();
+			
+			$taxonomy_name = $group_term->get_taxonomy()->get_name();
+			$terms = $this->get_taxonomy_terms($taxonomy_name);
+			foreach($terms as $term) {
+				if($term->get_parent() === $group_term) {
+					$return_array[] = $term;
+				}
+			}
+			
+			return $return_array;
+		}
+		
+		public function has_term($term) {
+			$taxonomy_name = $term->get_taxonomy()->get_name();
+			$terms = $this->get_taxonomy_terms($taxonomy_name);
+			foreach($terms as $current_term) {
+				if($current_term === $term) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
 		public function get_active_taxonomy_names() {
 			global $wprr_data_api;
 			
@@ -186,6 +217,24 @@
 			$data = $this->get_database_data();
 			
 			return $data['post_name'];
+		}
+		
+		public function get_incoming_direction() {
+			if(!$this->_incomingRelations) {
+				$this->_incomingRelations = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationDirection();
+				$this->_incomingRelations->setup($this, 'incoming');
+			}
+			
+			return $this->_incomingRelations;
+		}
+		
+		public function get_outcoming_direction() {
+			if(!$this->_outgoingRelations) {
+				$this->_outgoingRelations = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationDirection();
+				$this->_outgoingRelations->setup($this, 'outgoing');
+			}
+			
+			return $this->_outgoingRelations;
 		}
 
 		public static function test_import() {

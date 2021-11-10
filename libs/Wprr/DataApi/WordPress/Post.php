@@ -152,6 +152,32 @@
 			return $return_array;
 		}
 		
+		public function get_single_term_in_with_descendants($group_term) {
+			$taxonomy_name = $group_term->get_taxonomy()->get_name();
+			$terms = $this->get_taxonomy_terms($taxonomy_name);
+			foreach($terms as $term) {
+				if($term->is_descendant_of($group_term)) {
+					return $term;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function get_terms_in_with_descendants($group_term) {
+			$return_array = array();
+			
+			$taxonomy_name = $group_term->get_taxonomy()->get_name();
+			$terms = $this->get_taxonomy_terms($taxonomy_name);
+			foreach($terms as $term) {
+				if($term->is_descendant_of($group_term)) {
+					$return_array[] = $term;
+				}
+			}
+			
+			return $return_array;
+		}
+		
 		public function has_term($term) {
 			$taxonomy_name = $term->get_taxonomy()->get_name();
 			$terms = $this->get_taxonomy_terms($taxonomy_name);

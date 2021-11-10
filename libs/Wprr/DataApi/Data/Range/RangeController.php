@@ -99,7 +99,7 @@
 		}
 		
 		public function encode_object_as($id, $encoding_type) {
-			//var_dump("encode_object_as");
+			//var_dump("encode_object_as", $id);
 			
 			if(!isset($this->_encoding[$encoding_type])) {
 				throw(new \Exception('Encode '.$encoding_type.' doesn\'t exist'));
@@ -128,6 +128,11 @@
 		}
 		
 		public function encode_term($term) {
+			
+			if(!$term) {
+				return null;
+			}
+			
 			$encoded_data = $this->get_encoded_data();
 			
 			$id = $term->get_identifier();

@@ -132,7 +132,21 @@
 		}
 		
 		public function get_id() {
+			if($this->_only !== null && empty($this->_only)) {
+				return 0;
+			}
 			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			$query = $this->get_query().' LIMIT 1';
+			
+			$posts = $db->query($query);
+			
+			if(!empty($posts)) {
+				return (int)$posts[0]['id'];
+			}
+			
+			return 0;
 		}
 		
 		public static function test_import() {

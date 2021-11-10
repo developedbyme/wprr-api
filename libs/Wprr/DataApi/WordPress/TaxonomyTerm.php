@@ -54,6 +54,20 @@
 			return null;
 		}
 		
+		public function is_descendant_of($term) {
+			$current_term = $this->get_parent();
+			
+			while($current_term) {
+				if($current_term === $term) {
+					return true;
+				}
+				
+				$current_term = $current_term->get_parent();
+			}
+			
+			return false;
+		}
+		
 		public function get_ids() {
 			
 			if($this->_ids === null) {

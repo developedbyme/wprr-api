@@ -15,18 +15,27 @@
 		}
 		
 		public function output_api_repsponse($data) {
+			//var_dump('output_api_repsponse');
+			//var_dump($data);
+			
 			$reposonse = array(
 				'code' => 'success',
 				'data' => $data,
 				'performance' => array()
 			);
+			
+			$encoded_reponse = json_encode($reposonse);
+			$json_error = json_last_error();
+			if($json_error) {
+				$this->output_api_error('Could not encode JSON (error: '.$json_error.')');
+			}
 
 			header('Content-Type: application/json; charset=utf-8');
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Pragma: no-cache');
 			header('Expires: 0');
 		
-			echo(json_encode($reposonse));
+			echo($encoded_reponse);
 			
 			$this->_has_output = true;
 			die();

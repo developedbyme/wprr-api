@@ -14,6 +14,7 @@
 			if(!$this->_db) {
 				mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 				$this->_db = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+				mysqli_set_charset($this->_db, "utf8");
 			}
 			
 			return $this;

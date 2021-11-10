@@ -20,7 +20,7 @@
 		}
 		
 		public function load() {
-			if(!$this->_selection) {
+			if(!$this->_encoder) {
 				require_once($this->_file);
 				
 				$class = $this->_class_name;

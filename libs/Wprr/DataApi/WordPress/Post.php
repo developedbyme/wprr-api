@@ -88,7 +88,7 @@
 					if($meta_data_row['meta_key'] === $name) {
 						$value = $meta_data_row['meta_value'];
 						
-						if($value[1] === ":") {
+						if(isset($value[1]) && $value[1] === ":") {
 							$unserialize_value = unserialize($value);
 							if($unserialize_value !== false) {
 								$value = $unserialize_value;

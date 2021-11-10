@@ -3,9 +3,15 @@
 
 	// \Wprr\DataApi\Output
 	class Output {
-
+		
+		protected $_has_output = false;
+		
 		function __construct() {
 			
+		}
+		
+		public function has_output() {
+			return $this->_has_output;
 		}
 		
 		public function output_api_repsponse($data) {
@@ -21,6 +27,8 @@
 			header('Expires: 0');
 		
 			echo(json_encode($reposonse));
+			
+			$this->_has_output = true;
 			die();
 		}
 		
@@ -40,6 +48,8 @@
 			header('Expires: 0');
 		
 			echo(json_encode($reposonse));
+			
+			$this->_has_output = true;
 			die();
 		}
 

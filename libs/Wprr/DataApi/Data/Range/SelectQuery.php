@@ -43,6 +43,12 @@
 		}
 		
 		public function include_term($term) {
+			if(!$term) {
+				//METODO: error message
+				$this->include_only(array());
+				return $this;
+			}
+			
 			$this->include_only($term->get_ids());
 			
 			return $this;

@@ -5,6 +5,7 @@
 	class Database {
 		
 		protected $_db = null;
+		protected $_stored_queries = array();
 
 		function __construct() {
 			
@@ -25,17 +26,19 @@
 		}
 		
 		public function query($query) {
-			$this->start_session();
-			$result = $this->_db->query($query);
 			
-			return $result->fetch_all(MYSQLI_ASSOC);
+			if(!isset($this->_stored_queries[$query])) {
+				$this->start_session();
+				$result = $this->_db->query($query);
+				
+				$this->_stored_queries[$query] = $result->fetch_all(MYSQLI_ASSOC);
+			}
+			
+			return $this->_stored_queries[$query];
 		}
 		
 		public function query_first($query) {
-			$this->start_session();
-			$result = $this->_db->query($query);
-			
-			return $result->fetch_assoc();
+			return $this->query($query)[0];
 		}
 		
 		public function end_session() {

@@ -28,10 +28,17 @@
 		public function query($query) {
 			
 			if(!isset($this->_stored_queries[$query])) {
-				$this->start_session();
-				$result = $this->_db->query($query);
+				global $wprr_data_api;
 				
+				$this->start_session();
+				
+				$wprr_data_api->performance()->start_meassure('Database::query query');
+				$result = $this->_db->query($query);
+				$wprr_data_api->performance()->stop_meassure('Database::query query');
+				
+				$wprr_data_api->performance()->start_meassure('Database::query fetch');
 				$this->_stored_queries[$query] = $result->fetch_all(MYSQLI_ASSOC);
+				$wprr_data_api->performance()->stop_meassure('Database::query fetch');
 			}
 			
 			return $this->_stored_queries[$query];

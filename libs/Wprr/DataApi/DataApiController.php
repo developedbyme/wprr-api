@@ -9,6 +9,7 @@
 		protected $_output = null;
 		protected $_range = null;
 		protected $_wordpress = null;
+		protected $_performance = null;
 
 		function __construct() {
 			
@@ -52,6 +53,14 @@
 			}
 			
 			return $this->_wordpress;
+		}
+		
+		public function performance() {
+			if(!$this->_performance) {
+				$this->_performance = new \Wprr\DataApi\Performance();
+			}
+			
+			return $this->_performance;
 		}
 
 		public static function test_import() {

@@ -23,10 +23,12 @@
 			//var_dump('output_api_repsponse');
 			//var_dump($data);
 			
+			global $wprr_data_api;
+			
 			$reposonse = array(
 				'code' => 'success',
 				'data' => $data,
-				'performance' => array(),
+				'performance' => $wprr_data_api->performance()->get_stats(),
 				'logs' => $this->_logs
 			);
 			
@@ -53,7 +55,7 @@
 				'data' => null,
 				'message' => $message,
 				'error' => $error,
-				'performance' => array(),
+				'performance' => $wprr_data_api->performance()->get_stats(),
 				'logs' => $this->_logs
 			);
 			

@@ -77,7 +77,7 @@
 					
 					$intersected_array = array_intersect_key($array1, $array2);
 					
-					$this->_only = array_flip($intersected_array);
+					$this->_only = array_keys($intersected_array);
 					
 					//$intersected_array = array_intersect($this->_only, $ids);
 					$wprr_data_api->performance()->stop_meassure('SelectQuery::include_only array_intersect');

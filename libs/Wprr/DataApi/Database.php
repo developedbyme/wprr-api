@@ -26,11 +26,15 @@
 		}
 		
 		public function query($query) {
+			global $wprr_data_api;
 			
 			if(!isset($this->_stored_queries[$query])) {
-				global $wprr_data_api;
+				
 				
 				$this->start_session();
+				
+				$wprr_data_api->performance()->count('Database::query query');
+				$wprr_data_api->performance()->count($query);
 				
 				$wprr_data_api->performance()->start_meassure('Database::query query');
 				$result = $this->_db->query($query);
@@ -39,6 +43,9 @@
 				$wprr_data_api->performance()->start_meassure('Database::query fetch');
 				$this->_stored_queries[$query] = $result->fetch_all(MYSQLI_ASSOC);
 				$wprr_data_api->performance()->stop_meassure('Database::query fetch');
+			}
+			else {
+				$wprr_data_api->performance()->count('Database::query stored');
 			}
 			
 			return $this->_stored_queries[$query];

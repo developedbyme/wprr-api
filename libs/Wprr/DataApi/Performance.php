@@ -5,9 +5,17 @@
 	class Performance {
 		
 		protected $_call_performance = array();
+		protected $_counts = array();
 		
 		function __construct() {
 			
+		}
+		
+		public function count($type) {
+			if(!$this->_counts[$type]) {
+				$this->_counts[$type] = 0;
+			}
+			$this->_counts[$type]++;
 		}
 		
 		public function &get_call_performance($type) {
@@ -48,7 +56,10 @@
 				);
 			}
 			
-			return $return_object;
+			return array(
+				'speed' => $return_object,
+				'count' => $this->_counts
+			);
 		}
 		
 		public static function test_import() {

@@ -34,7 +34,7 @@
 				$this->start_session();
 				
 				$wprr_data_api->performance()->count('Database::query query');
-				$wprr_data_api->performance()->count($query);
+				//$wprr_data_api->performance()->count($query);
 				
 				$wprr_data_api->performance()->start_meassure('Database::query query');
 				$result = $this->_db->query($query);

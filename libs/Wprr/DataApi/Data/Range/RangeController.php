@@ -47,7 +47,7 @@
 		}
 		
 		public function select($selections, $data) {
-			//METODO
+			
 			$query = new \Wprr\DataApi\Data\Range\SelectQuery();
 			
 			$types = explode(',', $selections);

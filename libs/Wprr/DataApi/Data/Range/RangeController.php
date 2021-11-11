@@ -48,6 +48,8 @@
 		
 		public function select($selections, $data) {
 			
+			global $wprr_data_api;
+			
 			$query = new \Wprr\DataApi\Data\Range\SelectQuery();
 			
 			$types = explode(',', $selections);
@@ -55,20 +57,29 @@
 				if(!isset($this->_selections[$type])) {
 					throw(new \Exception('Select '.$type.' doesn\'t exist'));
 				}
+				
+				$wprr_data_api->performance()->start_meassure('RangeController::select select '.$type);
 			
 				$selections = $this->_selections[$type];
 				foreach($selections as $selection) {
 					$selection->select($query, $data);
 				}
+				
+				$wprr_data_api->performance()->stop_meassure('RangeController::select select '.$type);
 			}
 			
 			$ids = $query->get_ids();
 			
 			foreach($types as $type) {
+				
+				$wprr_data_api->performance()->start_meassure('RangeController::select filter '.$type);
+				
 				$selections = $this->_selections[$type];
 				foreach($selections as $selection) {
 					$ids = $selection->filter($ids, $data);
 				}
+				
+				$wprr_data_api->performance()->stop_meassure('RangeController::select filter '.$type);
 			}
 			
 			return $ids;
@@ -76,11 +87,15 @@
 		
 		public function encode_range($ids, $encodings, $data) {
 			
+			global $wprr_data_api;
+			
 			$types = explode(',', $encodings);
 			foreach($types as $type) {
+				$wprr_data_api->performance()->start_meassure('RangeController::encode_range '.$type);
 				foreach($ids as $id) {
 					$this->encode_object_as($id, $type);
 				}
+				$wprr_data_api->performance()->stop_meassure('RangeController::encode_range '.$type);
 			}
 			
 			$encoded_data = $this->get_encoded_data();
@@ -101,6 +116,8 @@
 		public function encode_object_as($id, $encoding_type) {
 			//var_dump("encode_object_as", $id);
 			
+			global $wprr_data_api;
+			
 			if(!isset($this->_encoding[$encoding_type])) {
 				throw(new \Exception('Encode '.$encoding_type.' doesn\'t exist'));
 			}
@@ -108,6 +125,8 @@
 			if(!$id) {
 				return $id;
 			}
+			
+			$wprr_data_api->performance()->start_meassure('RangeController::encode_object_as '.$encoding_type);
 			
 			$encoded_data = $this->get_encoded_data();
 			
@@ -117,6 +136,8 @@
 					$encoding->encode($id);
 				}
 			}
+			
+			$wprr_data_api->performance()->stop_meassure('RangeController::encode_object_as '.$encoding_type);
 			
 			return $id;
 		}

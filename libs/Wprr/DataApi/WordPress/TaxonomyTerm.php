@@ -72,6 +72,9 @@
 			
 			if($this->_ids === null) {
 				global $wprr_data_api;
+				
+				$wprr_data_api->performance()->start_meassure('Database::get_ids get');
+				
 				$db = $wprr_data_api->database();
 				
 				$query = 'SELECT object_id as id FROM wp_term_relationships WHERE term_taxonomy_id = "'.$this->_data['id'].'"';
@@ -80,6 +83,8 @@
 				$this->_ids = array_map(function($item) {
 					return (int)$item['id'];
 				}, $posts);
+				
+				$wprr_data_api->performance()->stop_meassure('Database::get_ids get');
 			}
 			
 			return $this->_ids;

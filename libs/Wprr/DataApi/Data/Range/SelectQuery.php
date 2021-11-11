@@ -69,7 +69,11 @@
 			}
 			else {
 				if($this->_only !== null) {
+					global $wprr_data_api;
+				
+					$wprr_data_api->performance()->start_meassure('SelectQuery::include_only array_intersect');
 					$intersected_array = array_intersect($this->_only, $ids);
+					$wprr_data_api->performance()->stop_meassure('SelectQuery::include_only array_intersect');
 					
 					$this->_only = $intersected_array;
 				}

@@ -20,6 +20,10 @@
 			return $this;
 		}
 		
+		public function new_select_query() {
+			return new \Wprr\DataApi\Data\Range\SelectQuery();
+		}
+		
 		public function query($query) {
 			$this->start_session();
 			$result = $this->_db->query($query);

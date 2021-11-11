@@ -5,6 +5,7 @@
 	class Output {
 		
 		protected $_has_output = false;
+		protected $_logs = array();
 		
 		function __construct() {
 			
@@ -14,6 +15,10 @@
 			return $this->_has_output;
 		}
 		
+		public function log($message) {
+			$this->_logs[] = (string)$message;
+		}
+		
 		public function output_api_repsponse($data) {
 			//var_dump('output_api_repsponse');
 			//var_dump($data);
@@ -21,7 +26,8 @@
 			$reposonse = array(
 				'code' => 'success',
 				'data' => $data,
-				'performance' => array()
+				'performance' => array(),
+				'logs' => $this->_logs
 			);
 			
 			$encoded_reponse = json_encode($reposonse);
@@ -47,7 +53,8 @@
 				'data' => null,
 				'message' => $message,
 				'error' => $error,
-				'performance' => array()
+				'performance' => array(),
+				'logs' => $this->_logs
 			);
 			
 			header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');

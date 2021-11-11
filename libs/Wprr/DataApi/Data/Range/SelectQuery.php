@@ -81,6 +81,36 @@
 			return $this;
 		}
 		
+		public function include_none() {
+			$this->_only = array();
+			
+			return $this;
+		}
+		
+		public function include_post_relation_by_path($post, $relation) {
+			global $wprr_data_api;
+			
+			$parent_term = $wprr_data_api->wordpress()->get_taxonomy('dbm_relation')->get_term($relation);
+			
+			if(!$parent_term) {
+				$wprr_data_api->output()->log('No relation named '.$relation);
+				$this->include_none();
+				return $this;
+			}
+			
+			$term = $post->get_single_term_in($parent_term);
+			
+			if(!$term) {
+				$wprr_data_api->output()->log('Post '.$post->get_id().' doesn\'t have any relation in group '.$relation);
+				$this->include_none();
+				return $this;
+			}
+			
+			$this->include_term($term);
+			
+			return $this;
+		}
+		
 		public function get_query() {
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();

@@ -69,18 +69,13 @@
 			}
 			else {
 				if($this->_only !== null) {
-					global $wprr_data_api;
-					
-					$wprr_data_api->performance()->start_meassure('SelectQuery::include_only array_intersect');
+					//MENOTE: faster intersection than array_intersect
 					$array1 = array_flip($this->_only);
 					$array2 = array_flip($ids);
 					
 					$intersected_array = array_intersect_key($array1, $array2);
 					
 					$this->_only = array_keys($intersected_array);
-					
-					//$intersected_array = array_intersect($this->_only, $ids);
-					$wprr_data_api->performance()->stop_meassure('SelectQuery::include_only array_intersect');
 				}
 				else {
 					$this->_only = $ids;

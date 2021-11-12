@@ -171,6 +171,22 @@
 			return $id;
 		}
 		
+		public function encode_term_and_parents($term) {
+			if(!$term) {
+				return null;
+			}
+			
+			$id = $term->get_identifier();
+			
+			$current_term = $term;
+			while($current_term) {
+				$this->encode_term($current_term);
+				$current_term = $term->get_parent();
+			}
+			
+			return $id;
+		}
+		
 		public function encode_terms($terms) {
 			$identifiers = array();
 			foreach($terms as $term) {

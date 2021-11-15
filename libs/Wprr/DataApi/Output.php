@@ -50,12 +50,13 @@
 		}
 		
 		public function output_api_error($message, $error = null) {
+			
 			$reposonse = array(
 				'code' => 'error',
 				'data' => null,
 				'message' => $message,
 				'error' => $error,
-				'performance' => $wprr_data_api->performance()->get_stats(),
+				'performance' => null,
 				'logs' => $this->_logs
 			);
 			

@@ -179,9 +179,14 @@
 			$id = $term->get_identifier();
 			
 			$current_term = $term;
+			
+			$debug_counter = 0;
 			while($current_term) {
+				if($debug_counter++ > 255) {
+					throw(new \Exception('To many parents for term'));
+				}
 				$this->encode_term($current_term);
-				$current_term = $term->get_parent();
+				$current_term = $current_term->get_parent();
 			}
 			
 			return $id;

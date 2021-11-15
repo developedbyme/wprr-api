@@ -89,6 +89,10 @@
 			
 			return $this->_ids;
 		}
+		
+		public function __toString() {
+			return "[TaxonomyTerm id=".$this->get_id()." slug=".$this->get_slug()."]";
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\TaxonomyTerm<br />");

@@ -105,6 +105,25 @@
 			return $this->_meta[$name][0];
 		}
 		
+		public function get_acf_repeater_meta($name, $fields) {
+			
+			$return_array = array();
+			
+			$length = (int)$this->get_meta($name);
+			
+			for($i = 0; $i < $length; $i++) {
+				$encoded_object = array();
+				
+				foreach($fields as $field) {
+					$encoded_object[$field] = $this->get_meta($name.'_'.$i.'_'.$field);
+				}
+				
+				$return_array[] = $encoded_object;
+			}
+			
+			return $return_array;
+		}
+		
 		public function get_taxonomy_terms($taxonomy_name) {
 			if(!isset($this->_taxonomy_terms[$taxonomy_name])) {
 				global $wprr_data_api;

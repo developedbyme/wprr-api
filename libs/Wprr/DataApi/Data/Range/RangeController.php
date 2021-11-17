@@ -195,7 +195,10 @@
 		public function encode_terms($terms) {
 			$identifiers = array();
 			foreach($terms as $term) {
-				$identifiers[] = $this->encode_term($term);
+				$encoded_term_id = $this->encode_term($term);
+				if($encoded_term_id) {
+					$identifiers[] = $encoded_term_id;
+				}
 			}
 			
 			return $identifiers;

@@ -33,9 +33,15 @@
 			$wprr_data_api->range()->encode_object_if_encoding_exists_as($id, $type_encoding);
 			
 			$user_id = (int)$post->get_data('post_author');
-			$user = $wprr_data_api->wordpress()->get_user($user_id);
+			if($user_id) {
+				$user = $wprr_data_api->wordpress()->get_user($user_id);
 			
-			$encoded_data->data['user'] = $wprr_data_api->range()->encode_user($user);
+				$encoded_data->data['user'] = $wprr_data_api->range()->encode_user($user);
+			}
+			else {
+				$encoded_data->data['user'] = null;
+			}
+			
 		}
 
 		public static function test_import() {

@@ -1,15 +1,15 @@
 <?php
 	namespace Wprr\DataApi\Data\Range\Encode\InternalMessageTypes;
 
-	// \Wprr\DataApi\Data\Range\Encode\InternalMessageTypes\FieldChange
-	class FieldChange {
+	// \Wprr\DataApi\Data\Range\Encode\InternalMessageTypes\FieldChanged
+	class FieldChanged {
 
 		function __construct() {
 			
 		}
 		
 		public function encode($id) {
-			//var_dump("FieldChange::encode");
+			//var_dump("FieldChanged::encode");
 			
 			global $wprr_data_api;
 			
@@ -24,7 +24,7 @@
 		}
 
 		public static function test_import() {
-			echo("Imported \Wprr\DataApi\FieldChange<br />");
+			echo("Imported \Wprr\DataApi\FieldChanged<br />");
 		}
 	}
 ?>

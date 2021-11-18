@@ -16,8 +16,6 @@
 			$post = $wprr_data_api->wordpress()->get_post($id);
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
-			$encoded_data->data['test'] = "test";
-			
 			$encoded_data->data['oldValue'] = $post->get_meta('oldValue');
 			$encoded_data->data['newValue'] = $post->get_meta('newValue');
 			$encoded_data->data['field'] = $post->get_meta('field');

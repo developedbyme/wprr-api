@@ -142,6 +142,14 @@
 			return $id;
 		}
 		
+		public function encode_object_if_encoding_exists_as($id, $encoding_type) {
+			
+			if(isset($this->_encoding[$encoding_type])) {
+				$this->encode_object_as($id, $encoding_type);
+			}
+			return $id;
+		}
+		
 		public function get_encoded_object($id) {
 			$encoded_data = $this->get_encoded_data();
 			
@@ -169,6 +177,24 @@
 			}
 			
 			return $id;
+		}
+		
+		public function encode_user($user) {
+			
+			$id = $user->get_id();
+			$store_id = 'user'.$id;
+			
+			$encoded_data = $this->get_encoded_data();
+			$encoded_item = $encoded_data->get_item($store_id);
+			
+			if(!$encoded_data->has_encoded_object($store_id, 'user')) {
+				$encoded_item->data['id'] = $id;
+				$encoded_item->data['name'] = $user->get_display_name();
+				$encoded_item->data['gravatarHash'] = $user->get_gravatar_hash();
+				$encoded_data->add_object_to_range($store_id, 'user');
+			}
+			
+			return $store_id;
 		}
 		
 		public function encode_term_and_parents($term) {

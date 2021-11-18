@@ -64,7 +64,9 @@
 		
 		public function get_relations($object_type, $time = -1) {
 			$selected_relations = $this->_relations;
-			$selected_relations = $this->filter_relations_by_object_type($selected_relations, $object_type);
+			if($object_type !== '*') {
+				$selected_relations = $this->filter_relations_by_object_type($selected_relations, $object_type);
+			}
 			
 			if($time !== false) {
 				if($time === -1) {

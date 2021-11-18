@@ -6,6 +6,7 @@
 		
 		protected $_taxonomies = array();
 		protected $_posts = array();
+		protected $_users = array();
 
 		function __construct() {
 			
@@ -29,6 +30,16 @@
 			}
 			
 			return $this->_posts[$id];
+		}
+		
+		public function get_user($id) {
+			if(!isset($this->_users[$id])) {
+				$new_user = new \Wprr\DataApi\WordPress\User();
+				$new_user->setup($id);
+				$this->_users[$id] = $new_user;
+			}
+			
+			return $this->_users[$id];
 		}
 
 		public static function test_import() {

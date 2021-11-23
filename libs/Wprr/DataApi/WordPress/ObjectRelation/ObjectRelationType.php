@@ -80,6 +80,8 @@
 		
 		public function get_object_ids($object_type, $time = -1) {
 			
+			$return_array = array();
+			
 			$selected_relations = $this->get_relations($object_type, $time);
 			
 			foreach($selected_relations as $relation) {

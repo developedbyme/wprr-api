@@ -42,6 +42,28 @@
 			return $this;
 		}
 		
+		public function meta_query_in($field, $values) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$encoded_values = array();
+			foreach($values as $value) {
+				$encoded_values[] = '"'.$db->escape($value).'"';
+			}
+			
+			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value IN ('.implode(',', $encoded_values).')';
+			$posts = $db->query($query);
+		
+			$ids = array_map(function($item) {
+				return (int)$item['id'];
+			}, $posts);
+			
+			$this->include_only($ids);
+			
+			return $this;
+		}
+		
 		public function include_term($term) {
 			if(!$term) {
 				//METODO: error message

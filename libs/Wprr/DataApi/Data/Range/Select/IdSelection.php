@@ -13,8 +13,6 @@
 			
 			global $wprr_data_api;
 			
-			$has_query = false;
-			
 			if(!isset($data['ids'])) {
 				throw(new \Exception('No ids specified'));
 			}

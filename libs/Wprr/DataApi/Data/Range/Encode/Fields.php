@@ -25,7 +25,8 @@
 			$encoded_field_values = array();
 			
 			foreach($all_fields as $name => $field) {
-				$encoded_field_values[$name] = $field->get_value();
+				$value = $field->get_encoded_value();
+				$encoded_field_values[$name] = $value;
 			}
 			
 			$encoded_data->data['fieldValues'] = $encoded_field_values;

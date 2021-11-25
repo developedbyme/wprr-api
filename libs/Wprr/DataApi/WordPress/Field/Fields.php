@@ -16,6 +16,10 @@
 			return $this;
 		}
 		
+		public function get_post() {
+			return $this->_post;
+		}
+		
 		public function get_structures() {
 			
 			$return_array = array();
@@ -41,7 +45,7 @@
 		}
 		
 		public function get_all() {
-			var_dump('Fields::get_all');
+			//var_dump('Fields::get_all');
 			
 			global $wprr_data_api;
 			$wp = $wprr_data_api->wordpress();
@@ -49,11 +53,10 @@
 			$fields = array();
 			
 			$field_ids = $this->_post->get_incoming_direction()->get_type('field-for')->get_object_ids('internal-message-group-field');
-			var_dump($field_ids);
 			
 			foreach($field_ids as $field_id) {
 				$field = new \Wprr\DataApi\WordPress\Field\Field();
-				$field->setup($wp->get_post($field_id));
+				$field->setup($wp->get_post($field_id), $this);
 				
 				$fields[$field->get_name()] = $field;
 			}

@@ -285,7 +285,7 @@
 		}
 		
 		public function get_fields() {
-			echo("Post::get_fields\n");
+			//echo("Post::get_fields\n");
 			
 			if(!$this->_fields) {
 				$this->_fields = new \Wprr\DataApi\WordPress\Field\Fields();

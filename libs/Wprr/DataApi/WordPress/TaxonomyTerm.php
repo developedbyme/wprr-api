@@ -2,7 +2,7 @@
 	namespace Wprr\DataApi\WordPress;
 
 	// \Wprr\DataApi\WordPress\TaxonomyTerm
-	class TaxonomyTerm {
+	class TaxonomyTerm implements \JsonSerializable {
 		
 		protected $_path = null;
 		protected $_data = null;
@@ -92,6 +92,10 @@
 		
 		public function __toString() {
 			return "[TaxonomyTerm id=".$this->get_id()." slug=".$this->get_slug()."]";
+		}
+		
+		public function jsonSerialize() {
+			return $this->get_identifier();
 		}
 
 		public static function test_import() {

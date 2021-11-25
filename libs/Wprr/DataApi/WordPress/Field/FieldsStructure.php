@@ -44,7 +44,7 @@
 					$field_template = new \Wprr\DataApi\WordPress\Field\FieldTemplate();
 					$field_template->setup($field_template_post);
 					
-					$name = $field_template->get_key();
+					$name = $field_template->get_name();
 					$this->_field_templates[$name] = $field_template;
 				}
 			}

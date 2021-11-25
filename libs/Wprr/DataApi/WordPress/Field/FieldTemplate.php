@@ -24,7 +24,7 @@
 			return $this->get_post()->get_id();
 		}
 		
-		public function get_key() {
+		public function get_name() {
 			return $this->get_post()->get_meta('dbmtc_key');
 		}
 		
@@ -35,6 +35,18 @@
 			$term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term_by_id($type_id);
 			
 			return $term;
+		}
+		
+		public function get_storage_type() {
+			global $wprr_data_api;
+			$wp = $wprr_data_api->wordpress();
+			return $this->get_post()->get_single_term_in($wp->get_taxonomy('dbm_relation')->get_term('field-storage'));
+		}
+		
+		public function get_field_type() {
+			global $wprr_data_api;
+			$wp = $wprr_data_api->wordpress();
+			return $this->get_post()->get_single_term_in($wp->get_taxonomy('dbm_relation')->get_term('field-type'));
 		}
 		
 		public static function test_import() {

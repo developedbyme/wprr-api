@@ -7,6 +7,7 @@
 		protected $_taxonomies = array();
 		protected $_posts = array();
 		protected $_users = array();
+		protected $_fields_structures = array();
 
 		function __construct() {
 			
@@ -40,6 +41,16 @@
 			}
 			
 			return $this->_users[$id];
+		}
+		
+		public function get_fields_structure($type) {
+			if(!isset($this->_fields_structures[$type])) {
+				$new_fields_structure = new \Wprr\DataApi\WordPress\FieldsStructure();
+				$new_fields_structure->setup($type);
+				$this->_fields_structures[$type] = $new_fields_structure;
+			}
+			
+			return $this->_fields_structures[$type];
 		}
 
 		public static function test_import() {

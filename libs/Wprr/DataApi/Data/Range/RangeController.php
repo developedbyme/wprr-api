@@ -229,6 +229,47 @@
 			
 			return $identifiers;
 		}
+		
+		public function encode_fields_structure($fields_structure) {
+			if(!$fields_structure) {
+				return null;
+			}
+			
+			$encoded_data = $this->get_encoded_data();
+			
+			$id = $fields_structure->get_identifier();
+			
+			$encoded_item = $encoded_data->get_item($id);
+			
+			if(!$encoded_data->has_encoded_object($id, 'fieldsStructure')) {
+				$encoded_item->data['forType'] = $fields_structure->get_type();
+				$fields = $fields_structure->get_fields();
+				
+				$encoded_fields = array();
+				
+				foreach($fields as $key => $field) {
+					$encoded_fields[$key] = $this->encode_object_as($field->get_id(), 'fieldTemplate');
+				}
+				
+				$encoded_item->data['fields'] = $encoded_fields;
+				
+				$encoded_data->add_object_to_range($id, 'fieldsStructure');
+			}
+			
+			return $id;
+		}
+		
+		public function encode_fields_structures($fields_structures) {
+			$identifiers = array();
+			foreach($fields_structures as $fields_structure) {
+				$encoded_identifier = $this->encode_fields_structure($fields_structure);
+				if($encoded_identifier) {
+					$identifiers[] = $encoded_identifier;
+				}
+			}
+			
+			return $identifiers;
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\RangeController<br />");

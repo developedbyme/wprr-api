@@ -14,6 +14,8 @@
 		protected $_incomingRelations = null;
 		protected $_outgoingRelations = null;
 		
+		protected $_fields = null;
+		
 		function __construct() {
 			
 		}
@@ -280,6 +282,17 @@
 			}
 			
 			return $this->_outgoingRelations;
+		}
+		
+		public function get_fields() {
+			echo("Post::get_fields\n");
+			
+			if(!$this->_fields) {
+				$this->_fields = new \Wprr\DataApi\WordPress\Fields();
+				$this->_fields->setup($this);
+			}
+			
+			return $this->_fields;
 		}
 
 		public static function test_import() {

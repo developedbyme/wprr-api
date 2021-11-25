@@ -211,6 +211,11 @@
 			return 0;
 		}
 		
+		public function debug_print_query() {
+			var_dump($this->get_query());
+			return $this;
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\SelectQuery<br />");
 		}

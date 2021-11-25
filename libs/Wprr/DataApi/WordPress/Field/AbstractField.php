@@ -1,7 +1,7 @@
 <?php
-	namespace Wprr\DataApi\WordPress;
+	namespace Wprr\DataApi\WordPress\Field;
 
-	// \Wprr\DataApi\WordPress\AbstractField
+	// \Wprr\DataApi\WordPress\Field\AbstractField
 	class AbstractField {
 		
 		protected $_post = null;

@@ -1,7 +1,7 @@
 <?php
-	namespace Wprr\DataApi\WordPress;
+	namespace Wprr\DataApi\WordPress\Field;
 
-	// \Wprr\DataApi\WordPress\FieldTemplate
+	// \Wprr\DataApi\WordPress\Field\FieldTemplate
 	class FieldTemplate {
 		
 		protected $_post = null;

@@ -1,7 +1,7 @@
 <?php
-	namespace Wprr\DataApi\WordPress;
+	namespace Wprr\DataApi\WordPress\Field;
 
-	// \Wprr\DataApi\WordPress\FieldsStructure
+	// \Wprr\DataApi\WordPress\Field\FieldsStructure
 	class FieldsStructure {
 		
 		protected $_type = null;
@@ -41,7 +41,7 @@
 				foreach($field_template_ids as $field_template_id) {
 					$field_template_post = $wprr_data_api->wordpress()->get_post($field_template_id);
 					
-					$field_template = new \Wprr\DataApi\WordPress\FieldTemplate();
+					$field_template = new \Wprr\DataApi\WordPress\Field\FieldTemplate();
 					$field_template->setup($field_template_post);
 					
 					$name = $field_template->get_key();

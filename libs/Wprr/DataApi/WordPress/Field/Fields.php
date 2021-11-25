@@ -1,7 +1,7 @@
 <?php
-	namespace Wprr\DataApi\WordPress;
+	namespace Wprr\DataApi\WordPress\Field;
 
-	// \Wprr\DataApi\WordPress\Fields
+	// \Wprr\DataApi\WordPress\Field\Fields
 	class Fields {
 		
 		protected $_post = null;
@@ -52,7 +52,7 @@
 			var_dump($field_ids);
 			
 			foreach($field_ids as $field_id) {
-				$field = new \Wprr\DataApi\WordPress\Field();
+				$field = new \Wprr\DataApi\WordPress\Field\Field();
 				$field->setup($wp->get_post($field_id));
 				
 				$fields[$field->get_name()] = $field;
@@ -63,7 +63,7 @@
 				$field_templates = $structure->get_fields();
 				foreach($field_templates as $name => $field_template) {
 					if(!isset($fields[$name])) {
-						$field = new \Wprr\DataApi\WordPress\AbstractField();
+						$field = new \Wprr\DataApi\WordPress\Field\AbstractField();
 						$field->setup($this->_post, $field_template);
 						$fields[$name]  = $field;
 					}

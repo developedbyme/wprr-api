@@ -45,7 +45,7 @@
 		
 		public function get_fields_structure($type) {
 			if(!isset($this->_fields_structures[$type])) {
-				$new_fields_structure = new \Wprr\DataApi\WordPress\FieldsStructure();
+				$new_fields_structure = new \Wprr\DataApi\WordPress\Field\FieldsStructure();
 				$new_fields_structure->setup($type);
 				$this->_fields_structures[$type] = $new_fields_structure;
 			}

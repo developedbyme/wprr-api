@@ -20,7 +20,7 @@
 			$encoded_data->data['body'] = $post->get_post_content();
 			$encoded_data->data['date'] = $post->get_data('post_date');
 			
-			$group = $post->get_outcoming_direction()->get_type('message-in')->get_single_object_id('*');
+			$group = $post->get_outgoing_direction()->get_type('message-in')->get_single_object_id('*');
 			
 			$encoded_data->data['group'] = $wprr_data_api->range()->encode_object_as($group, 'id');
 			

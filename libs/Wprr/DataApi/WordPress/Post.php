@@ -275,7 +275,7 @@
 			return $this->_incomingRelations;
 		}
 		
-		public function get_outcoming_direction() {
+		public function get_outgoing_direction() {
 			if(!$this->_outgoingRelations) {
 				$this->_outgoingRelations = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationDirection();
 				$this->_outgoingRelations->setup($this, 'outgoing');

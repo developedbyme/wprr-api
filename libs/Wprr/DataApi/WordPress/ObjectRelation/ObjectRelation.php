@@ -18,6 +18,10 @@
 			return $this;
 		}
 		
+		public function get_id() {
+			return $this->_post->get_id();
+		}
+		
 		public function has_object_type($term) {
 			$object = $this->get_object();
 			return $object->has_term($term);

@@ -20,25 +20,29 @@
 			
 			$current_direction = $post->get_incoming_direction();
 			$types = $current_direction->get_types();
+			$current_encoded_relations = array();
 			foreach($types as $type) {
 				$relations = $type->get_relations('*', false);
 				$relation_ids = array();
 				foreach($relations as $relation) {
 					$relation_ids[] = $relation->get_id();
 				}
-				$encoded_relations['incoming'] = $wprr_data_api->range()->encode_objects_as($relation_ids, 'relation');
+				$current_encoded_relations = array_merge($current_encoded_relations, $wprr_data_api->range()->encode_objects_as($relation_ids, 'relation'));
 			}
+			$encoded_relations['incoming'] = array_values($current_encoded_relations);
 			
 			$current_direction = $post->get_outgoing_direction();
 			$types = $current_direction->get_types();
+			$current_encoded_relations = array();
 			foreach($types as $type) {
 				$relations = $type->get_relations('*', false);
 				$relation_ids = array();
 				foreach($relations as $relation) {
 					$relation_ids[] = $relation->get_id();
 				}
-				$encoded_relations['outgoing'] = $wprr_data_api->range()->encode_objects_as($relation_ids, 'relation');
+				$current_encoded_relations = array_merge($current_encoded_relations, $wprr_data_api->range()->encode_objects_as($relation_ids, 'relation'));
 			}
+			$encoded_relations['outgoing'] = array_values($current_encoded_relations);
 			
 			$encoded_data->data['relations'] = $encoded_relations;
 			

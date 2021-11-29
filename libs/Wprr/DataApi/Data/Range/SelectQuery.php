@@ -19,7 +19,23 @@
 		}
 		
 		public function include_private() {
-			$this->_statuses[] = 'private';
+			if($this->_statuses) {
+				$this->_statuses[] = 'private';
+			}
+			
+			return $this;
+		}
+		
+		public function include_draft() {
+			if($this->_statuses) {
+				$this->_statuses[] = 'draft';
+			}
+			
+			return $this;
+		}
+		
+		public function include_all_statuses() {
+			$this->_statuses = null;
 			
 			return $this;
 		}

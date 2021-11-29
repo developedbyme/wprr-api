@@ -24,8 +24,8 @@
 			$wprr_data_api->range()->encode_object_as($id, 'featuredImage');
 			$wprr_data_api->range()->encode_object_as($id, 'pageSettings');
 			$wprr_data_api->range()->encode_object_as($id, 'pageDataSources');
+			$wprr_data_api->range()->encode_object_as($id, 'postStatus');
 			
-			$encoded_data->data['postStatus'] = $post->get_data('post_status');
 			$encoded_data->data['postType'] = $post->get_data('post_type');
 		}
 

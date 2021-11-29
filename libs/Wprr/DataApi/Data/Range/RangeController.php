@@ -235,6 +235,8 @@
 				return null;
 			}
 			
+			global $wprr_data_api;
+			
 			$encoded_data = $this->get_encoded_data();
 			
 			$id = $fields_structure->get_identifier();
@@ -242,7 +244,16 @@
 			$encoded_item = $encoded_data->get_item($id);
 			
 			if(!$encoded_data->has_encoded_object($id, 'fieldsStructure')) {
-				$encoded_item->data['forType'] = $fields_structure->get_type();
+				
+				$for_type = $fields_structure->get_type();
+				
+				if($for_type) {
+					$encoded_item->data['forType'] = $this->encode_term($wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term($for_type));
+				}
+				else {
+					$encoded_item->data['forType'] = null;
+				}
+				
 				$fields = $fields_structure->get_fields();
 				
 				$encoded_fields = array();

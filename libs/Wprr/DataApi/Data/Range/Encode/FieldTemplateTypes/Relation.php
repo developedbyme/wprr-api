@@ -16,8 +16,22 @@
 			$post = $wprr_data_api->wordpress()->get_post($id);
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
-			$encoded_data->data['relationPath'] = $post->get_meta('dbmtc_relation_path');
-			$encoded_data->data['subtree'] = $post->get_meta('subtree');
+			$relation_path = $post->get_meta('dbmtc_relation_path');
+			if($relation_path) {
+				$encoded_data->data['relationPath'] = $wprr_data_api->range()->encode_term($wprr_data_api->wordpress()->get_taxonomy('dbm_relation')->get_term($relation_path));
+			}
+			else {
+				$encoded_data->data['relationPath'] = null;
+			}
+			
+			$subtree = $post->get_meta('subtree');
+			if($subtree) {
+				$encoded_data->data['subtree'] = $wprr_data_api->range()->encode_term($wprr_data_api->wordpress()->get_taxonomy('dbm_relation')->get_term($subtree));
+			}
+			else {
+				$encoded_data->data['subtree'] = null;
+			}
+			
 			
 		}
 

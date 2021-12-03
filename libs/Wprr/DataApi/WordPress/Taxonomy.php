@@ -23,6 +23,10 @@
 			return $this->_name;
 		}
 		
+		public function get_identifier() {
+			return 'taxonomy:'.$this->get_name();
+		}
+		
 		protected function get_term_data() {
 			if(!$this->_term_data) {
 				global $wprr_data_api;
@@ -146,6 +150,17 @@
 			}
 			
 			return $this->get_term($this->_term_ids_map[$id]);
+		}
+		
+		public function get_terms() {
+			$terms = array();
+			$term_data = $this->get_term_data();
+			
+			foreach($term_data as $raw_term) {
+				$terms[] = $this->get_term_by_id($raw_term['id']);
+			}
+			
+			return $terms;
 		}
 
 		public static function test_import() {

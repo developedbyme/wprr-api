@@ -230,6 +230,32 @@
 			return $identifiers;
 		}
 		
+		public function encode_taxonomy($taxonomy) {
+			
+			if(!$taxonomy) {
+				return null;
+			}
+			
+			$terms = $taxonomy->get_terms();
+			$ids = $this->encode_terms($terms);
+			
+			$encoded_data = $this->get_encoded_data();
+			
+			$id = $taxonomy->get_identifier();
+			
+			$encoded_item = $encoded_data->get_item($id);
+			
+			if(!$encoded_data->has_encoded_object($id, 'taxonomy')) {
+				$encoded_item->data['terms'] = $ids;
+				$encoded_data->add_object_to_range($id, 'taxonomy');
+			}
+			
+			$return_data = $encoded_data->get_result();
+			$return_data['ids'] = $taxonomy->get_identifier();
+			
+			return $id; 
+		}
+		
 		public function encode_fields_structure($fields_structure) {
 			if(!$fields_structure) {
 				return null;

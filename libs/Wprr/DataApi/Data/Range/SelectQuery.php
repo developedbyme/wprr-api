@@ -4,7 +4,7 @@
 	// \Wprr\DataApi\Data\Range\SelectQuery
 	class SelectQuery {
 		
-		protected $_only = array();
+		protected $_only = null;
 		protected $_statuses = array('publish');
 		protected $_post_types = null;
 
@@ -123,14 +123,25 @@
 				$this->include_none();
 			}
 			else {
-				$this->_only[] = $ids;
+				if($this->_only !== null) {
+					//MENOTE: faster intersection than array_intersect
+					$array1 = array_flip($this->_only);
+					$array2 = array_flip($ids);
+					
+					$intersected_array = array_intersect_key($array1, $array2);
+					
+					$this->_only = array_keys($intersected_array);
+				}
+				else {
+					$this->_only = $ids;
+				}
 			}
 			
 			return $this;
 		}
 		
 		public function include_none() {
-			$this->_only[] = array(0);
+			$this->_only = array();
 			
 			return $this;
 		}
@@ -190,10 +201,8 @@
 				$where[] = 'post_type in ('.implode(',', $encoded_types).')';
 			}
 			
-			if(!empty($this->_only)) {
-				foreach($this->_only as $only_ids) {
-					$where[] = 'ID in ('.implode(',', $only_ids).')';
-				}
+			if($this->_only !== null) {
+				$where[] = 'ID in ('.implode(',', $this->_only).')';
 			}
 			
 			$query .= " WHERE ".implode(' AND ', $where);
@@ -202,11 +211,9 @@
 		}
 		
 		public function get_ids() {
-			/*
 			if($this->_only !== null && empty($this->_only)) {
 				return array();
 			}
-			*/
 			
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
@@ -220,11 +227,9 @@
 		}
 		
 		public function get_id() {
-			/*
 			if($this->_only !== null && empty($this->_only)) {
 				return 0;
 			}
-			*/
 			
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();

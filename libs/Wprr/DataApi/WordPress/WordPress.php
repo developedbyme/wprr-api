@@ -45,20 +45,23 @@
 				}
 			}
 			
-			global $wprr_data_api;
-			$db = $wprr_data_api->database();
+			if(!empty($ids_to_load)) {
+				global $wprr_data_api;
+				$db = $wprr_data_api->database();
 			
-			$query = 'SELECT post_id as id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN ('.implode(',', $ids_to_load).')';
-			$meta_fields = $db->query($query);
+				$query = 'SELECT post_id as id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN ('.implode(',', $ids_to_load).')';
+				$meta_fields = $db->query($query);
 			
-			foreach($meta_fields as $meta_field) {
-				$id = (int)$meta_field['id'];
-				$grouped_data[$id][] = $meta_field;
+				foreach($meta_fields as $meta_field) {
+					$id = (int)$meta_field['id'];
+					$grouped_data[$id][] = $meta_field;
+				}
+			
+				foreach($grouped_data as $id => $meta_array) {
+					$this->get_post($id)->set_database_meta_data($meta_array);
+				}
 			}
 			
-			foreach($grouped_data as $id => $meta_array) {
-				$this->get_post($id)->set_database_meta_data($meta_array);
-			}
 		}
 		
 		public function get_user($id) {

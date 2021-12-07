@@ -51,6 +51,8 @@
 				$wp = $wprr_data_api->wordpress();
 				$group_term = $wp->get_taxonomy('dbm_type')->get_term('object-relation');
 				
+				$wp->load_meta_for_posts($ids);
+				
 				foreach($ids as $id) {
 					$post = $wp->get_post($id);
 					

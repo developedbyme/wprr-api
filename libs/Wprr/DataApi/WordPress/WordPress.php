@@ -90,7 +90,7 @@
 					$id = (int)$row['id'];
 					$grouped_data[$id][] = $row;
 				}
-			
+				
 				foreach($grouped_data as $id => $data) {
 					$this->get_post($id)->set_database_taxonomy_terms($data);
 				}

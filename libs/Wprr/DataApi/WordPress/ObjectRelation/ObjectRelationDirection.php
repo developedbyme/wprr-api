@@ -36,6 +36,11 @@
 		
 		public function get_types() {
 			if($this->_types === null) {
+				
+				global $wprr_data_api;
+				
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types');
+				
 				$this->_types = array();
 				
 				$query = new \Wprr\DataApi\Data\Range\SelectQuery();
@@ -47,9 +52,10 @@
 					$reverse_field = 'toId';
 				}
 				
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids');
 				$ids = $query->set_post_type('dbm_object_relation')->include_term_by_path('dbm_type', 'object-relation')->include_private()->meta_query($field, $this->_post->get_id())->get_ids();
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids');
 				
-				global $wprr_data_api;
 				$wp = $wprr_data_api->wordpress();
 				$group_term = $wp->get_taxonomy('dbm_type')->get_term('object-relation');
 				
@@ -58,6 +64,7 @@
 				
 				$reference_ids = array();
 				
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types setup relations');
 				foreach($ids as $id) {
 					$post = $wp->get_post($id);
 					$reference_ids[] = (int)$post->get_meta($reverse_field);
@@ -71,8 +78,11 @@
 						$object_relation_type->add_relation($post);
 					}
 				}
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types setup relations');
 				
 				$wp->load_taxonomy_terms_for_posts($reference_ids);
+				
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types');
 			}
 			
 			return $this->_types;

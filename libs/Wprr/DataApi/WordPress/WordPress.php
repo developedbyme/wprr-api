@@ -82,7 +82,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT wp_term_relationships.object_id as id, wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id = "'.$this->_id.'"';
+				$query = 'SELECT wp_term_relationships.object_id as id, wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id IN ('.implode(',', $ids_to_load).')';
 				
 				$rows = $db->query($query);
 			

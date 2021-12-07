@@ -5,6 +5,7 @@
 	class Fields {
 		
 		protected $_post = null;
+		protected $_fields = null;
 		
 		function __construct() {
 			
@@ -41,39 +42,44 @@
 		}
 		
 		public function get_field($name) {
-			
+			return $this->get_all()[$name];
 		}
 		
 		public function get_all() {
 			//var_dump('Fields::get_all');
 			
-			global $wprr_data_api;
-			$wp = $wprr_data_api->wordpress();
+			if(!$this->_fields) {
+				global $wprr_data_api;
+				$wp = $wprr_data_api->wordpress();
 			
-			$fields = array();
+				$fields = array();
 			
-			$field_ids = $this->_post->get_incoming_direction()->get_type('field-for')->get_object_ids('internal-message-group-field');
+				$field_ids = $this->_post->get_incoming_direction()->get_type('field-for')->get_object_ids('internal-message-group-field');
 			
-			foreach($field_ids as $field_id) {
-				$field = new \Wprr\DataApi\WordPress\Field\Field();
-				$field->setup($wp->get_post($field_id), $this);
+				foreach($field_ids as $field_id) {
+					$field = new \Wprr\DataApi\WordPress\Field\Field();
+					$field->setup($wp->get_post($field_id), $this);
 				
-				$fields[$field->get_name()] = $field;
-			}
+					$fields[$field->get_name()] = $field;
+				}
 			
-			$structures = $this->get_structures();
-			foreach($structures as $structure) {
-				$field_templates = $structure->get_fields();
-				foreach($field_templates as $name => $field_template) {
-					if(!isset($fields[$name])) {
-						$field = new \Wprr\DataApi\WordPress\Field\AbstractField();
-						$field->setup($this->_post, $field_template);
-						$fields[$name]  = $field;
+				$structures = $this->get_structures();
+				foreach($structures as $structure) {
+					$field_templates = $structure->get_fields();
+					foreach($field_templates as $name => $field_template) {
+						if(!isset($fields[$name])) {
+							$field = new \Wprr\DataApi\WordPress\Field\AbstractField();
+							$field->setup($this->_post, $field_template);
+							$fields[$name]  = $field;
+						}
 					}
 				}
+				
+				$this->_fields = $fields;
 			}
 			
-			return $fields;
+			
+			return $this->_fields;
 		}
 		
 		public static function test_import() {

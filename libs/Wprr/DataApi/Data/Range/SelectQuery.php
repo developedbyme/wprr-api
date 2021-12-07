@@ -80,6 +80,23 @@
 			return $this;
 		}
 		
+		public function meta_query_between($field, $low_value, $high_value) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value BETWEEN "'.$db->escape($low_value).'" AND "'.$db->escape($high_value).'"';
+			$posts = $db->query($query);
+		
+			$ids = array_map(function($item) {
+				return (int)$item['id'];
+			}, $posts);
+			
+			$this->include_only($ids);
+			
+			return $this;
+		}
+		
 		public function include_term($term) {
 			if(!$term) {
 				//METODO: error message

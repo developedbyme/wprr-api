@@ -28,6 +28,15 @@
 			}
 		}
 		
+		public function prepare($ids) {
+			$this->load();
+			
+			if(method_exists($this->_encoder, 'prepare')) {
+				return $this->_encoder->prepare($ids);
+			}
+			return null;
+		}
+		
 		public function encode($id) {
 			$this->load();
 			

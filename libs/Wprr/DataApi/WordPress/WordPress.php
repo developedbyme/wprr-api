@@ -33,6 +33,34 @@
 			return $this->_posts[$id];
 		}
 		
+		public function load_meta_for_posts($ids) {
+			$ids_to_load = array();
+			
+			foreach($ids as $id) {
+				$post = $this->get_post($id);
+				if(!$post->has_database_meta_data()) {
+					$ids_to_load[] = (int)$id;
+					$grouped_data = array();
+					$grouped_data[$id] = array();
+				}
+			}
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$query = 'SELECT post_id as id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN ('.implode(',', $ids_to_load).')';
+			$meta_fields = $db->query($query);
+			
+			foreach($meta_fields as $meta_field) {
+				$id = (int)$meta_field['id'];
+				$grouped_data[$id][] = $meta_field;
+			}
+			
+			foreach($grouped_data as $id => $meta_array) {
+				$this->get_post($id)->set_database_meta_data($meta_array);
+			}
+		}
+		
 		public function get_user($id) {
 			if(!isset($this->_users[$id])) {
 				$new_user = new \Wprr\DataApi\WordPress\User();

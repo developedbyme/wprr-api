@@ -42,6 +42,10 @@
 			return $this->_database_data;
 		}
 		
+		public function has_database_meta_data() {
+			return !!$this->_database_meta;
+		}
+		
 		public function get_database_meta_data() {
 			if(!$this->_database_meta) {
 				global $wprr_data_api;
@@ -52,6 +56,12 @@
 			}
 			
 			return $this->_database_meta;
+		}
+		
+		public function set_database_meta_data($data) {
+			$this->_database_meta = $data;
+			
+			return $this;
 		}
 		
 		public function get_database_taxonomy_terms() {

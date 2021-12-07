@@ -111,10 +111,10 @@
 				
 				$wprr_data_api->performance()->start_meassure('RangeController::encode_range '.$current_encoding);
 				
-				$ids = $this->_queued_encodings[$current_encoding];
+				$current_ids = $this->_queued_encodings[$current_encoding];
 				unset($this->_queued_encodings[$current_encoding]);
 				
-				$this->_perform_encode_objects_as($ids, $current_encoding);
+				$this->_perform_encode_objects_as($current_ids, $current_encoding);
 				
 				$wprr_data_api->performance()->stop_meassure('RangeController::encode_range '.$current_encoding);
 			}

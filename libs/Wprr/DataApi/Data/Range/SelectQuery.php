@@ -47,6 +47,10 @@
 			
 			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value = "'.$db->escape($value).'"';
 			
+			if($this->_only !== null) {
+				$query .= ' AND post_id in ('.implode(',', $this->_only).')';
+			}
+			
 			$posts = $db->query($query);
 		
 			$ids = array_map(function($item) {

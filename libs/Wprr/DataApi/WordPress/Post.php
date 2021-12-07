@@ -64,6 +64,10 @@
 			return $this;
 		}
 		
+		public function has_database_taxonomy_terms() {
+			return !!$this->_database_taxonomy_terms;
+		}
+		
 		public function get_database_taxonomy_terms() {
 			if(!$this->_database_taxonomy_terms) {
 				global $wprr_data_api;
@@ -74,6 +78,12 @@
 			}
 			
 			return $this->_database_taxonomy_terms;
+		}
+		
+		public function set_database_taxonomy_terms($data) {
+			$this->_database_taxonomy_terms = $data;
+			
+			return $this;
 		}
 		
 		public function get_post_title() {

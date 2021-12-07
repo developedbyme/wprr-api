@@ -41,8 +41,10 @@
 				$query = new \Wprr\DataApi\Data\Range\SelectQuery();
 				
 				$field = 'toId';
+				$reverse_field = 'fromId';
 				if($this->_direction === 'outgoing') {
 					$field = 'fromId';
+					$reverse_field = 'toId';
 				}
 				
 				$ids = $query->set_post_type('dbm_object_relation')->include_term_by_path('dbm_type', 'object-relation')->include_private()->meta_query($field, $this->_post->get_id())->get_ids();
@@ -52,9 +54,13 @@
 				$group_term = $wp->get_taxonomy('dbm_type')->get_term('object-relation');
 				
 				$wp->load_meta_for_posts($ids);
+				$wp->load_taxonomy_terms_for_posts($ids);
+				
+				$reference_ids = array();
 				
 				foreach($ids as $id) {
 					$post = $wp->get_post($id);
+					$reference_ids[] = (int)$post->get_meta($reverse_field);
 					
 					$type_terms = $post->get_terms_in($group_term);
 					
@@ -63,11 +69,10 @@
 						
 						$object_relation_type = $this->ensure_type($type);
 						$object_relation_type->add_relation($post);
-						
-						
 					}
-					
 				}
+				
+				$wp->load_taxonomy_terms_for_posts($reference_ids);
 			}
 			
 			return $this->_types;

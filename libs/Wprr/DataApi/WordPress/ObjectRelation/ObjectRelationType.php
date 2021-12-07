@@ -30,7 +30,7 @@
 			$new_relation->setup($this, $post);
 			$this->_relations[] = $new_relation;
 			
-			return $this;
+			return $new_relation;
 		}
 		
 		public function filter_relations_by_object_type($relations, $object_type) {

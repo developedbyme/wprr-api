@@ -61,7 +61,40 @@
 					$this->get_post($id)->set_database_meta_data($meta_array);
 				}
 			}
+		}
+		
+		public function load_taxonomy_terms_for_posts($ids) {
+			//var_dump('load_taxonomy_terms_for_posts');
+			//var_dump($ids);
 			
+			$ids_to_load = array();
+			
+			foreach($ids as $id) {
+				$post = $this->get_post($id);
+				if(!$post->has_database_taxonomy_terms()) {
+					$ids_to_load[] = (int)$id;
+					$grouped_data = array();
+					$grouped_data[$id] = array();
+				}
+			}
+			
+			if(!empty($ids_to_load)) {
+				global $wprr_data_api;
+				$db = $wprr_data_api->database();
+				
+				$query = 'SELECT wp_term_relationships.object_id as id, wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id = "'.$this->_id.'"';
+				
+				$rows = $db->query($query);
+			
+				foreach($rows as $row) {
+					$id = (int)$row['id'];
+					$grouped_data[$id][] = $row;
+				}
+			
+				foreach($grouped_data as $id => $data) {
+					$this->get_post($id)->set_database_taxonomy_terms($data);
+				}
+			}
 		}
 		
 		public function get_user($id) {

@@ -126,18 +126,27 @@
 				return $id;
 			}
 			
-			$wprr_data_api->performance()->start_meassure('RangeController::encode_object_as '.$encoding_type);
-			
 			$encoded_data = $this->get_encoded_data();
 			
 			if(!$encoded_data->has_encoded_object($id, $encoding_type)) {
 				$encoded_data->add_object_to_range($id, $encoding_type);
-				foreach($this->_encoding[$encoding_type] as $encoding) {
-					$encoding->encode($id);
-				}
+				$this->_perform_encode_object_as($id, $encoding_type);
 			}
 			
-			$wprr_data_api->performance()->stop_meassure('RangeController::encode_object_as '.$encoding_type);
+			return $id;
+		}
+		
+		protected function _perform_encode_object_as($id, $encoding_type) {
+			
+			global $wprr_data_api;
+			
+			$wprr_data_api->performance()->start_meassure('RangeController::_perform_encode_object_as '.$encoding_type);
+			
+			foreach($this->_encoding[$encoding_type] as $encoding) {
+				$encoding->encode($id);
+			}
+			
+			$wprr_data_api->performance()->stop_meassure('RangeController::_perform_encode_object_as '.$encoding_type);
 			
 			return $id;
 		}

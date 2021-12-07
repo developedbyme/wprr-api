@@ -53,7 +53,18 @@
 				}
 				
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids');
-				$ids = $query->set_post_type('dbm_object_relation')->include_term_by_path('dbm_type', 'object-relation')->include_private()->meta_query($field, $this->_post->get_id())->get_ids();
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 1');
+				$query->set_post_type('dbm_object_relation')->include_private();
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 1');
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 2');
+				$query->include_term_by_path('dbm_type', 'object-relation');
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 2');
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 3');
+				$query->meta_query($field, $this->_post->get_id());
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 3');
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 4');
+				$ids = $query->get_ids();
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 4');
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids');
 				
 				$wp = $wprr_data_api->wordpress();

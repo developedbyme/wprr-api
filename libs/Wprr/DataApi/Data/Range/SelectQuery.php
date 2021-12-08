@@ -7,6 +7,8 @@
 		protected $_only = null;
 		protected $_statuses = array('publish');
 		protected $_post_types = null;
+		protected $_joins = array();
+		protected $_wheres = array();
 
 		function __construct() {
 			
@@ -118,6 +120,22 @@
 			return $this;
 		}
 		
+		public function term_query($term) {
+			$this->_joins[] = 'wp_term_relationships ON wp_posts.ID = wp_term_relationships.object_id';
+			$this->_wheres[] = 'wp_term_relationships.term_taxonomy_id = '.$term->get_id();
+			
+			return $this;
+		}
+		
+		public function term_query_by_path($taxonomy, $term_path) {
+			global $wprr_data_api;
+			$term = $wprr_data_api->wordpress()->get_taxonomy($taxonomy)->get_term($term_path);
+			
+			$this->term_query($term);
+			
+			return $this;
+		}
+		
 		public function include_only($ids) {
 			if(!$ids || empty($ids)) {
 				$this->include_none();
@@ -179,6 +197,13 @@
 			
 			$where = array();
 			
+			if(!empty($this->_joins)) {
+				foreach($this->_joins as $join) {
+					$query .= ' INNER JOIN '.$join;
+				}
+			}
+			
+			
 			if($this->_statuses) {
 				$has_query = true;
 				$encoded_statuses = array();
@@ -203,6 +228,10 @@
 			
 			if($this->_only !== null) {
 				$where[] = 'ID in ('.implode(',', $this->_only).')';
+			}
+			
+			foreach($this->_wheres as $extra_where) {
+				$where[] = $extra_where;
 			}
 			
 			$query .= " WHERE ".implode(' AND ', $where);

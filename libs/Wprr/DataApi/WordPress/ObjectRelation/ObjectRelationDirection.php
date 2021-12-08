@@ -57,7 +57,7 @@
 				$query->set_post_type('dbm_object_relation')->include_private();
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 1');
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 2');
-				$query->include_term_by_path('dbm_type', 'object-relation');
+				$query->term_query_by_path('dbm_type', 'object-relation');
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 2');
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 3');
 				$query->meta_query($field, $this->_post->get_id());

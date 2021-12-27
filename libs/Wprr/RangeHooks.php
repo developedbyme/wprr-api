@@ -102,6 +102,7 @@
 			add_filter(WPRR_DOMAIN.'/range_query/myOrder', array($this, 'filter_query_my_order'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/inTaxonomy', array($this, 'filter_query_in_taxonomy'), 10, 2);
 			
+			add_filter(WPRR_DOMAIN.'/range_query/anyStatus', array($this, 'filter_query_anyStatus'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/allOrders', array($this, 'filter_query_allOrders'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/byOrderStatus', array($this, 'filter_query_byOrderStatus'), 10, 2);
 			add_filter(WPRR_DOMAIN.'/range_query/byCompletedDate', array($this, 'filter_query_byCompletedDate'), 10, 2);
@@ -629,6 +630,15 @@
 			}
 			
 			return true;
+		}
+		
+		public function filter_query_anyStatus($query_args, $data) {
+			
+			$this->verify_orders_permission();
+			
+			$query_args['post_status'] = array('any');
+			
+			return $query_args;
 		}
 		
 		public function filter_query_allOrders($query_args, $data) {

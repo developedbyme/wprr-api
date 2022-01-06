@@ -286,6 +286,12 @@
 			return $data['post_name'];
 		}
 		
+		public function get_publish_date() {
+			$data = $this->get_database_data();
+			
+			return $data['post_date'];
+		}
+		
 		public function get_incoming_direction() {
 			if(!$this->_incomingRelations) {
 				$this->_incomingRelations = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationDirection();

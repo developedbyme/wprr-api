@@ -8,6 +8,11 @@
 			
 		}
 		
+		public function prepare($ids) {
+			global $wprr_data_api;
+			$wprr_data_api->wordpress()->load_meta_for_posts($ids);
+		}
+		
 		public function encode($id) {
 			//var_dump("FeaturedImage::encode");
 			

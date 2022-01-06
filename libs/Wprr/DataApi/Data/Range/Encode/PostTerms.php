@@ -8,6 +8,11 @@
 			
 		}
 		
+		public function prepare($ids) {
+			global $wprr_data_api;
+			$wprr_data_api->wordpress()->load_taxonomy_terms_for_posts($ids);
+		}
+		
 		public function encode($id) {
 			//var_dump("PostTerms::encode");
 			

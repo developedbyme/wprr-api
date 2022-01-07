@@ -555,4 +555,40 @@
 		
 		return implode('-', $ids);
 	}
+	
+	function wprr_generate_data_api_settings() {
+		$settings = apply_filters('wprr/data-api/generate-settings', '');
+		$ranges = '';
+		
+		$ranges = apply_filters('wprr/data-api/generate-ranges', $ranges);
+		
+		$settings = "<?php"."\n".$settings."?>";
+		$ranges = "<?php"."\n".$ranges."?>";
+		
+		$upload_dir = wp_upload_dir(null, false);
+		
+		$upload_path = $upload_dir['basedir'].'/wprr-api-settings';
+		
+		if (!file_exists($upload_path)) {
+			mkdir($upload_path, 0775, true);
+		}
+		
+		if(file_exists($upload_path.'/settings.php')) {
+			copy($upload_path.'/settings.php', $upload_path.'/settings-'.time().'.php');
+		}
+		file_put_contents($upload_path.'/settings.php', $settings);
+		
+		if(file_exists($upload_path.'/register-ranges.php')) {
+			copy($upload_path.'/register-ranges.php', $upload_path.'/register-ranges-'.time().'.php');
+		}
+		file_put_contents($upload_path.'/register-ranges.php', $ranges);
+	}
+	
+	function wprr_get_data_api_select_registration_code($type, $file_path, $class_path) {
+		return '$range_controller->register_selection("'.$type.'", "'.$file_path.'", "'.$class_path.'");';
+	}
+	
+	function wprr_get_data_api_encode_registration_code($type, $file_path, $class_path) {
+		return '$range_controller->register_encoding(\''.$type.'\', \''.$file_path.'\', \''.$class_path.'\');';
+	}
 ?>

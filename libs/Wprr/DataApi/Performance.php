@@ -47,7 +47,12 @@
 				
 				$number_of_calls = count($data['calls']);
 				$total_time = array_sum($data['calls']);
-				$average_time = $total_time/$number_of_calls;
+				if($number_of_calls) {
+					$average_time = $total_time/$number_of_calls;
+				}
+				else {
+					$number_of_calls = 0;
+				}
 				
 				$return_object[$type] = array(
 					'numberOfCalls' => $number_of_calls,

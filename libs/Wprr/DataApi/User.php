@@ -87,6 +87,33 @@
 			
 			return $rest_nonce;
 		}
+		
+		public function get_user_for_call($data) {
+			if(!$this->is_signed_in()) {
+				throw(new \Exception('Not signed in'));
+			}
+			
+			global $wprr_data_api;
+			
+			$current_id = $this->get_user_data()['id'];
+			if(isset($data['asUser'])) {
+				
+				$as_user = (int)$data['asUser'];
+				if($as_user !== $current_id ) {
+					$signed_in_user = $wprr_data_api->wordpress()->get_user($current_id);
+				
+					$current_id = $as_user;
+				
+					$is_ok = in_array('administrator', $signed_in_user->get_roles());
+					//METODO: check more permissions
+					if(!$is_ok) {
+						throw(new \Exception('Not allowed to impersonate user '.$as_user));
+					}
+				}
+			}
+			
+			return $wprr_data_api->wordpress()->get_user($current_id);
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\User<br />");

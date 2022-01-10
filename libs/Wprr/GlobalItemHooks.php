@@ -29,6 +29,7 @@
 			add_filter($prefix.'/acf/options', array($this, 'filter_acf_options'), 10, 3);
 			add_filter($prefix.'/oembed', array($this, 'filter_oembed'), 10, 3);
 			
+			add_filter($prefix.'/development/generate-data-api-settings', array($this, 'filter_development_generate_data_api_settings'), 10, 3);
 		}
 		
 		public function filter_wpml_languages($return_object, $item, $data) {
@@ -262,6 +263,10 @@
 			$return_object['renderedHtml'] = $html;
 			
 			return $return_object;
+		}
+		
+		public function filter_development_generate_data_api_settings($return_object, $item, $data) {
+			wprr_generate_data_api_settings();
 		}
 		
 		public static function test_import() {

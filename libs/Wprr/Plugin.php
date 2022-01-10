@@ -361,6 +361,9 @@
 			
 			add_filter($create_post_prefix.'valid_combination', array($this, 'filter_create_post_valid_combination'), 10, 4);
 			add_filter($create_post_prefix.'insert/draft', array($this, 'filter_create_post_insert_draft'), 10, 3);
+			
+			add_filter('wprr/data-api/generate-settings', array($this, 'filter_data_api_generate_settings'), 10, 1);
+			add_filter('wprr/data-api/generate-ranges', array($this, 'filter_data_api_generate_ranges'), 10, 1);
 		}
 		
 		public function filter_create_post_valid_combination($is_valid, $post_type, $data_type, $creation_method) {
@@ -385,6 +388,97 @@
 			$post_id = wp_insert_post($insert_arguments);
 			
 			return $post_id;
+		}
+		
+		public function filter_data_api_generate_settings($code) {
+			
+			$code .= "define('DB_NAME', '".(DB_NAME)."');"."\n";
+			$code .= "define('DB_USER', '".(DB_USER)."');"."\n";
+			$code .= "define('DB_PASSWORD', '".(DB_PASSWORD)."');"."\n";
+			$code .= "define('DB_HOST', '".(DB_HOST)."');"."\n";
+				
+			$code .= "define('THEME_NAME', '".(basename(get_template_directory()))."');"."\n";
+	
+			$code .= "define('SITE_URL', '".(get_site_url())."');"."\n";
+			
+			$upload_dir = wp_upload_dir(null, false);
+			$code .= "define('UPLOAD_URL', '".($upload_dir['baseurl'])."');"."\n";
+	
+			$code .= "define('AUTH_KEY', '".(AUTH_KEY)."');"."\n";
+			$code .= "define('SECURE_AUTH_KEY', '".(SECURE_AUTH_KEY)."');"."\n";
+			$code .= "define('LOGGED_IN_KEY', '".(LOGGED_IN_KEY)."');"."\n";
+			$code .= "define('NONCE_KEY', '".(NONCE_KEY)."');"."\n";
+			$code .= "define('AUTH_SALT', '".(AUTH_SALT)."');"."\n";
+			$code .= "define('SECURE_AUTH_SALT', '".(SECURE_AUTH_SALT)."');"."\n";
+			$code .= "define('LOGGED_IN_SALT', '".(LOGGED_IN_SALT)."');"."\n";
+			$code .= "define('NONCE_SALT', '".(NONCE_SALT)."');"."\n";
+	
+			$code .= "define('NONCE_LIFE', ".(apply_filters( 'nonce_life', DAY_IN_SECONDS )).");"."\n";
+			
+			return $code;
+		}
+		
+		public function filter_data_api_generate_ranges($code) {
+			
+			$code .= 'global $wprr_data_api;'."\n";
+			$code .= '$range_controller = $wprr_data_api->range();'."\n";
+			
+			$select_prefix = WPRR_DIR.'/libs/Wprr/DataApi/Data/Range/Select/';
+			$select_namespace = '\\Wprr\\DataApi\\Data\\Range\\Select\\';
+			
+			$selections = array(
+				'idSelection' => 'IdSelection',
+				'relation' => 'Relation',
+				'menu' => 'Menu',
+				'postRelation' => 'PostRelation',
+				'wpmlLanguage' => 'WpmlLanguage',
+				'anyStatus' => 'AnyStatus',
+				'posts' => 'Posts',
+			);
+			
+			foreach($selections as $id => $class_name) {
+				$code .= wprr_get_data_api_select_registration_code($id, $select_prefix.$class_name.'.php', $select_namespace.implode('\\', explode('/', $class_name)))."\n";
+			}
+			
+			$encode_prefix = WPRR_DIR.'/libs/Wprr/DataApi/Data/Range/Encode/';
+			$encode_namespace = '\\Wprr\\DataApi\\Data\\Range\\Encode\\';
+			
+			$encodings = array(
+				'id' => 'Id',
+				'postTitle' => 'PostTitle',
+				'featuredImage' => 'FeaturedImage',
+				'postTerms' => 'PostTerms',
+				'permalink' => 'Permalink',
+				'preview' => 'Preview',
+				'image' => 'Image',
+				'menuItem' => 'MenuItem',
+				'postContent' => 'PostContent',
+				'page' => 'Page',
+				'postExcerpt' => 'PostExcerpt',
+				'pageSettings' => 'PageSettings',
+				'pageSetting' => 'PageSetting',
+				'type' => 'Type',
+				'pageDataSources' => 'PageDataSources',
+				'dataSource' => 'DataSource',
+				'messagesInGroup' => 'MessagesInGroup',
+				'internalMessage' => 'InternalMessage',
+				'internalMessage/change-comment' => 'InternalMessageTypes/ChangeComment',
+				'internalMessage/field-changed' => 'InternalMessageTypes/FieldChanged',
+				'fields' => 'Fields',
+				'fieldTemplate' => 'FieldTemplate',
+				'fieldTemplate/relation' => 'FieldTemplateTypes/Relation',
+				'relations' => 'Relations',
+				'relation' => 'Relation',
+				'objectTypes' => 'ObjectTypes',
+				'postStatus' => 'PostStatus',
+				'publishDate' => 'PublishDate',
+			);
+			
+			foreach($encodings as $id => $class_name) {
+				$code .= wprr_get_data_api_encode_registration_code($id, $encode_prefix.$class_name.'.php', $encode_namespace.implode('\\', explode('/', $class_name)))."\n";
+			}
+			
+			return $code;
 		}
 		
 		public function hook_wpml_before_init() {

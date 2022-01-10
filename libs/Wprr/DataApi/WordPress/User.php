@@ -8,6 +8,7 @@
 		protected $_database_data = null;
 		protected $_database_meta = null;
 		protected $_meta = array();
+		protected $_relation_types = null;
 		
 		function __construct() {
 			
@@ -40,7 +41,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT meta_key, meta_value FROM wp_usermeta WHERE post_id = "'.$this->_id.'"';
+				$query = 'SELECT meta_key, meta_value FROM wp_usermeta WHERE user_id = "'.$this->_id.'"';
 				$this->_database_meta = $db->query($query);
 			}
 			
@@ -90,6 +91,73 @@
 		
 		public function get_gravatar_hash() {
 			return md5( strtolower( trim( $this->get_email() ) ) );
+		}
+		
+		public function get_roles() {
+			$capabilites = $this->get_meta('wp_capabilities');
+			
+			$return_array = array();
+			foreach($capabilites as $name => $active) {
+				if($active) {
+					$return_array[] = $name;
+				}
+			}
+			
+			return $return_array;
+		}
+		
+		public function ensure_relation_type($type) {
+			if(!isset($this->_relation_types[$type])) {
+				$new_type = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectUserRelationFromUserType();
+				$new_type->setup($this, $type);
+				$this->_relation_types[$type] = $new_type;
+			}
+			
+			return $this->_relation_types[$type];
+		}
+		
+		public function get_relation_types() {
+			if(!$this->_relation_types) {
+				global $wprr_data_api;
+				
+				$this->_relation_types = array();
+				
+				$query = new \Wprr\DataApi\Data\Range\SelectQuery();
+				
+				$query->set_post_type('dbm_object_relation')->include_private();
+				$query->term_query_by_path('dbm_type', 'object-user-relation');
+				$query->meta_query('toId', $this->get_id());
+				$ids = $query->get_ids();
+				
+				$wp = $wprr_data_api->wordpress();
+				$group_term = $wp->get_taxonomy('dbm_type')->get_term('object-user-relation');
+				
+				$reference_ids = array();
+				
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types setup relations');
+				foreach($ids as $id) {
+					$post = $wp->get_post($id);
+					$reference_ids[] = (int)$post->get_meta('toId');
+					
+					$type_terms = $post->get_terms_in($group_term);
+					
+					foreach($type_terms as $type_term) {
+						$type = $type_term->get_slug();
+						
+						$object_relation_type = $this->ensure_relation_type($type);
+						$object_relation_type->add_relation($post);
+					}
+				}
+				
+				$wp->load_taxonomy_terms_for_posts($reference_ids);
+				
+			}
+			
+			return $this->_relation_types;
+		}
+		
+		public function get_relation_type($type) {
+			return $this->get_relation_types()[$type];
 		}
 
 		public static function test_import() {

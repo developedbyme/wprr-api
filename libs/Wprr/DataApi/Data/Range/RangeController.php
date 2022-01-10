@@ -128,6 +128,7 @@
 		}
 		
 		public function encode_objects_as($ids, $encoding_type) {
+			
 			foreach($ids as $id) {
 				$this->encode_object_as($id, $encoding_type);
 			}

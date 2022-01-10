@@ -32,8 +32,10 @@
 			
 			$encoded_data->data['type'] = $wprr_data_api->range()->encode_term($type);
 			
-			$subtype_encoding_name = 'fieldTemplate/'.$type->get_slug();
-			$wprr_data_api->range()->encode_object_if_encoding_exists_as($id, $subtype_encoding_name);
+			if($type) {
+				$subtype_encoding_name = 'fieldTemplate/'.$type->get_slug();
+				$wprr_data_api->range()->encode_object_if_encoding_exists_as($id, $subtype_encoding_name);
+			}
 		}
 
 		public static function test_import() {

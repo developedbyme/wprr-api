@@ -437,7 +437,7 @@
 			);
 			
 			foreach($selections as $id => $class_name) {
-				$code .= wprr_get_data_api_select_registration_code($id, $select_prefix.$class_name.'.php', $select_namespace.$encode_namespace.implode('\\', explode('/', $class_name)))."\n";
+				$code .= wprr_get_data_api_select_registration_code($id, $select_prefix.$class_name.'.php', $select_namespace.implode('\\', explode('/', $class_name)))."\n";
 			}
 			
 			$encode_prefix = WPRR_DIR.'/libs/Wprr/DataApi/Data/Range/Encode/';

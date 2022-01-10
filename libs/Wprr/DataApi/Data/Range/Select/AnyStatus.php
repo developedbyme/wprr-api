@@ -14,6 +14,11 @@
 			global $wprr_data_api;
 			
 			//METODO: check that user is allowed
+			$user = $wprr_data_api->user()->get_user_for_call($data);
+			$is_ok = in_array('administrator', $user->get_roles());
+			if(!$is_ok) {
+				throw(new \Exception('User '.$as_user.' is not allowed to get anyStatus'));
+			}
 			
 			$query->include_all_statuses();
 		}

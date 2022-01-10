@@ -13,6 +13,7 @@
 		
 		protected $_incomingRelations = null;
 		protected $_outgoingRelations = null;
+		protected $_userRelations = null;
 		
 		protected $_fields = null;
 		
@@ -308,6 +309,15 @@
 			}
 			
 			return $this->_outgoingRelations;
+		}
+		
+		public function get_user_relations() {
+			if(!$this->_userRelations) {
+				$this->_userRelations = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectUserRelationDirection();
+				$this->_userRelations->setup($this);
+			}
+			
+			return $this->_userRelations;
 		}
 		
 		public function get_fields() {

@@ -469,6 +469,7 @@
 				'fieldTemplate/relation' => 'FieldTemplateTypes/Relation',
 				'relations' => 'Relations',
 				'relation' => 'Relation',
+				'userRelation' => 'UserRelation',
 				'objectTypes' => 'ObjectTypes',
 				'postStatus' => 'PostStatus',
 				'publishDate' => 'PublishDate',

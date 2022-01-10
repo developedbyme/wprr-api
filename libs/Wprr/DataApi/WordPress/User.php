@@ -134,7 +134,6 @@
 				
 				$reference_ids = array();
 				
-				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types setup relations');
 				foreach($ids as $id) {
 					$post = $wp->get_post($id);
 					$reference_ids[] = (int)$post->get_meta('toId');

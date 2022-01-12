@@ -37,7 +37,8 @@
 			if($json_error) {
 				$this->output_api_error('Could not encode JSON (error: '.$json_error.')');
 			}
-
+			
+			header('Access-Control-Allow-Origin: *');
 			header('Content-Type: application/json; charset=utf-8');
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Pragma: no-cache');
@@ -61,6 +62,7 @@
 			);
 			
 			header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
+			header('Access-Control-Allow-Origin: *');
 			header('Content-Type: application/json; charset=utf-8');
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Pragma: no-cache');

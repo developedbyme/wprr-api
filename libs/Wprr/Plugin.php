@@ -473,6 +473,9 @@
 				'objectTypes' => 'ObjectTypes',
 				'postStatus' => 'PostStatus',
 				'publishDate' => 'PublishDate',
+				'subscriptionDates' => 'SubscriptionDates',
+				'orderItems' => 'OrderItems',
+				'product' => 'Product',
 			);
 			
 			foreach($encodings as $id => $class_name) {

@@ -434,6 +434,7 @@
 				'wpmlLanguage' => 'WpmlLanguage',
 				'anyStatus' => 'AnyStatus',
 				'posts' => 'Posts',
+				'byTaxonomyTerm' => 'ByTaxonomyTerm',
 			);
 			
 			foreach($selections as $id => $class_name) {

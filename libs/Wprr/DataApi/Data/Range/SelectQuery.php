@@ -42,6 +42,18 @@
 			return $this;
 		}
 		
+		public function set_status($status) {
+			$this->_statuses = array($status);
+			
+			return $this;
+		}
+		
+		public function include_status($status) {
+			$this->_statuses[] = $status;
+			
+			return $this;
+		}
+		
 		public function meta_query($field, $value) {
 			
 			global $wprr_data_api;
@@ -95,6 +107,16 @@
 			}, $posts);
 			
 			$this->include_only($ids);
+			
+			return $this;
+		}
+		
+		public function in_date_range($start_date, $end_date) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$this->_wheres[] = 'DATE(post_date) BETWEEN "'.$db->escape($start_date).'" AND "'.$db->escape($end_date).'"';
 			
 			return $this;
 		}

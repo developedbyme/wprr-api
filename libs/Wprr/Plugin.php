@@ -435,6 +435,7 @@
 				'anyStatus' => 'AnyStatus',
 				'posts' => 'Posts',
 				'byTaxonomyTerm' => 'ByTaxonomyTerm',
+				'inDateRange' => 'InDateRange',
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -477,6 +478,11 @@
 				'subscriptionDates' => 'SubscriptionDates',
 				'orderItems' => 'OrderItems',
 				'product' => 'Product',
+				'order/items' => 'Order/Items',
+				'order/totals' => 'Order/Totals',
+				'order/details' => 'Order/Details',
+				'order/user' => 'Order/User',
+				'order/paymentMethod' => 'Order/PaymentMethod',
 			);
 			
 			foreach($encodings as $id => $class_name) {

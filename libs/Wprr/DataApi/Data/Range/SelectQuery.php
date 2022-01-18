@@ -20,6 +20,21 @@
 			return $this;
 		}
 		
+		public function set_post_types($post_types) {
+			$this->_post_types = $post_types;
+			
+			return $this;
+		}
+		
+		public function add_post_type($post_type) {
+			if(!$this->_post_types) {
+				$this->_post_types = array();
+			}
+			$this->_post_types[] = $post_type;
+			
+			return $this;
+		}
+		
 		public function include_private() {
 			if($this->_statuses) {
 				$this->_statuses[] = 'private';
@@ -119,6 +134,22 @@
 			$this->_wheres[] = 'DATE(post_date) BETWEEN "'.$db->escape($start_date).'" AND "'.$db->escape($end_date).'"';
 			
 			return $this;
+		}
+		
+		public function with_parent($parent_id) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$this->_wheres[] = 'post_parent = '.$db->escape($parent_id);
+		}
+		
+		public function with_slug($slug) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$this->_wheres[] = 'post_name = "'.$db->escape($slug).'"';
 		}
 		
 		public function include_term($term) {

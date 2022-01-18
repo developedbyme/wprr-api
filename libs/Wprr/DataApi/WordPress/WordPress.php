@@ -116,6 +116,39 @@
 			
 			return $this->_fields_structures[$type];
 		}
+		
+		public function get_post_id_by_path($path) {
+			
+			if($path === '') {
+				return $this->get_front_page_id();
+			}
+			
+			$slugs = explode('/', $path);
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$current_id = 0;
+			foreach($slugs as $slug) {
+				$query = $db->new_select_query();
+				$query->set_post_types(array('page', 'post'));
+				$query->with_parent($current_id);
+				$query->with_slug($slug);
+				$new_id = $query->get_id();
+				if(!$new_id) {
+					return 0;
+				}
+				$current_id = $new_id;
+			}
+			
+			return $current_id;
+		}
+		
+		public function get_front_page_id() {
+			//METODO
+			
+			return 0;
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress<br />");

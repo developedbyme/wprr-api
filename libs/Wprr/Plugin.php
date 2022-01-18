@@ -483,6 +483,7 @@
 				'order/details' => 'Order/Details',
 				'order/user' => 'Order/User',
 				'order/paymentMethod' => 'Order/PaymentMethod',
+				'pageTemplate' => 'PageTemplate',
 			);
 			
 			foreach($encodings as $id => $class_name) {

@@ -23,6 +23,8 @@
 			
 			$encoded_data->data['dataName'] = $post->get_meta('dataName');
 			$encoded_data->data['data'] = $post->get_meta('data');
+			
+			$wprr_data_api->range()->encode_object_as($id, 'objectTypes');
 		}
 
 		public static function test_import() {

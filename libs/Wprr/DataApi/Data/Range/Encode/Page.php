@@ -25,8 +25,8 @@
 			$wprr_data_api->range()->encode_object_as($id, 'pageSettings');
 			$wprr_data_api->range()->encode_object_as($id, 'pageDataSources');
 			$wprr_data_api->range()->encode_object_as($id, 'postStatus');
+			$wprr_data_api->range()->encode_object_as($id, 'postType');
 			
-			$encoded_data->data['postType'] = $post->get_data('post_type');
 		}
 
 		public static function test_import() {

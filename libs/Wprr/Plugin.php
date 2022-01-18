@@ -484,6 +484,7 @@
 				'order/user' => 'Order/User',
 				'order/paymentMethod' => 'Order/PaymentMethod',
 				'pageTemplate' => 'PageTemplate',
+				'postType' => 'PostType',
 			);
 			
 			foreach($encodings as $id => $class_name) {

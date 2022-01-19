@@ -486,6 +486,7 @@
 				'pageTemplate' => 'PageTemplate',
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',
+				'sequenceNumber' => 'SequenceNumber',
 			);
 			
 			foreach($encodings as $id => $class_name) {

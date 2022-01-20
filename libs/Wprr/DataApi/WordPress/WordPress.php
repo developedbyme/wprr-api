@@ -145,7 +145,13 @@
 		}
 		
 		public function get_front_page_id() {
-			//METODO
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$result = $db->query_first('SELECT option_value as id FROM wp_options WHERE option_name = "page_on_front"');
+			if($result) {
+				return (int)$result['id'];
+			}
 			
 			return 0;
 		}

@@ -415,6 +415,33 @@
 	
 			$code .= "define('NONCE_LIFE', ".(apply_filters( 'nonce_life', DAY_IN_SECONDS )).");"."\n";
 			
+			$post_types = get_post_types();
+			
+			$public_types = array();
+			$rewrites = array();
+			
+			foreach($post_types as $post_type) {
+				$post_type_data = get_post_type_object($post_type);
+				if($post_type_data->public) {
+					
+					if($post_type_data->rewrite) {
+						$rewrites[$post_type_data->rewrite["slug"]] = $post_type;
+					}
+					else {
+						$public_types[] = $post_type;
+					}
+				}
+				
+			}
+			
+			$code .= "define('PUBLIC_POST_TYPES', array('".implode('\',\'', $public_types)."'));"."\n";
+			
+			$code .= "define('REWRITE_POST_TYPES', array("."\n";
+			foreach($rewrites as $slug => $type) {
+				$code .= "\t'".$slug."' => '".$type."',\n";
+			}
+			$code .= "));"."\n";
+			
 			return $code;
 		}
 		

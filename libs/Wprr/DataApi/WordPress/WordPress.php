@@ -131,14 +131,32 @@
 			$current_id = 0;
 			foreach($slugs as $slug) {
 				$query = $db->new_select_query();
-				$query->set_post_types(array('page', 'post'));
+				$query->set_post_types(PUBLIC_POST_TYPES);
 				$query->with_parent($current_id);
 				$query->with_slug($slug);
 				$new_id = $query->get_id();
-				if(!$new_id) {
-					return 0;
-				}
 				$current_id = $new_id;
+				if(!$current_id) {
+					break;
+				}
+			}
+			
+			if(!$current_id) {
+				if(isset(REWRITE_POST_TYPES[$slugs[0]])) {
+					$current_post_type = REWRITE_POST_TYPES[$slugs[0]];
+					array_shift($slugs);
+					foreach($slugs as $slug) {
+						$query = $db->new_select_query();
+						$query->set_post_types(array($current_post_type));
+						$query->with_parent($current_id);
+						$query->with_slug($slug);
+						$new_id = $query->get_id();
+						$current_id = $new_id;
+						if(!$current_id) {
+							break;
+						}
+					}
+				}
 			}
 			
 			return $current_id;

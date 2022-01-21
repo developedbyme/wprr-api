@@ -307,17 +307,15 @@
 			global $wprr_data_api;
 			$wp = $wprr_data_api->wordpress();
 			
-			$order_ids = $this->get_outgoing_direction('relation-order-by')->get_type('relation-order')->get_object_ids();
+			$order_ids = $this->get_outgoing_direction()->get_type('relation-order-by')->get_object_ids('relation-order');
 		
 			foreach($order_ids as $order_id) {
 				
-				$post = $wprr_data_api->get_post($order_id);
+				$post = $wp->get_post($order_id);
 				
 				$current_for_type = $post->get_meta('forType');
 			
 				if($current_for_type === $for_type) {
-					$order_data_id = $post->get_meta('toId');
-					$post = $wprr_data_api->get_post($order_data_id);
 					return $post->get_meta('order');
 				}
 			}

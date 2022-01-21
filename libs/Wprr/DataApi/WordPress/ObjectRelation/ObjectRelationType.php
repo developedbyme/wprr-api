@@ -106,15 +106,27 @@
 			
 			$selected_relations = $this->get_relations($object_type, $time);
 			
-			//METODO: sort
 			$order = $this->get_direction()->get_post()->get_order($order);
-			var_dump($order);
+			
+			$current_next_space = count($order);
+			
+			$return_array = array();
 			
 			foreach($selected_relations as $relation) {
-				$return_array[] = $relation->get_object_id();
+				
+				$current_id = $relation->get_id();
+				$index = array_search($current_id, $order);
+				if($index === false) {
+					$index = $current_next_space;
+					$current_next_space++;
+				}
+				
+				$return_array[$index] = $relation->get_object_id();
 			}
 			
-			return $return_array;
+			ksort($return_array);
+			
+			return array_values($return_array);
 		}
 		
 		public function __toString() {

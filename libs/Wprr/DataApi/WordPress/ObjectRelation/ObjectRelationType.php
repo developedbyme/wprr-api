@@ -101,6 +101,22 @@
 			return 0;
 		}
 		
+		public function get_object_ids_in_order($object_type, $order, $time = -1) {
+			$return_array = array();
+			
+			$selected_relations = $this->get_relations($object_type, $time);
+			
+			//METODO: sort
+			$order = $this->get_direction()->get_post()->get_order($order);
+			var_dump($order);
+			
+			foreach($selected_relations as $relation) {
+				$return_array[] = $relation->get_object_id();
+			}
+			
+			return $return_array;
+		}
+		
 		public function __toString() {
 			return "[Type type:".$this->_type."]";
 		}

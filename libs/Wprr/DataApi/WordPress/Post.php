@@ -302,6 +302,29 @@
 			return $this->_incomingRelations;
 		}
 		
+		public function get_order($for_type) {
+			
+			global $wprr_data_api;
+			$wp = $wprr_data_api->wordpress();
+			
+			$order_ids = $this->get_outgoing_direction('relation-order-by')->get_type('relation-order')->get_object_ids();
+		
+			foreach($order_ids as $order_id) {
+				
+				$post = $wprr_data_api->get_post($order_id);
+				
+				$current_for_type = $post->get_meta('forType');
+			
+				if($current_for_type === $for_type) {
+					$order_data_id = $post->get_meta('toId');
+					$post = $wprr_data_api->get_post($order_data_id);
+					return $post->get_meta('order');
+				}
+			}
+		
+			return array();
+		}
+		
 		public function get_outgoing_direction() {
 			if(!$this->_outgoingRelations) {
 				$this->_outgoingRelations = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationDirection();

@@ -17,6 +17,10 @@
 			return $this->_direction;
 		}
 		
+		public function get_post() {
+			return $this->_post;
+		}
+		
 		public function setup($post, $direction) {
 			$this->_post = $post;
 			$this->_direction = $direction;

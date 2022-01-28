@@ -129,6 +129,62 @@
 			return array_values($return_array);
 		}
 		
+		protected function _update_hierarchy_order(&$hierarchy_items, &$active_ids, &$unused_ids, &$id_map) {
+			//var_dump('_update_hierarchy_order', $hierarchy_items, $active_ids, $unused_ids, $id_map);
+			
+			$length = count($hierarchy_items);
+			
+			for($i = 0; $i < $length; $i++) {
+				$hierarchy_item = &$hierarchy_items[$i];
+				$id = $hierarchy_item["id"];
+				if(array_search($id, $active_ids) !== false) {
+					$hierarchy_item["id"] = $id_map[$id];
+					
+					$unused_index = array_search($id, $unused_ids);
+					if($unused_index !== false) {
+						array_splice($unused_ids, $unused_index, 1);
+					}
+					
+					$this->_update_hierarchy_order($hierarchy_item["children"], $active_ids, $unused_ids, $id_map);
+				}
+				else {
+					array_splice($hierarchy_items, $i, 1);
+					$i--;
+					$length--;
+				}
+			}
+		}
+		
+		public function get_object_ids_in_hierarchy($object_type, $order, $time = -1) {
+			$return_array = array();
+			
+			$selected_relations = $this->get_relations($object_type, $time);
+			
+			$order = $this->get_direction()->get_post()->get_order($order);
+			
+			$active_ids = array();
+			$unused_ids = array();
+			$id_map = array();
+			
+			foreach($selected_relations as $relation) {
+				
+				$current_id = $relation->get_id();
+				
+				$active_ids[] = $current_id;
+				$unused_ids[] = $current_id;
+				
+				$id_map[$current_id] = $relation->get_object_id();
+			}
+			
+			$this->_update_hierarchy_order($order, $active_ids, $unused_ids, $id_map);
+			
+			foreach($unused_ids as $unused_id) {
+				$order[] = array('id' => $unused_id, 'children' => array());
+			}
+			
+			return $order;
+		}
+		
 		public function __toString() {
 			return "[Type type:".$this->_type."]";
 		}

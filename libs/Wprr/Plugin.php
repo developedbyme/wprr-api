@@ -514,6 +514,10 @@
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',
 				'sequenceNumber' => 'SequenceNumber',
+				'task' => 'Task',
+				'process' => 'Process',
+				'processPart' => 'ProcessPart',
+				'itemInProcess' => 'ItemInProcess',
 			);
 			
 			foreach($encodings as $id => $class_name) {

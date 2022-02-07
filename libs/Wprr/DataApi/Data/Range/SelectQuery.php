@@ -217,6 +217,14 @@
 			return $this;
 		}
 		
+		public function exclude($ids) {
+			if(!empty($ids)) {
+				$this->_wheres[] = 'ID NOT IN ('.implode(',', $ids).')';
+			}
+			
+			return $this;
+		}
+		
 		public function include_post_relation_by_path($post, $relation) {
 			global $wprr_data_api;
 			

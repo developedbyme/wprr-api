@@ -463,6 +463,8 @@
 				'posts' => 'Posts',
 				'byTaxonomyTerm' => 'ByTaxonomyTerm',
 				'inDateRange' => 'InDateRange',
+				'products' => 'Products',
+				'includePrivate' => 'IncludePrivate',
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -514,6 +516,7 @@
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',
 				'sequenceNumber' => 'SequenceNumber',
+				'relatedProducts' => 'RelatedProducts',
 			);
 			
 			foreach($encodings as $id => $class_name) {

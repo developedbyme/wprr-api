@@ -517,6 +517,10 @@
 				'breadcrumb' => 'Breadcrumb',
 				'sequenceNumber' => 'SequenceNumber',
 				'relatedProducts' => 'RelatedProducts',
+				'task' => 'Task',
+				'process' => 'Process',
+				'processPart' => 'ProcessPart',
+				'itemInProcess' => 'ItemInProcess',
 			);
 			
 			foreach($encodings as $id => $class_name) {

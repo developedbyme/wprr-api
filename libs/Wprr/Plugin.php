@@ -521,6 +521,8 @@
 				'process' => 'Process',
 				'processPart' => 'ProcessPart',
 				'itemInProcess' => 'ItemInProcess',
+				'contentTemplate' => 'ContentTemplate',
+				'templatePosition' => 'TemplatePosition',
 			);
 			
 			foreach($encodings as $id => $class_name) {

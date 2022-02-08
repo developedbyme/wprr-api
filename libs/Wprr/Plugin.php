@@ -516,6 +516,7 @@
 				'order/details' => 'Order/Details',
 				'order/user' => 'Order/User',
 				'order/paymentMethod' => 'Order/PaymentMethod',
+				'order/paidDate' => 'Order/PaidDate',
 				'pageTemplate' => 'PageTemplate',
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',

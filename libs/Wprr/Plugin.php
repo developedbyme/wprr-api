@@ -465,6 +465,10 @@
 				'inDateRange' => 'InDateRange',
 				'products' => 'Products',
 				'includePrivate' => 'IncludePrivate',
+				'subscriptionsForProduct' => 'SubscriptionsForProduct',
+				'ordersForProduct' => 'OrdersForProduct',
+				'mySubscriptions' => 'MySubscriptions',
+				'myOrders' => 'MyOrders',
 			);
 			
 			foreach($selections as $id => $class_name) {

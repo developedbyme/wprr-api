@@ -23,12 +23,6 @@
 			//$encoded_data->data['type'] = //Relation: content-section-type
 			
 			
-			/*
-			$current_type = $setup_manager->create_data_type('template-position')->set_name('Template position');
-			$current_type->add_field("name")->setup_meta_storage();
-			$current_type->add_field("identifier")->setup_meta_storage();
-			$current_type->add_field("description")->setup_meta_storage();
-			*/
 		}
 
 		public static function test_import() {

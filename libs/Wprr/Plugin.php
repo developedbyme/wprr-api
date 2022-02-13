@@ -528,6 +528,8 @@
 				'itemInProcess' => 'ItemInProcess',
 				'contentTemplate' => 'ContentTemplate',
 				'templatePosition' => 'TemplatePosition',
+				'description' => 'Description',
+				'imagesFor' => 'ImagesFor',
 			);
 			
 			foreach($encodings as $id => $class_name) {

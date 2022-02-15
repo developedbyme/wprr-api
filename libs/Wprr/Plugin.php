@@ -396,7 +396,8 @@
 			$code .= "define('DB_USER', '".(DB_USER)."');"."\n";
 			$code .= "define('DB_PASSWORD', '".(DB_PASSWORD)."');"."\n";
 			$code .= "define('DB_HOST', '".(DB_HOST)."');"."\n";
-				
+			$code .= "define('DB_CHARSET', '".(DB_CHARSET)."');"."\n";
+			
 			$code .= "define('THEME_NAME', '".(basename(get_template_directory()))."');"."\n";
 	
 			$code .= "define('SITE_URL', '".(get_site_url())."');"."\n";
@@ -530,6 +531,8 @@
 				'templatePosition' => 'TemplatePosition',
 				'description' => 'Description',
 				'imagesFor' => 'ImagesFor',
+				'tags' => 'Tags',
+				'identifier' => 'Identifier',
 			);
 			
 			foreach($encodings as $id => $class_name) {

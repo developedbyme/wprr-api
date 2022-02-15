@@ -77,7 +77,7 @@
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get terms');
 				
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types load relation meta');
-				$wp->load_meta_for_posts($ids);
+				//$wp->load_meta_for_posts($ids);
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types load relation meta');
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types load relation terms');
 				$wp->load_taxonomy_terms_for_posts($ids);
@@ -88,7 +88,7 @@
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types setup relations');
 				foreach($ids as $id) {
 					$post = $wp->get_post($id);
-					$reference_ids[] = (int)$post->get_meta($reverse_field);
+					//$reference_ids[] = (int)$post->get_meta($reverse_field);
 					
 					$type_terms = $post->get_terms_in($group_term);
 					
@@ -102,7 +102,7 @@
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types setup relations');
 				
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types load terms');
-				$wp->load_taxonomy_terms_for_posts($reference_ids);
+				//$wp->load_taxonomy_terms_for_posts($reference_ids);
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types load terms');
 				
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types');

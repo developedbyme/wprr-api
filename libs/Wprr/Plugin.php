@@ -470,6 +470,7 @@
 				'ordersForProduct' => 'OrdersForProduct',
 				'mySubscriptions' => 'MySubscriptions',
 				'myOrders' => 'MyOrders',
+				'orders' => 'Orders',
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -518,6 +519,7 @@
 				'order/user' => 'Order/User',
 				'order/paymentMethod' => 'Order/PaymentMethod',
 				'order/paidDate' => 'Order/PaidDate',
+				'order/creationType' => 'Order/CreationType',
 				'pageTemplate' => 'PageTemplate',
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',

@@ -533,6 +533,7 @@
 				'imagesFor' => 'ImagesFor',
 				'tags' => 'Tags',
 				'identifier' => 'Identifier',
+				'dataImage' => 'DataImage',
 			);
 			
 			foreach($encodings as $id => $class_name) {

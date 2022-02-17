@@ -16,7 +16,7 @@
 			$post = $wprr_data_api->wordpress()->get_post($id);
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
-			$encoded_data->data['images'] = $wprr_data_api->range()->encode_objects_as($post->get_incoming_direction()->get_type('for')->get_object_ids('image'), 'image');
+			$encoded_data->data['images'] = $wprr_data_api->range()->encode_objects_as($post->get_incoming_direction()->get_type('for')->get_object_ids('image'), 'dataImage');
 		}
 
 		public static function test_import() {

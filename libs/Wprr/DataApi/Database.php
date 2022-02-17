@@ -37,7 +37,12 @@
 				//$wprr_data_api->performance()->count($query);
 				
 				$wprr_data_api->performance()->start_meassure('Database::query query');
-				$result = $this->_db->query($query);
+				try {
+					$result = $this->_db->query($query);
+				}
+				catch(\Exception $exception) {
+					throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
+				}
 				$wprr_data_api->performance()->stop_meassure('Database::query query');
 				
 				$wprr_data_api->performance()->start_meassure('Database::query fetch');

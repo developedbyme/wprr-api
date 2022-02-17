@@ -38,17 +38,19 @@
 				$ids[] = $row['id'];
 			}
 			
-			$query = 'SELECT order_item_id as id, meta_key, meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id IN ('.implode(',', $ids).')';
-			$rows = $wprr_data_api->database()->query($query);
+			if(!empty($ids)) {
+				$query = 'SELECT order_item_id as id, meta_key, meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id IN ('.implode(',', $ids).')';
+				$rows = $wprr_data_api->database()->query($query);
 			
-			foreach($rows as $row) {
-				$id = $row['id'];
+				foreach($rows as $row) {
+					$id = $row['id'];
 				
-				$key = $row['meta_key'];
-				if(!isset($items[$id]['meta'][$key])) {
-					$items[$id]['meta'][$key] = array();
+					$key = $row['meta_key'];
+					if(!isset($items[$id]['meta'][$key])) {
+						$items[$id]['meta'][$key] = array();
+					}
+					$items[$id]['meta'][$key][] = $row['meta_value'];
 				}
-				$items[$id]['meta'][$key][] = $row['meta_value'];
 			}
 			
 			$line_items = array();

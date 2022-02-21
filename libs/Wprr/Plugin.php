@@ -413,7 +413,9 @@
 			$code .= "define('SECURE_AUTH_SALT', '".(SECURE_AUTH_SALT)."');"."\n";
 			$code .= "define('LOGGED_IN_SALT', '".(LOGGED_IN_SALT)."');"."\n";
 			$code .= "define('NONCE_SALT', '".(NONCE_SALT)."');"."\n";
-	
+			
+			$code .= "define('LOGGED_IN_COOKIE', '".(LOGGED_IN_COOKIE)."');"."\n";
+			
 			$code .= "define('NONCE_LIFE', ".(apply_filters( 'nonce_life', DAY_IN_SECONDS )).");"."\n";
 			
 			$post_types = get_post_types();

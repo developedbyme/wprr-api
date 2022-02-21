@@ -13,12 +13,12 @@
 		}
 		
 		public function start_session() {
+			
 			if(!$this->_has_loaded) {
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
-			
-				$cookie_hash = 'wordpress_logged_in_' . md5( SITE_URL );
-				$cookie = $_COOKIE[ $cookie_hash ];
+				
+				$cookie = $_COOKIE[LOGGED_IN_COOKIE];
 	
 				if($cookie) {
 					$cookie_parts = explode( '|', $cookie );
@@ -50,7 +50,7 @@
 								$hashed_token = hash( 'sha256', $token );
 			
 								$session_tokens = unserialize($db->query_first('SELECT meta_value FROM wp_usermeta WHERE user_id = '.$user_data['id'].' AND meta_key = "session_tokens" LIMIT 1')['meta_value']);
-					
+								
 								if(isset($session_tokens[$hashed_token])) {
 									$this->_user_data = $user_data;
 								}

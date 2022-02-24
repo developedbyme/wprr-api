@@ -1,36 +1,36 @@
 <?php
 	namespace Wprr\DataApi\Data\Range\Select;
 
-	// \Wprr\DataApi\Data\Range\Select\IncludePrivate
-	class IncludePrivate {
+	// \Wprr\DataApi\Data\Range\Select\Subscriptions
+	class Subscriptions {
 
 		function __construct() {
 			
 		}
 		
 		public function select($query, $data) {
-			//var_dump("IncludePrivate::select");
+			//var_dump("Subscriptions::select");
 			
 			global $wprr_data_api;
 			
-			//METODO: check that user is allowed
 			$user = $wprr_data_api->user()->get_user_for_call($data);
 			$is_ok = $user->is_trusted();
 			if(!$is_ok) {
-				throw(new \Exception('User '.$as_user.' is not allowed to get private'));
+				throw(new \Exception('User '.$user->get_id().' is not allowed to get orders'));
 			}
 			
-			$query->include_private();
+			$query->set_post_type('shop_subscription')->include_all_statuses();
+			
 		}
 		
 		public function filter($posts, $data) {
-			//var_dump("IncludePrivate::filter");
+			//var_dump("Subscriptions::filter");
 			
 			return $posts;
 		}
 
 		public static function test_import() {
-			echo("Imported \Wprr\DataApi\IncludePrivate<br />");
+			echo("Imported \Wprr\DataApi\Subscriptions<br />");
 		}
 	}
 ?>

@@ -8,9 +8,16 @@
 		protected $_posts = array();
 		protected $_users = array();
 		protected $_fields_structures = array();
+		protected $_trusted_roles = array();
 
 		function __construct() {
+			$this->add_trusted_role('administrator');
+		}
+		
+		public function add_trusted_role($role) {
+			$this->_trusted_roles[] = $role;
 			
+			return $this;
 		}
 		
 		public function get_taxonomy($name) {
@@ -172,6 +179,18 @@
 			}
 			
 			return 0;
+		}
+		
+		public function is_user_trusted($user) {
+			$roles = $user->get_roles();
+			
+			foreach($this->_trusted_roles as $trusted_role) {
+				if(in_array($trusted_role, $roles)) {
+					return true;
+				}
+			}
+			
+			return false;
 		}
 
 		public static function test_import() {

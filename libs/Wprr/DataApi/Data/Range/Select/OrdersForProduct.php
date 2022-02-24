@@ -20,7 +20,7 @@
 			$product = (int)$data['product'];
 			
 			$user = $wprr_data_api->user()->get_user_for_call($data);
-			$is_ok = in_array('administrator', $user->get_roles());
+			$is_ok = $user->is_trusted();
 			if(!$is_ok) {
 				throw(new \Exception('User '.$user->get_id().' is not allowed to get orders'));
 			}

@@ -142,6 +142,8 @@
 			$db = $wprr_data_api->database();
 			
 			$this->_wheres[] = 'post_parent = '.$db->escape($parent_id);
+			
+			return $this;
 		}
 		
 		public function with_slug($slug) {

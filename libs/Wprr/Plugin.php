@@ -473,6 +473,7 @@
 				'mySubscriptions' => 'MySubscriptions',
 				'myOrders' => 'MyOrders',
 				'orders' => 'Orders',
+				'subscriptions' => 'Subscriptions',
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -538,6 +539,7 @@
 				'tags' => 'Tags',
 				'identifier' => 'Identifier',
 				'dataImage' => 'DataImage',
+				'subscription/orders' => 'Subscription/Orders',
 			);
 			
 			foreach($encodings as $id => $class_name) {

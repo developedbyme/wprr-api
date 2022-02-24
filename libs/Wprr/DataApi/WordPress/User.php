@@ -24,6 +24,11 @@
 			return $this->_id;
 		}
 		
+		public function is_trusted() {
+			global $wprr_data_api;
+			return $wprr_data_api->wordpress()->is_user_trusted($this);
+		}
+		
 		public function get_database_data() {
 			if(!$this->_database_data) {
 				global $wprr_data_api;

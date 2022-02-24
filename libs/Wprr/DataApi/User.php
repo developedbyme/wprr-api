@@ -104,8 +104,7 @@
 				
 					$current_id = $as_user;
 				
-					$is_ok = in_array('administrator', $signed_in_user->get_roles());
-					//METODO: check more permissions
+					$is_ok = $signed_in_user->is_trusted();
 					if(!$is_ok) {
 						throw(new \Exception('Not allowed to impersonate user '.$as_user));
 					}

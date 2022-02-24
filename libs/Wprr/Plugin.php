@@ -474,6 +474,9 @@
 				'myOrders' => 'MyOrders',
 				'orders' => 'Orders',
 				'subscriptions' => 'Subscriptions',
+				'byPostType' => 'ByPostType',
+				'ordersForDiscountCode' => 'OrdersForDiscountCode',
+				'objectRelation' => 'ObjectRelation',
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -523,6 +526,7 @@
 				'order/paymentMethod' => 'Order/PaymentMethod',
 				'order/paidDate' => 'Order/PaidDate',
 				'order/creationType' => 'Order/CreationType',
+				'order/subscription' => 'Order/Subscription',
 				'pageTemplate' => 'PageTemplate',
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',
@@ -540,6 +544,8 @@
 				'identifier' => 'Identifier',
 				'dataImage' => 'DataImage',
 				'subscription/orders' => 'Subscription/Orders',
+				'discountCode' => 'DiscountCode/DiscountCode',
+				'discountCode/recurring_percent' => 'DiscountCode/Types/RecurringPercent',
 			);
 			
 			foreach($encodings as $id => $class_name) {

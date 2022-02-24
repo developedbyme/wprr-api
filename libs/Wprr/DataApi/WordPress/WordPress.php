@@ -40,6 +40,16 @@
 			return $this->_posts[$id];
 		}
 		
+		public function get_posts($ids) {
+			$return_array = array();
+			
+			foreach($ids as $id) {
+				$return_array[] = $this->get_post($id);
+			}
+			
+			return $return_array;
+		}
+		
 		public function load_meta_for_posts($ids) {
 			$ids_to_load = array();
 			

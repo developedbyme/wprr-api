@@ -68,15 +68,15 @@
 					
 					$line_items[] = $current_item;
 				}
-				if($item['type'] === 'coupons') {
+				if($item['type'] === 'coupon') {
 					$current_coupon = array();
 					
-					$current_item['id'] = $id;
-					$current_item['code'] = $item['name'];
-					$current_item['total'] = (float)$item['meta']['discount_amount'][0];
-					$current_item['tax'] = (float)$item['meta']['discount_amount_tax'][0];
+					$current_coupon['id'] = $id;
+					$current_coupon['code'] = $item['name'];
+					$current_coupon['total'] = (float)$item['meta']['discount_amount'][0];
+					$current_coupon['tax'] = (float)$item['meta']['discount_amount_tax'][0];
 					
-					$coupons[] = $current_item;
+					$coupons[] = $current_coupon;
 				}
 			}
 			

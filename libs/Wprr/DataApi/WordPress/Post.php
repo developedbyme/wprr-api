@@ -351,6 +351,14 @@
 			
 			return $this->_fields;
 		}
+		
+		public function object_relation_query($path) {
+			return \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_posts(array($this), $path);
+		}
+		
+		public function single_object_relation_query($path) {
+			return \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_single_post($this, $path);
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Post<br />");

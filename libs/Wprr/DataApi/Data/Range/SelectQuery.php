@@ -57,6 +57,13 @@
 			return $this;
 		}
 		
+		public function include_all_exisiting_statuses() {
+			$this->_statuses = null;
+			$this->_wheres[] = 'post_status NOT IN ("draft", "trash")';
+			
+			return $this;
+		}
+		
 		public function set_status($status) {
 			$this->_statuses = array($status);
 			

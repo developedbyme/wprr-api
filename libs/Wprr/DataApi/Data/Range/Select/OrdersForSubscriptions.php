@@ -30,9 +30,9 @@
 			foreach($subscriptions as $subscription) {
 				$parent = $subscription->get_parent();
 			
-				$query = $wprr_data_api->database()->new_select_query();
-			
-				$children_ids = $query->set_post_type('shop_order')->include_all_statuses()->meta_query('_subscription_renewal', $subscription->get_id())->get_ids();
+				$subquery = $wprr_data_api->database()->new_select_query();
+				
+				$children_ids = $subquery->set_post_type('shop_order')->include_all_statuses()->meta_query('_subscription_renewal', $subscription->get_id())->get_ids();
 				
 				$order_ids = array_merge($order_ids, $children_ids);
 				if($parent) {
@@ -40,7 +40,7 @@
 				}
 			}
 			
-			$query->set_post_type('shop_order')->include_all_statuses()->include_only($order_ids);
+			$query->set_post_type('shop_order')->include_all_exisiting_statuses()->include_only($order_ids);
 			
 		}
 		

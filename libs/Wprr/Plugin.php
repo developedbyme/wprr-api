@@ -477,6 +477,7 @@
 				'byPostType' => 'ByPostType',
 				'ordersForDiscountCode' => 'OrdersForDiscountCode',
 				'objectRelation' => 'ObjectRelation',
+				'ordersForSubscriptions' => 'OrdersForSubscriptions',
 			);
 			
 			foreach($selections as $id => $class_name) {

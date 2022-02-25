@@ -33,7 +33,7 @@
 			return $current_items;
 		}
 		
-		public static function get_single_posts($post, $path) {
+		public static function get_single_post($post, $path) {
 			$posts = self::get_posts(array($post), $path);
 			
 			return $posts[0];

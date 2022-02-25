@@ -19,7 +19,7 @@
 				throw(new \Exception('User '.$user->get_id().' is not allowed to get orders'));
 			}
 			
-			$query->set_post_type('shop_subscription')->include_all_statuses();
+			$query->set_post_type('shop_subscription')->include_all_exisiting_statuses();
 			
 		}
 		

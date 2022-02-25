@@ -35,7 +35,7 @@
 			
 			$order_ids = array_map(function($row) {return $row['id'];}, $order_rows);
 			
-			$query->set_post_type('shop_subscription')->include_all_statuses()->include_only($order_ids);
+			$query->set_post_type('shop_subscription')->include_all_exisiting_statuses()->include_only($order_ids);
 			
 		}
 		

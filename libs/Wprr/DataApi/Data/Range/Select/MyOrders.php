@@ -15,7 +15,7 @@
 			
 			$user = $wprr_data_api->user()->get_user_for_call($data);
 			
-			$query->set_post_type('shop_order')->include_all_statuses()->meta_query('_customer_user', $user->get_id());
+			$query->set_post_type('shop_order')->include_all_exisiting_statuses()->meta_query('_customer_user', $user->get_id());
 			
 		}
 		

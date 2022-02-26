@@ -30,6 +30,7 @@
 			}
 			
 			$encoded_data->data['subscription'] = $wprr_data_api->range()->encode_object_as($subscription_id, 'postStatus');
+			$wprr_data_api->range()->encode_object_as($subscription_id, 'subscriptionDates');
 		}
 		
 		public static function test_import() {

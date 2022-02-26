@@ -25,7 +25,7 @@
 			
 			$query = $wprr_data_api->database()->new_select_query();
 			
-			$children_ids = $query->set_post_type('shop_order')->include_all_statuses()->meta_query('_subscription_renewal', $id)->get_ids();
+			$children_ids = $query->set_post_type('shop_order')->include_all_exisiting_statuses()->meta_query('_subscription_renewal', $id)->get_ids();
 			
 			$children_ids = array_reverse($children_ids);
 			

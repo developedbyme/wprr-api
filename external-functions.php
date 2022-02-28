@@ -591,4 +591,11 @@
 	function wprr_get_data_api_encode_registration_code($type, $file_path, $class_path) {
 		return '$range_controller->register_encoding(\''.$type.'\', \''.$file_path.'\', \''.$class_path.'\');';
 	}
+	
+	function wprr_get_data_api() {
+		require_once(WPRR_DIR."/data/settings-wp.php");
+		
+		global $wprr_data_api;
+		return $wprr_data_api;
+	}
 ?>

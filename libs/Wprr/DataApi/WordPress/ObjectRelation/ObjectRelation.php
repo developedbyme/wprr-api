@@ -22,6 +22,10 @@
 			return $this->_post->get_id();
 		}
 		
+		public function get_type() {
+			return $this->_type;
+		}
+		
 		public function has_object_type($term) {
 			$object = $this->get_object();
 			return $object->has_term($term);

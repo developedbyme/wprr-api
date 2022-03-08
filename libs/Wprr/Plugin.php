@@ -513,6 +513,7 @@
 				'fieldTemplate/relation' => 'FieldTemplateTypes/Relation',
 				'relations' => 'Relations',
 				'relation' => 'Relation',
+				'relationOrder' => 'RelationOrder',
 				'userRelation' => 'UserRelation',
 				'objectTypes' => 'ObjectTypes',
 				'postStatus' => 'PostStatus',

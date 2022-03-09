@@ -544,6 +544,7 @@
 				'imagesFor' => 'ImagesFor',
 				'tags' => 'Tags',
 				'identifier' => 'Identifier',
+				'value' => 'Value',
 				'dataImage' => 'DataImage',
 				'subscription/orders' => 'Subscription/Orders',
 				'discountCode' => 'DiscountCode/DiscountCode',

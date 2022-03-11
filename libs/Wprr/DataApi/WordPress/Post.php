@@ -359,6 +359,18 @@
 		public function single_object_relation_query($path) {
 			return \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_single_post($this, $path);
 		}
+		
+		public function has_object_relation_meta($path, $key, $value) {
+			$items = $this->object_relation_query($path);
+			
+			foreach($items as $item) {
+				if($item->get_meta($key) == $value) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Post<br />");

@@ -39,6 +39,11 @@
 				$relation_ids = array();
 				foreach($relations as $relation) {
 					$relation_ids[] = $relation->get_id();
+					
+					if($relation->get_type()->get_type() === 'relation-order-by') {
+						$object_id = $relation->get_object_id();
+						$wprr_data_api->range()->encode_object_as($object_id, 'relationOrder');
+					}
 				}
 				$current_encoded_relations = array_merge($current_encoded_relations, $wprr_data_api->range()->encode_objects_as($relation_ids, 'relation'));
 			}
@@ -58,11 +63,7 @@
 			}
 			
 			$encoded_relations['user'] = $current_encoded_relations;
-			
 			$encoded_data->data['relations'] = $encoded_relations;
-			
-			//METODO: user relations
-			//METODO: orders?
 		}
 
 		public static function test_import() {

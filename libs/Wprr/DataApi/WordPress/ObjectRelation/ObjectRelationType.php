@@ -16,6 +16,10 @@
 			return $this->_direction;
 		}
 		
+		public function get_type() {
+			return $this->_type;
+		}
+		
 		public function setup($direction, $type) {
 			$this->_direction = $direction;
 			$this->_type = $type;

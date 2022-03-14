@@ -53,7 +53,7 @@
 				$db = $wprr_data_api->database();
 				
 				$query = 'SELECT meta_key, meta_value FROM wp_postmeta WHERE post_id = "'.$this->_id.'"';
-				$this->_database_meta = $db->query($query);
+				$this->_database_meta = $db->query_without_storage($query);
 			}
 			
 			return $this->_database_meta;
@@ -75,7 +75,7 @@
 				$db = $wprr_data_api->database();
 				
 				$query = 'SELECT wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id = "'.$this->_id.'"';
-				$this->_database_taxonomy_terms = $db->query($query);
+				$this->_database_taxonomy_terms = $db->query_without_storage($query);
 			}
 			
 			return $this->_database_taxonomy_terms;

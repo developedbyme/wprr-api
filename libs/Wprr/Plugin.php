@@ -549,6 +549,8 @@
 				'subscription/orders' => 'Subscription/Orders',
 				'discountCode' => 'DiscountCode/DiscountCode',
 				'discountCode/recurring_percent' => 'DiscountCode/Types/RecurringPercent',
+				'triggers' => 'Triggers',
+				'trigger' => 'Trigger',
 			);
 			
 			foreach($encodings as $id => $class_name) {

@@ -24,7 +24,6 @@
 			$subscription_id = 1*$post->get_meta("_subscription_renewal");
 			
 			if(!$subscription_id) {
-				//METODO: get child
 				$query = $wprr_data_api->database()->new_select_query();
 				$subscription_id = $query->set_post_type('shop_subscription')->include_all_statuses()->with_parent($id)->get_id();
 			}

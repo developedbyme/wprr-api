@@ -60,6 +60,28 @@
 			return $this->query($query)[0];
 		}
 		
+		public function query_without_storage($query) {
+			global $wprr_data_api;
+			
+			$this->start_session();
+			$wprr_data_api->performance()->count('Database::query_without_storage query');
+			
+			$wprr_data_api->performance()->start_meassure('Database::query_without_storage query');
+			try {
+				$result = $this->_db->query($query);
+			}
+			catch(\Exception $exception) {
+				throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
+			}
+			$wprr_data_api->performance()->stop_meassure('Database::query_without_storage query');
+			
+			$wprr_data_api->performance()->start_meassure('Database::query_without_storage fetch');
+			$rows = $result->fetch_all(MYSQLI_ASSOC);
+			$wprr_data_api->performance()->stop_meassure('Database::query_without_storage fetch');
+			
+			return $rows;
+		}
+		
 		public function end_session() {
 			if($this->_db) {
 				$this->_db->close();

@@ -469,6 +469,7 @@
 				'products' => 'Products',
 				'includePrivate' => 'IncludePrivate',
 				'subscriptionsForProduct' => 'SubscriptionsForProduct',
+				'subscriptionsForUser' => 'SubscriptionsForUser',
 				'ordersForProduct' => 'OrdersForProduct',
 				'mySubscriptions' => 'MySubscriptions',
 				'myOrders' => 'MyOrders',

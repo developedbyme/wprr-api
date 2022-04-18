@@ -148,6 +148,9 @@
 		}
 		
 		public function get_data($type, $data) {
+			
+			global $wprr_data_api;
+			
 			if(!isset($this->_data_functions[$type])) {
 				throw(new \Exception('Data type '.$type.' doesn\'t exist'));
 			}
@@ -155,6 +158,25 @@
 			$data_functions = $this->_data_functions[$type];
 			foreach($data_functions as $data_function) {
 				$data_function->get_data($data);
+			}
+			
+			$debug_counter = 0;
+			while(!empty($this->_queued_encodings)) {
+				if($debug_counter++ > 10000) {
+					//METODO: throw
+					break;
+				}
+				
+				$current_encoding = array_keys($this->_queued_encodings)[0];
+				
+				$wprr_data_api->performance()->start_meassure('RangeController::get_data '.$current_encoding);
+				
+				$current_ids = $this->_queued_encodings[$current_encoding];
+				unset($this->_queued_encodings[$current_encoding]);
+				
+				$this->_perform_encode_objects_as($current_ids, $current_encoding);
+				
+				$wprr_data_api->performance()->stop_meassure('RangeController::get_data '.$current_encoding);
 			}
 			
 			$encoded_data = $this->get_encoded_data();

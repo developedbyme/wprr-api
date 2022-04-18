@@ -125,6 +125,10 @@
 				$this->_meta[$name] = $selected_meta;
 			}
 			
+			if(empty($this->_meta[$name])) {
+				return null;
+			}
+			
 			return $this->_meta[$name][0];
 		}
 		

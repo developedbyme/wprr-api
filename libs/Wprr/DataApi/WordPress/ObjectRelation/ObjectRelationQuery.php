@@ -36,6 +36,10 @@
 		public static function get_single_post($post, $path) {
 			$posts = self::get_posts(array($post), $path);
 			
+			if(empty($posts)) {
+				return null;
+			}
+			
 			return $posts[0];
 		}
 		

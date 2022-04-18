@@ -6,6 +6,7 @@
 		
 		protected $_selections = array();
 		protected $_encoding = array();
+		protected $_data_functions = array();
 		protected $_encoded_data = null;
 		protected $_queued_encodings = array();
 
@@ -39,12 +40,31 @@
 			return $this;
 		}
 		
+		public function register_data_function($type, $file, $class) {
+			if(!isset($this->_data_functions[$type])) {
+				$this->_data_functions[$type] = array();
+			}
+			
+			$registration = new \Wprr\DataApi\Data\Range\DataFunctionRegistration();
+			$registration->setup($file, $class);
+			
+			$this->_data_functions[$type][] = $registration;
+			
+			return $this;
+		}
+		
 		public function get_encoded_data() {
 			if(!$this->_encoded_data) {
 				$this->_encoded_data = new \Wprr\DataApi\Data\Range\EncodedData\EncodedData();
 			}
 			
 			return $this->_encoded_data;
+		}
+		
+		public function new_query() {
+			$query = new \Wprr\DataApi\Data\Range\SelectQuery();
+			
+			return $query;
 		}
 		
 		public function select($selections, $data) {
@@ -123,6 +143,28 @@
 			$encoded_data = $this->get_encoded_data();
 			$return_data = $encoded_data->get_result();
 			$return_data['ids'] = $ids;
+			
+			return $return_data; 
+		}
+		
+		public function get_data($type, $data) {
+			if(!isset($this->_data_functions[$type])) {
+				throw(new \Exception('Data type '.$type.' doesn\'t exist'));
+			}
+			
+			$data_functions = $this->_data_functions[$type];
+			foreach($data_functions as $data_function) {
+				$data_function->get_data($data);
+			}
+			
+			$encoded_data = $this->get_encoded_data();
+			$return_data = $encoded_data->get_result();
+			
+			$generated_data = $return_data['items']['data'];
+			unset($generated_data['id']);
+			unset($return_data['items']['data']);
+			
+			$return_data['data'] = $generated_data;
 			
 			return $return_data; 
 		}

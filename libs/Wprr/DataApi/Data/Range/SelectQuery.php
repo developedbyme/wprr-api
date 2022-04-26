@@ -159,6 +159,18 @@
 			$db = $wprr_data_api->database();
 			
 			$this->_wheres[] = 'post_name = "'.$db->escape($slug).'"';
+			
+			return $this;
+		}
+		
+		public function with_title($title) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$this->_wheres[] = 'post_title = "'.$db->escape($title).'"';
+			
+			return $this;
 		}
 		
 		public function include_term($term) {

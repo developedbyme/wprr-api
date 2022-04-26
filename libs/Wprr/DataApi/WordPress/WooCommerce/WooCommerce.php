@@ -105,6 +105,24 @@
 			
 			return $wprr_data_api->wordpress()->get_post($subscription_id);
 		}
+		
+		public function get_subscription_orders($subscription) {
+			global $wprr_data_api;
+			
+			$parent = $subscription->get_parent();
+			$order_ids = $wprr_data_api->database()->new_select_query()->set_post_type('shop_order')->include_all_exisiting_statuses()->meta_query('_subscription_renewal', $subscription->get_id())->get_ids();
+		
+			if($parent) {
+				$order_ids[] = $parent->get_id();
+			}
+			
+			return $wprr_data_api->wordpress()->get_posts($order_ids);
+		}
+		
+		public function has_coupon_by_name($order, $code) {
+			$coupons = $this->get_order_items($order)['coupons'];
+			return in_array($code, array_column($coupons, 'code'));
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress\WooCommerce<br />");

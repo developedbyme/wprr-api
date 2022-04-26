@@ -12,7 +12,7 @@
 		}
 		
 		public function count($type) {
-			if(!$this->_counts[$type]) {
+			if(!isset($this->_counts[$type])) {
 				$this->_counts[$type] = 0;
 			}
 			$this->_counts[$type]++;

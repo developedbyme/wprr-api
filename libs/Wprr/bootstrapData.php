@@ -1,7 +1,7 @@
 <?php
 
-function Wprr_Autoloader( $class ) {
-	//echo("Wprr_Autoloader<br />");
+function Wprr_Data_Autoloader( $class ) {
+	//echo("Wprr_Data_Autoloader<br />");
 	
 	$namespace_length = strlen("Wprr");
 	
@@ -33,4 +33,4 @@ function Wprr_Autoloader( $class ) {
 
 }
 
-spl_autoload_register("Wprr_Autoloader"); // Register autoloader
+spl_autoload_register("Wprr_Data_Autoloader"); // Register autoloader

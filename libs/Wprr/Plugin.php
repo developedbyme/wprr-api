@@ -558,6 +558,17 @@
 				$code .= wprr_get_data_api_encode_registration_code($id, $encode_prefix.$class_name.'.php', $encode_namespace.implode('\\', explode('/', $class_name)))."\n";
 			}
 			
+			$data_function_prefix = WPRR_DIR.'/libs/Wprr/DataApi/Data/Range/DataFunction/';
+			$data_function_namespace = '\\Wprr\\DataApi\\Data\\Range\\DataFunction\\';
+			
+			$data_functions = array(
+				'example' => 'Example',
+			);
+			
+			foreach($data_functions as $id => $class_name) {
+				$code .= wprr_get_data_api_data_function_registration_code($id, $data_function_prefix.$class_name.'.php', $data_function_namespace.implode('\\', explode('/', $class_name)))."\n";
+			}
+			
 			return $code;
 		}
 		

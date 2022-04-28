@@ -116,6 +116,13 @@
 					exit();
 				}
 			}
+			else if(( strpos($url, '/redirect/') === 0 ) ) {
+				$to = $_GET['to'];
+				
+				wp_redirect($to);
+				
+				exit();
+			}
 		}
 		
 		public static function test_import() {

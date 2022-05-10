@@ -479,6 +479,8 @@
 				'ordersForDiscountCode' => 'OrdersForDiscountCode',
 				'objectRelation' => 'ObjectRelation',
 				'ordersForSubscriptions' => 'OrdersForSubscriptions',
+				'globalObjectRelation' => 'GlobalObjectRelation',
+				'typeObjectRelation' => 'TypeObjectRelation',
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -552,6 +554,7 @@
 				'discountCode/recurring_percent' => 'DiscountCode/Types/RecurringPercent',
 				'triggers' => 'Triggers',
 				'trigger' => 'Trigger',
+				'action' => 'Action',
 			);
 			
 			foreach($encodings as $id => $class_name) {

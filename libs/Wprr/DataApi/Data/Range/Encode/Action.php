@@ -25,6 +25,7 @@
 			}
 			
 			$encoded_data->data['statusRelations'] = $wprr_data_api->range()->encode_objects_as($relation_ids, 'relation');
+			$wprr_data_api->range()->encode_objects_as($post->get_incoming_direction()->get_type('for')->get_object_ids('type/action-status'), 'type');
 			
 			$ids = $post->get_outgoing_direction()->get_type('from')->get_object_ids('*');
 			

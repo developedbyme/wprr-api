@@ -14,6 +14,10 @@
 		return $WprrPerformanceTracker;
 	}
 	
+	function wprr_get_logger() {
+		return new \Wprr\Logger();
+	}
+	
 	function get_initial_mrouter_data() {
 		$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 		

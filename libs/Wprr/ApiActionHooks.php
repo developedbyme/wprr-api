@@ -142,10 +142,16 @@
 		public function hook_woocommerce_checkout($data, &$response_data) {
 			//echo("\Wprr\ApiActionHooks::hook_woocommerce_checkout<br />");
 			
+			wprr_performance_tracker()->start_meassure('hook_woocommerce_checkout load cart');
+			
 			$this->ensure_wc_has_cart();
 			WC()->cart->set_session();
 			
 			$cart = WC()->cart;
+			
+			wprr_performance_tracker()->stop_meassure('hook_woocommerce_checkout load cart');
+			
+			wprr_performance_tracker()->start_meassure('hook_woocommerce_checkout get order data');
 			
 			$order_data = array();
 			
@@ -166,18 +172,29 @@
 				$order_data['billing_phone'] = $customer->get_billing_phone();
 			}
 			
+			wprr_performance_tracker()->stop_meassure('hook_woocommerce_checkout get order data');
 			
+			wprr_performance_tracker()->start_meassure('hook_woocommerce_checkout create order');
 			$order_id = WC()->checkout()->create_order($order_data);
+			wprr_performance_tracker()->stop_meassure('hook_woocommerce_checkout create order');
+			wprr_performance_tracker()->start_meassure('hook_woocommerce_checkout get order');
 			$order = wc_get_order( $order_id );
+			wprr_performance_tracker()->stop_meassure('hook_woocommerce_checkout get order');
+			wprr_performance_tracker()->start_meassure('hook_woocommerce_checkout calculate totals');
 			$order->calculate_totals();
+			wprr_performance_tracker()->stop_meassure('hook_woocommerce_checkout calculate totals');
 			
+			wprr_performance_tracker()->start_meassure('hook_woocommerce_checkout set payment method');
 			if(isset($data['paymentMethod'])) {
 				$order->set_payment_method($data['paymentMethod']);
 				$order->save();
 			}
+			wprr_performance_tracker()->stop_meassure('hook_woocommerce_checkout set payment method');
 			
+			wprr_performance_tracker()->start_meassure('hook_woocommerce_checkout order_created action');
 			$response_data['orderId'] = $order_id;
 			do_action('wprr/api_action_part/woocommerce/checkout/order_created', $order_id, $order, $response_data);
+			wprr_performance_tracker()->stop_meassure('hook_woocommerce_checkout order_created action');
 			
 			//Empty cart
 			//WC()->cart->empty_cart(); //MEDEBUG: //

@@ -17,6 +17,52 @@ Add the query ?mRouterData=json to any url to get output as json.
 1. Upload the folder `wprr-api` to the `/wp-content/plugins/` directory.
 2. Activate the plugin through the 'Plugins' menu in WordPress.
 
+## Data structures for data API
+
+### CurrentUserData
+
+```
+{
+	id: int,
+	login: string,
+	email: string,
+	name: string,
+}
+```
+
+## Data API Endpoints
+
+### Get the current user
+
+Gets the details for the current user
+
+#### Request
+
+GET `/wp-content/plugins/wprr-api/data/me/`
+
+#### Response
+
+```
+{
+	code: "success",
+	data: {
+		user: CurrentUserData,
+		restNonce: string
+	}
+}
+```
+
+#### Errors
+
+Response for not signed in
+
+```
+{
+	code: "success",
+	data: null
+}
+```
+
 ## Changelog
 
 ### 0.17.0

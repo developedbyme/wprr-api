@@ -38,12 +38,20 @@
 				$this->output_api_error('Could not encode JSON (error: '.$json_error.')');
 			}
 			
-			header('Access-Control-Allow-Origin: *');
+			if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN']) {
+				header('Access-Control-Allow-Origin: '.$_SERVER['HTTP_ORIGIN']);
+				header('Access-Control-Allow-Credentials: true');
+				header('Vary: Origin');
+			}
+			else {
+				header('Access-Control-Allow-Origin: *');
+			}
+			
 			header('Content-Type: application/json; charset=utf-8');
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Pragma: no-cache');
 			header('Expires: 0');
-		
+			
 			echo($encoded_reponse);
 			
 			$this->_has_output = true;
@@ -62,7 +70,16 @@
 			);
 			
 			header($_SERVER['SERVER_PROTOCOL'] . ' 500 Internal Server Error');
-			header('Access-Control-Allow-Origin: *');
+			
+			if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN']) {
+				header('Access-Control-Allow-Origin: '.$_SERVER['HTTP_ORIGIN']);
+				header('Access-Control-Allow-Credentials: true');
+				header('Vary: Origin');
+			}
+			else {
+				header('Access-Control-Allow-Origin: *');
+			}
+			
 			header('Content-Type: application/json; charset=utf-8');
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Pragma: no-cache');

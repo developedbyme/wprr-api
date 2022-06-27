@@ -1,8 +1,8 @@
 <?php
-	namespace Wprr\DataApi\Data\Range\Encode;
+	namespace Wprr\DataApi\Data\Range\Encode\Group;
 
-	// \Wprr\DataApi\Data\Range\Encode\Process
-	class Process {
+	// \Wprr\DataApi\Data\Range\Encode\Group\OrderedTypeGroup
+	class OrderedTypeGroup {
 
 		function __construct() {
 			
@@ -14,23 +14,21 @@
 		}
 		
 		public function encode($id) {
-			//var_dump("Process::encode");
+			//var_dump("OrderedTypeGroup::encode");
 			
 			global $wprr_data_api;
 			
 			$post = $wprr_data_api->wordpress()->get_post($id);
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
-			$encoded_data->data['name'] = $post->get_meta('name');
-			
-			$parts = $post->get_incoming_direction()->get_type('in')->get_object_ids_in_order('process-part', 'parts');
-			$encoded_data->data['parts'] = $wprr_data_api->range()->encode_objects_as($parts, 'processPart');
+			$parts = $post->get_incoming_direction()->get_type('in')->get_object_ids_in_order('type', 'order');
+			$encoded_data->data['parts'] = $wprr_data_api->range()->encode_objects_as($parts, 'type');
 			
 			
 		}
 
 		public static function test_import() {
-			echo("Imported \Wprr\DataApi\Process<br />");
+			echo("Imported \Wprr\DataApi\OrderedTypeGroup<br />");
 		}
 	}
 ?>

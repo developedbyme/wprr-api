@@ -22,7 +22,7 @@
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
 			$parts = $post->get_incoming_direction()->get_type('in')->get_object_ids_in_order('type', 'order');
-			$encoded_data->data['parts'] = $wprr_data_api->range()->encode_objects_as($parts, 'type');
+			$encoded_data->data['items'] = $wprr_data_api->range()->encode_objects_as($parts, 'type');
 			
 			
 		}

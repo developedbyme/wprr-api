@@ -555,6 +555,7 @@
 				'triggers' => 'Triggers',
 				'trigger' => 'Trigger',
 				'action' => 'Action',
+				'group/orderedTypeGroup' => 'Group/OrderedTypeGroup',
 			);
 			
 			foreach($encodings as $id => $class_name) {

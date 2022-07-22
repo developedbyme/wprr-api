@@ -239,7 +239,10 @@
 		}
 		
 		public function filter_user_data_if_logged_in($null_value) {
-			if(is_user_logged_in()) {
+			
+			$encode_user_when_render = apply_filters(WPRR_DOMAIN.'/'.'encode_user_when_render', true);
+			
+			if(is_user_logged_in() && $encode_user_when_render) {
 				
 				$current_user = wp_get_current_user();
 				

@@ -67,7 +67,7 @@
 				$query->meta_query($field, $this->_post->get_id());
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 3');
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 4');
-				$ids = $query->get_ids();
+				$ids = $query->get_ids_without_storage();
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 4');
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids');
 				

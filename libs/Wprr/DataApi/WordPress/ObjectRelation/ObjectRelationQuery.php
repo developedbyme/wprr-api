@@ -17,17 +17,31 @@
 				
 				$direction_type = $path_part_data[0];
 				$type = $path_part_data[1];
-				$object_type = $path_part_data[2];
-				$time = isset($path_part_data[3]) ? (($path_part_data[3] === "*") ? false : 1*$path_part_data[3]) : time();
 				
-				foreach($current_items as $current_item) {
-					$direction = ($direction_type === "in") ? $current_item->get_incoming_direction() : $current_item->get_outgoing_direction();
-					$current_ids = $direction->get_type($type)->get_object_ids($object_type, $time);
+				if($direction_type === "user") {
+					$time = isset($path_part_data[2]) ? (($path_part_data[2] === "*") ? false : 1*$path_part_data[2]) : time();
 					
-					$new_ids = array_merge($new_ids, $current_ids);
+					$direction = $current_item->get_user_relations();
+					$new_ids = $direction->get_type($type)-get_user_ids();
 					
+					$current_items = $wp->get_users($new_ids);
+					
+					//METODO: go on from user
+					return $current_items;
 				}
-				$current_items = $wp->get_posts($new_ids);
+				else {
+					$object_type = $path_part_data[2];
+					$time = isset($path_part_data[3]) ? (($path_part_data[3] === "*") ? false : 1*$path_part_data[3]) : time();
+					
+					foreach($current_items as $current_item) {
+						$direction = ($direction_type === "in") ? $current_item->get_incoming_direction() : $current_item->get_outgoing_direction();
+						$current_ids = $direction->get_type($type)->get_object_ids($object_type, $time);
+					
+						$new_ids = array_merge($new_ids, $current_ids);
+					
+					}
+					$current_items = $wp->get_posts($new_ids);
+				}
 			}
 			
 			return $current_items;

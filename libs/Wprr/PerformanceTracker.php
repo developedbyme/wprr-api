@@ -39,13 +39,24 @@
 				
 				$number_of_calls = count($data['calls']);
 				$total_time = array_sum($data['calls']);
-				$average_time = $total_time/$number_of_calls;
 				
-				$return_object[$type] = array(
-					'numberOfCalls' => $number_of_calls,
-					'total' => $total_time,
-					'average' => $average_time
-				);
+				if($number_of_calls) {
+					$average_time = $total_time/$number_of_calls;
+				
+					$return_object[$type] = array(
+						'numberOfCalls' => $number_of_calls,
+						'total' => $total_time,
+						'average' => $average_time
+					);
+				}
+				else {
+					$return_object[$type] = array(
+						'numberOfCalls' => 0,
+						'total' => 0,
+						'average' => 0,
+						'message' => 'Missing end marker'
+					);
+				}
 			}
 			
 			return $return_object;

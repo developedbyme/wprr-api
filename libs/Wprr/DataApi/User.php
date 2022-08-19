@@ -73,6 +73,24 @@
 			return $this->_user_data;
 		}
 		
+		public function get_me_data() {
+			if($this->is_signed_in()) {
+				global $wprr_data_api;
+				$user_id = $this->get_user_data()['id'];
+				$wp_user = $wprr_data_api->wordpress()->get_user($user_id);
+				return array(
+					'id' => $user_id,
+					'name' => $wp_user->get_display_name(),
+					'firstName' => $wp_user->get_meta('first_name'),
+					'lastName' => $wp_user->get_meta('last_name'),
+					'email' => $wp_user->get_email(),
+					'gravatarHash' => $wp_user->get_gravatar_hash(),
+					'roles' => $wp_user->get_roles()
+				);
+			}
+			return null;
+		}
+		
 		public function get_rest_nonce() {
 			$rest_nonce = null;
 			

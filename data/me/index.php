@@ -5,8 +5,9 @@
 	$user = $wprr_data_api->user();
 	
 	if($user->is_signed_in()) {
+		
 		$data = array(
-			'user' => $user->get_user_data(),
+			'user' => $user->get_me_data(),
 			'restNonce' => $user->get_rest_nonce()
 		);
 		

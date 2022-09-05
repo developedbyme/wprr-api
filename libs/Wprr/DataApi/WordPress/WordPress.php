@@ -133,6 +133,23 @@
 			return $this->_users[$id];
 		}
 		
+		public function get_users($ids) {
+			
+			$return_array = array();
+			
+			foreach($ids as $id) {
+				if(!isset($this->_users[$id])) {
+					$new_user = new \Wprr\DataApi\WordPress\User();
+					$new_user->setup($id);
+					$this->_users[$id] = $new_user;
+				}
+				
+				$return_array[] = $this->_users[$id];
+			}
+			
+			return $return_array;
+		}
+		
 		public function get_fields_structure($type) {
 			if(!isset($this->_fields_structures[$type])) {
 				$new_fields_structure = new \Wprr\DataApi\WordPress\Field\FieldsStructure();

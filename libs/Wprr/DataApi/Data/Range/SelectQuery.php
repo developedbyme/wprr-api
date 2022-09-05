@@ -9,6 +9,7 @@
 		protected $_post_types = null;
 		protected $_joins = array();
 		protected $_wheres = array();
+		protected $_store = true;
 
 		function __construct() {
 			
@@ -16,6 +17,12 @@
 		
 		public function set_post_type($post_type) {
 			$this->_post_types = array($post_type);
+			
+			return $this;
+		}
+		
+		public function skip_storage() {
+			$this->_store = false;
 			
 			return $this;
 		}
@@ -330,7 +337,12 @@
 			$db = $wprr_data_api->database();
 			$query = $this->get_query();
 			
-			$posts = $db->query($query);
+			if($this->_store) {
+				$posts = $db->query($query);
+			}
+			else {
+				$posts = $db->query_without_storage($query);
+			}
 			
 			return array_map(function($item) {
 				return (int)$item['id'];
@@ -362,7 +374,12 @@
 			$db = $wprr_data_api->database();
 			$query = $this->get_query().' LIMIT 1';
 			
-			$posts = $db->query($query);
+			if($this->_store) {
+				$posts = $db->query($query);
+			}
+			else {
+				$posts = $db->query_without_storage($query);
+			}
 			
 			if(!empty($posts)) {
 				return (int)$posts[0]['id'];

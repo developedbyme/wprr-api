@@ -25,7 +25,6 @@
 					foreach($current_items as $current_item) {
 						$direction = $current_item->get_user_relations();
 						$current_ids = $direction->get_type($type)->get_user_ids();
-						var_dump($type, $direction->get_type($type));
 						
 						$new_ids = array_merge($new_ids, $current_ids);
 					}

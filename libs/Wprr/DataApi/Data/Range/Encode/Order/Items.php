@@ -55,6 +55,7 @@
 			
 			$line_items = array();
 			$coupons = array();
+			$fees = array();
 			
 			foreach($items as $id => $item) {
 				if($item['type'] === 'line_item') {
@@ -68,7 +69,7 @@
 					
 					$line_items[] = $current_item;
 				}
-				if($item['type'] === 'coupon') {
+				else if($item['type'] === 'coupon') {
 					$current_coupon = array();
 					
 					$current_coupon['id'] = $id;
@@ -78,10 +79,21 @@
 					
 					$coupons[] = $current_coupon;
 				}
+				else if($item['type'] === 'fee') {
+					$current_item = array();
+					
+					$current_coupon['id'] = $id;
+					$current_item['name'] = $item['name'];
+					$current_item['total'] = (float)$item['meta']['_line_total'][0];
+					$current_item['tax'] = (float)$item['meta']['_line_tax'][0];
+					
+					$fees[] = $current_item;
+				}
 			}
 			
 			$encoded_data->data['items'] = $line_items;
 			$encoded_data->data['coupons'] = $coupons;
+			$encoded_data->data['fees'] = $fees;
 		}
 		
 		public static function test_import() {

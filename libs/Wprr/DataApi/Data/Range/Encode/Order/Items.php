@@ -82,7 +82,7 @@
 				else if($item['type'] === 'fee') {
 					$current_item = array();
 					
-					$current_coupon['id'] = $id;
+					$current_item['id'] = $id;
 					$current_item['name'] = $item['name'];
 					$current_item['total'] = (float)$item['meta']['_line_total'][0];
 					$current_item['tax'] = (float)$item['meta']['_line_tax'][0];

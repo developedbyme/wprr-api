@@ -364,6 +364,7 @@
 			
 			add_filter($create_post_prefix.'valid_combination', array($this, 'filter_create_post_valid_combination'), 10, 4);
 			add_filter($create_post_prefix.'insert/draft', array($this, 'filter_create_post_insert_draft'), 10, 3);
+			add_filter($create_post_prefix.'insert/orderForCheckout', array($this, 'filter_create_post_insert_orderForCheckout'), 10, 3);
 			
 			add_filter('wprr/data-api/generate-settings', array($this, 'filter_data_api_generate_settings'), 10, 1);
 			add_filter('wprr/data-api/generate-ranges', array($this, 'filter_data_api_generate_ranges'), 10, 1);
@@ -389,6 +390,60 @@
 			);
 			
 			$post_id = wp_insert_post($insert_arguments);
+			
+			return $post_id;
+		}
+		
+		public function filter_create_post_insert_orderForCheckout($post_id, $title, $post_type) {
+			
+			$time_zone = get_option('timezone_string');
+			if($time_zone) {
+				date_default_timezone_set($time_zone);
+			}
+			
+			$insert_arguments = array(
+				'post_title' => $title,
+				'post_status' => 'draft',
+				'post_type' => 'shop_order',
+			);
+			
+			$post_id = wp_insert_post($insert_arguments);
+			
+			$order = wc_get_order($post_id);
+			
+			$user_id = get_current_user_id();
+			
+			if($user_id) {
+				$customer = new \WC_Customer($user_id);
+				
+				$order->set_billing_first_name($customer->get_billing_first_name());
+				$order->set_billing_last_name($customer->get_billing_last_name());
+				$order->set_billing_company($customer->get_billing_company());
+				$order->set_billing_address_1($customer->get_billing_address_1());
+				$order->set_billing_address_2($customer->get_billing_address_2());
+				$order->set_billing_postcode($customer->get_billing_postcode());
+				$order->set_billing_city($customer->get_billing_city());
+				$order->set_billing_country($customer->get_billing_country());
+				$order->set_billing_phone($customer->get_billing_phone());
+				
+				$order->set_customer_id($user_id);
+			}
+			
+			$now = time();
+			$time = date('Y-m-d', $now).'T'.date('H:i:s', $now);
+			
+			//METODO: figure this out
+			$order->set_date_created(strtotime($time));
+			$order->set_date_modified(strtotime($time));
+			
+			update_post_meta($post_id, '_created_via', 'api');
+			
+			update_post_meta($post_id, '_customer_ip_address', $_SERVER['REMOTE_ADDR']);
+			update_post_meta($post_id, '_customer_user_agent', $_SERVER['HTTP_USER_AGENT']);
+			
+			$order->set_order_key( wc_generate_order_key() );
+			
+			$order->save($post_id);
 			
 			return $post_id;
 		}

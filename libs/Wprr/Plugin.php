@@ -542,6 +542,7 @@
 				'ordersForProduct' => 'OrdersForProduct',
 				'mySubscriptions' => 'MySubscriptions',
 				'myOrders' => 'MyOrders',
+				'myDraftOrders' => 'MyDraftOrders',
 				'orders' => 'Orders',
 				'subscriptions' => 'Subscriptions',
 				'byPostType' => 'ByPostType',

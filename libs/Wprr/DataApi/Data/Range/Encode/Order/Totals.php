@@ -22,6 +22,8 @@
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
 			$encoded_data->data['total'] = (float)$post->get_meta('_order_total');
+			$encoded_data->data['tax'] = (float)$post->get_meta('_order_tax');
+			$encoded_data->data['subtotal'] = $encoded_data->data['total']-$encoded_data->data['tax'];
 		}
 		
 		public static function test_import() {

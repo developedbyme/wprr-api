@@ -448,33 +448,42 @@
 			return $post_id;
 		}
 		
+		protected function define_varaible_code($name, $value, $delimiter = '\'') {
+			$return_string = '';
+			$return_string .= "if(!defined('".$name."')) {"."\n";
+			$return_string .= "	define('".$name."', ".$delimiter.$value.$delimiter.");"."\n";
+			$return_string .= "}"."\n";
+			
+			return $return_string;
+		}
+		
 		public function filter_data_api_generate_settings($code) {
 			
-			$code .= "define('DB_NAME', '".(DB_NAME)."');"."\n";
-			$code .= "define('DB_USER', '".(DB_USER)."');"."\n";
-			$code .= "define('DB_PASSWORD', '".(DB_PASSWORD)."');"."\n";
-			$code .= "define('DB_HOST', '".(DB_HOST)."');"."\n";
-			$code .= "define('DB_CHARSET', '".(DB_CHARSET)."');"."\n";
+			$code .= $this->define_varaible_code('DB_NAME', DB_NAME);
+			$code .= $this->define_varaible_code('DB_USER', DB_USER);
+			$code .= $this->define_varaible_code('DB_PASSWORD', DB_PASSWORD);
+			$code .= $this->define_varaible_code('DB_HOST', DB_HOST);
+			$code .= $this->define_varaible_code('DB_CHARSET', DB_CHARSET);
 			
-			$code .= "define('THEME_NAME', '".(basename(get_template_directory()))."');"."\n";
+			$code .= $this->define_varaible_code('THEME_NAME', basename(get_template_directory()));
 	
-			$code .= "define('SITE_URL', '".(get_site_url())."');"."\n";
+			$code .= $this->define_varaible_code('SITE_URL', get_site_url());
 			
 			$upload_dir = wp_upload_dir(null, false);
-			$code .= "define('UPLOAD_URL', '".($upload_dir['baseurl'])."');"."\n";
+			$code .= $this->define_varaible_code('UPLOAD_URL', $upload_dir['baseurl']);
 	
-			$code .= "define('AUTH_KEY', '".(AUTH_KEY)."');"."\n";
-			$code .= "define('SECURE_AUTH_KEY', '".(SECURE_AUTH_KEY)."');"."\n";
-			$code .= "define('LOGGED_IN_KEY', '".(LOGGED_IN_KEY)."');"."\n";
-			$code .= "define('NONCE_KEY', '".(NONCE_KEY)."');"."\n";
-			$code .= "define('AUTH_SALT', '".(AUTH_SALT)."');"."\n";
-			$code .= "define('SECURE_AUTH_SALT', '".(SECURE_AUTH_SALT)."');"."\n";
-			$code .= "define('LOGGED_IN_SALT', '".(LOGGED_IN_SALT)."');"."\n";
-			$code .= "define('NONCE_SALT', '".(NONCE_SALT)."');"."\n";
+			$code .= $this->define_varaible_code('AUTH_KEY', AUTH_KEY);
+			$code .= $this->define_varaible_code('SECURE_AUTH_KEY', SECURE_AUTH_KEY);
+			$code .= $this->define_varaible_code('LOGGED_IN_KEY', LOGGED_IN_KEY);
+			$code .= $this->define_varaible_code('NONCE_KEY', NONCE_KEY);
+			$code .= $this->define_varaible_code('AUTH_SALT', AUTH_SALT);
+			$code .= $this->define_varaible_code('SECURE_AUTH_SALT', SECURE_AUTH_SALT);
+			$code .= $this->define_varaible_code('LOGGED_IN_SALT', LOGGED_IN_SALT);
+			$code .= $this->define_varaible_code('NONCE_SALT', NONCE_SALT);
 			
-			$code .= "define('LOGGED_IN_COOKIE', '".(LOGGED_IN_COOKIE)."');"."\n";
+			$code .= $this->define_varaible_code('LOGGED_IN_COOKIE', LOGGED_IN_COOKIE);
 			
-			$code .= "define('NONCE_LIFE', ".(apply_filters( 'nonce_life', DAY_IN_SECONDS )).");"."\n";
+			$code .= $this->define_varaible_code('NONCE_LIFE', apply_filters( 'nonce_life', DAY_IN_SECONDS ), '');
 			
 			$post_types = get_post_types();
 			
@@ -495,13 +504,15 @@
 				
 			}
 			
-			$code .= "define('PUBLIC_POST_TYPES', array('".implode('\',\'', $public_types)."'));"."\n";
+			$code .= $this->define_varaible_code('PUBLIC_POST_TYPES', "array('".implode('\',\'', $public_types)."')", '');
 			
-			$code .= "define('REWRITE_POST_TYPES', array("."\n";
+			$array_code = "array("."\n";
 			foreach($rewrites as $slug => $type) {
-				$code .= "\t'".$slug."' => '".$type."',\n";
+				$array_code .= "\t'".$slug."' => '".$type."',\n";
 			}
-			$code .= "));"."\n";
+			$array_code .= ")";
+			
+			$code .= $this->define_varaible_code('REWRITE_POST_TYPES', $array_code, '');
 			
 			return $code;
 		}

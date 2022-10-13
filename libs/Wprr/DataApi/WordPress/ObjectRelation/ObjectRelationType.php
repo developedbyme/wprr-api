@@ -183,7 +183,7 @@
 			$this->_update_hierarchy_order($order, $active_ids, $unused_ids, $id_map);
 			
 			foreach($unused_ids as $unused_id) {
-				$order[] = array('id' => $unused_id, 'children' => array());
+				$order[] = array('id' => $id_map[$unused_id], 'children' => array());
 			}
 			
 			return $order;

@@ -36,7 +36,7 @@
 			
 			$valid = apply_filters('wprr/admin/create_post/valid_combination', true, $post_type, $data_type, $creation_method, $data);
 			if(!$valid) {
-				return $this->output_error('Not a valid combination');
+				return $this->output_error('Not a valid combination '.$post_type.' '.$data_type.' '.$creation_method);
 			}
 			
 			$is_allowed = apply_filters('wprr/admin/create_post/allow', current_user_can('edit_others_posts'), $data);

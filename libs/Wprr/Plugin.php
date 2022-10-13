@@ -364,6 +364,7 @@
 			
 			add_filter($create_post_prefix.'valid_combination', array($this, 'filter_create_post_valid_combination'), 10, 4);
 			add_filter($create_post_prefix.'insert/draft', array($this, 'filter_create_post_insert_draft'), 10, 3);
+			add_filter($create_post_prefix.'insert/orderForCheckout', array($this, 'filter_create_post_insert_orderForCheckout'), 10, 3);
 			
 			add_filter('wprr/data-api/generate-settings', array($this, 'filter_data_api_generate_settings'), 10, 1);
 			add_filter('wprr/data-api/generate-ranges', array($this, 'filter_data_api_generate_ranges'), 10, 1);
@@ -393,33 +394,96 @@
 			return $post_id;
 		}
 		
+		public function filter_create_post_insert_orderForCheckout($post_id, $title, $post_type) {
+			
+			$time_zone = get_option('timezone_string');
+			if($time_zone) {
+				date_default_timezone_set($time_zone);
+			}
+			
+			$insert_arguments = array(
+				'post_title' => $title,
+				'post_status' => 'draft',
+				'post_type' => 'shop_order',
+			);
+			
+			$post_id = wp_insert_post($insert_arguments);
+			
+			$order = wc_get_order($post_id);
+			
+			$user_id = get_current_user_id();
+			
+			if($user_id) {
+				$customer = new \WC_Customer($user_id);
+				
+				$order->set_billing_first_name($customer->get_billing_first_name());
+				$order->set_billing_last_name($customer->get_billing_last_name());
+				$order->set_billing_company($customer->get_billing_company());
+				$order->set_billing_address_1($customer->get_billing_address_1());
+				$order->set_billing_address_2($customer->get_billing_address_2());
+				$order->set_billing_postcode($customer->get_billing_postcode());
+				$order->set_billing_city($customer->get_billing_city());
+				$order->set_billing_country($customer->get_billing_country());
+				$order->set_billing_phone($customer->get_billing_phone());
+				
+				$order->set_customer_id($user_id);
+			}
+			
+			$now = time();
+			$time = date('Y-m-d', $now).'T'.date('H:i:s', $now);
+			
+			//METODO: figure this out
+			$order->set_date_created(strtotime($time));
+			$order->set_date_modified(strtotime($time));
+			
+			update_post_meta($post_id, '_created_via', 'api');
+			
+			update_post_meta($post_id, '_customer_ip_address', $_SERVER['REMOTE_ADDR']);
+			update_post_meta($post_id, '_customer_user_agent', $_SERVER['HTTP_USER_AGENT']);
+			
+			$order->set_order_key( wc_generate_order_key() );
+			
+			$order->save($post_id);
+			
+			return $post_id;
+		}
+		
+		protected function define_varaible_code($name, $value, $delimiter = '\'') {
+			$return_string = '';
+			$return_string .= "if(!defined('".$name."')) {"."\n";
+			$return_string .= "	define('".$name."', ".$delimiter.$value.$delimiter.");"."\n";
+			$return_string .= "}"."\n";
+			
+			return $return_string;
+		}
+		
 		public function filter_data_api_generate_settings($code) {
 			
-			$code .= "define('DB_NAME', '".(DB_NAME)."');"."\n";
-			$code .= "define('DB_USER', '".(DB_USER)."');"."\n";
-			$code .= "define('DB_PASSWORD', '".(DB_PASSWORD)."');"."\n";
-			$code .= "define('DB_HOST', '".(DB_HOST)."');"."\n";
-			$code .= "define('DB_CHARSET', '".(DB_CHARSET)."');"."\n";
+			$code .= $this->define_varaible_code('DB_NAME', DB_NAME);
+			$code .= $this->define_varaible_code('DB_USER', DB_USER);
+			$code .= $this->define_varaible_code('DB_PASSWORD', DB_PASSWORD);
+			$code .= $this->define_varaible_code('DB_HOST', DB_HOST);
+			$code .= $this->define_varaible_code('DB_CHARSET', DB_CHARSET);
 			
-			$code .= "define('THEME_NAME', '".(basename(get_template_directory()))."');"."\n";
+			$code .= $this->define_varaible_code('THEME_NAME', basename(get_template_directory()));
 	
-			$code .= "define('SITE_URL', '".(get_site_url())."');"."\n";
+			$code .= $this->define_varaible_code('SITE_URL', get_site_url());
 			
 			$upload_dir = wp_upload_dir(null, false);
-			$code .= "define('UPLOAD_URL', '".($upload_dir['baseurl'])."');"."\n";
+			$code .= $this->define_varaible_code('UPLOAD_URL', $upload_dir['baseurl']);
 	
-			$code .= "define('AUTH_KEY', '".(AUTH_KEY)."');"."\n";
-			$code .= "define('SECURE_AUTH_KEY', '".(SECURE_AUTH_KEY)."');"."\n";
-			$code .= "define('LOGGED_IN_KEY', '".(LOGGED_IN_KEY)."');"."\n";
-			$code .= "define('NONCE_KEY', '".(NONCE_KEY)."');"."\n";
-			$code .= "define('AUTH_SALT', '".(AUTH_SALT)."');"."\n";
-			$code .= "define('SECURE_AUTH_SALT', '".(SECURE_AUTH_SALT)."');"."\n";
-			$code .= "define('LOGGED_IN_SALT', '".(LOGGED_IN_SALT)."');"."\n";
-			$code .= "define('NONCE_SALT', '".(NONCE_SALT)."');"."\n";
+			$code .= $this->define_varaible_code('AUTH_KEY', AUTH_KEY);
+			$code .= $this->define_varaible_code('SECURE_AUTH_KEY', SECURE_AUTH_KEY);
+			$code .= $this->define_varaible_code('LOGGED_IN_KEY', LOGGED_IN_KEY);
+			$code .= $this->define_varaible_code('NONCE_KEY', NONCE_KEY);
+			$code .= $this->define_varaible_code('AUTH_SALT', AUTH_SALT);
+			$code .= $this->define_varaible_code('SECURE_AUTH_SALT', SECURE_AUTH_SALT);
+			$code .= $this->define_varaible_code('LOGGED_IN_SALT', LOGGED_IN_SALT);
+			$code .= $this->define_varaible_code('NONCE_SALT', NONCE_SALT);
 			
-			$code .= "define('LOGGED_IN_COOKIE', '".(LOGGED_IN_COOKIE)."');"."\n";
+			$code .= $this->define_varaible_code('LOGGED_IN_COOKIE', LOGGED_IN_COOKIE);
 			
-			$code .= "define('NONCE_LIFE', ".(apply_filters( 'nonce_life', DAY_IN_SECONDS )).");"."\n";
+			$code .= $this->define_varaible_code('NONCE_LIFE', apply_filters( 'nonce_life', DAY_IN_SECONDS ), '');
 			
 			$post_types = get_post_types();
 			
@@ -440,13 +504,15 @@
 				
 			}
 			
-			$code .= "define('PUBLIC_POST_TYPES', array('".implode('\',\'', $public_types)."'));"."\n";
+			$code .= $this->define_varaible_code('PUBLIC_POST_TYPES', "array('".implode('\',\'', $public_types)."')", '');
 			
-			$code .= "define('REWRITE_POST_TYPES', array("."\n";
+			$array_code = "array("."\n";
 			foreach($rewrites as $slug => $type) {
-				$code .= "\t'".$slug."' => '".$type."',\n";
+				$array_code .= "\t'".$slug."' => '".$type."',\n";
 			}
-			$code .= "));"."\n";
+			$array_code .= ")";
+			
+			$code .= $this->define_varaible_code('REWRITE_POST_TYPES', $array_code, '');
 			
 			return $code;
 		}
@@ -476,6 +542,7 @@
 				'ordersForProduct' => 'OrdersForProduct',
 				'mySubscriptions' => 'MySubscriptions',
 				'myOrders' => 'MyOrders',
+				'myDraftOrders' => 'MyDraftOrders',
 				'orders' => 'Orders',
 				'subscriptions' => 'Subscriptions',
 				'byPostType' => 'ByPostType',

@@ -495,7 +495,7 @@
 				if($post_type_data->public) {
 					
 					if($post_type_data->rewrite) {
-						$rewrites[$post_type_data->rewrite["slug"]] = $post_type;
+						$rewrites[trim($post_type_data->rewrite["slug"], "/")] = $post_type;
 					}
 					else {
 						$public_types[] = $post_type;

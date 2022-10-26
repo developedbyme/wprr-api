@@ -21,13 +21,14 @@
 				if($direction_type === "user") {
 					$time = isset($path_part_data[2]) ? (($path_part_data[2] === "*") ? false : 1*$path_part_data[2]) : time();
 					
-					$current_items = $wp->get_users($new_ids);
 					foreach($current_items as $current_item) {
 						$direction = $current_item->get_user_relations();
 						$current_ids = $direction->get_type($type)->get_user_ids();
 						
 						$new_ids = array_merge($new_ids, $current_ids);
 					}
+					
+					$current_items = $wp->get_users($new_ids);
 					
 					//METODO: go on from user
 					return $current_items;

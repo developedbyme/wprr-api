@@ -410,6 +410,14 @@
 			return null;
 		}
 		
+		public function clear_object_relation_cache() {
+			$this->_incomingRelations = null;
+			$this->_outgoingRelations = null;
+			$this->_userRelations = null;
+			
+			return $this;
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Post<br />");
 		}

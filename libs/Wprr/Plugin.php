@@ -629,6 +629,9 @@
 				'trigger' => 'Trigger',
 				'action' => 'Action',
 				'group/orderedTypeGroup' => 'Group/OrderedTypeGroup',
+				'communication/transactionalEmail' => 'Communication/TransactionalEmail',
+				'communication/content' => 'Communication/CommunicationContent',
+				'communication/title' => 'Communication/CommunicationTitle'
 			);
 			
 			foreach($encodings as $id => $class_name) {

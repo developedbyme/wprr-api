@@ -44,6 +44,9 @@
 			$return_array = array();
 			
 			$object_type_term = $wp->get_taxonomy('dbm_type')->get_term($object_type);
+			if(!$object_type_term) {
+				throw new \Exception('No object type named '.$object_type);
+			}
 			
 			foreach($relations as $relation) {
 				if($relation->has_object_type($object_type_term)) {

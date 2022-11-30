@@ -633,6 +633,9 @@
 				'form/submission' => 'Form/Submission/Submission',
 				'uploadedFile' => 'UploadedFile',
 				'signupInvite' => 'SignupInvite/SignupInvite',
+				'communication/transactionalEmail' => 'Communication/TransactionalEmail',
+				'communication/content' => 'Communication/CommunicationContent',
+				'communication/title' => 'Communication/CommunicationTitle'
 			);
 			
 			foreach($encodings as $id => $class_name) {

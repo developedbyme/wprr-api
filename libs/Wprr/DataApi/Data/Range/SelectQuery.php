@@ -90,7 +90,7 @@
 			
 			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value = "'.$db->escape($value).'"';
 			
-			$posts = $db->query($query);
+			$posts = $db->query_without_storage($query);
 		
 			$ids = array_map(function($item) {
 				return (int)$item['id'];
@@ -112,7 +112,7 @@
 			}
 			
 			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value IN ('.implode(',', $encoded_values).')';
-			$posts = $db->query($query);
+			$posts = $db->query_without_storage($query);
 		
 			$ids = array_map(function($item) {
 				return (int)$item['id'];
@@ -129,7 +129,7 @@
 			$db = $wprr_data_api->database();
 			
 			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value BETWEEN "'.$db->escape($low_value).'" AND "'.$db->escape($high_value).'"';
-			$posts = $db->query($query);
+			$posts = $db->query_without_storage($query);
 		
 			$ids = array_map(function($item) {
 				return (int)$item['id'];

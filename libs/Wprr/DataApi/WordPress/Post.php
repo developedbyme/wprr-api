@@ -356,6 +356,12 @@
 			return $this->_fields;
 		}
 		
+		public function has_object_relation($path) {
+			$items = $this->object_relation_query($path);
+			
+			return !empty($items);
+		}
+		
 		public function object_relation_query($path) {
 			return \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_posts(array($this), $path);
 		}
@@ -389,7 +395,29 @@
 			
 			return $matching_items;
 		}
-
+		
+		public function single_object_relation_query_with_meta_filter($path, $key, $value) {
+			$items = $this->object_relation_query($path);
+			
+			$matching_items = array();
+			
+			foreach($items as $item) {
+				if($item->get_meta($key) == $value) {
+					return $item;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function clear_object_relation_cache() {
+			$this->_incomingRelations = null;
+			$this->_outgoingRelations = null;
+			$this->_userRelations = null;
+			
+			return $this;
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Post<br />");
 		}

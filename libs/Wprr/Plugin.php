@@ -554,6 +554,7 @@
 				'ordersForSubscriptions' => 'OrdersForSubscriptions',
 				'globalObjectRelation' => 'GlobalObjectRelation',
 				'typeObjectRelation' => 'TypeObjectRelation',
+				'openSignupInvitation' => 'OpenSignupInvitation',
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -632,6 +633,12 @@
 				'trigger' => 'Trigger',
 				'action' => 'Action',
 				'group/orderedTypeGroup' => 'Group/OrderedTypeGroup',
+				'form/submission' => 'Form/Submission/Submission',
+				'uploadedFile' => 'UploadedFile',
+				'signupInvite' => 'SignupInvite/SignupInvite',
+				'communication/transactionalEmail' => 'Communication/TransactionalEmail',
+				'communication/content' => 'Communication/CommunicationContent',
+				'communication/title' => 'Communication/CommunicationTitle'
 			);
 			
 			foreach($encodings as $id => $class_name) {

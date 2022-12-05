@@ -13,7 +13,7 @@
 			
 			$id = $post->get_id();
 			
-			$query = 'SELECT order_item_id as id, order_item_name as name, order_item_type as type FROM wp_woocommerce_order_items WHERE order_id = '.((int)$id);
+			$query = 'SELECT order_item_id as id, order_item_name as name, order_item_type as type FROM '.DB_TABLE_PREFIX.'woocommerce_order_items WHERE order_id = '.((int)$id);
 			$rows = $wprr_data_api->database()->query($query);
 			
 			$ids = array();
@@ -31,7 +31,7 @@
 			}
 			
 			if(!empty($ids)) {
-				$query = 'SELECT order_item_id as id, meta_key, meta_value FROM wp_woocommerce_order_itemmeta WHERE order_item_id IN ('.implode(',', $ids).')';
+				$query = 'SELECT order_item_id as id, meta_key, meta_value FROM '.DB_TABLE_PREFIX.'woocommerce_order_itemmeta WHERE order_item_id IN ('.implode(',', $ids).')';
 				$rows = $wprr_data_api->database()->query($query);
 			
 				foreach($rows as $row) {

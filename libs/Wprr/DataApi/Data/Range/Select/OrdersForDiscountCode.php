@@ -25,7 +25,7 @@
 				throw(new \Exception('User '.$user->get_id().' is not allowed to get orders'));
 			}
 			
-			$order_query = 'SELECT DISTINCT(order_id) as id FROM wp_woocommerce_order_items WHERE order_item_type = "coupon" AND order_item_name = "'.$wprr_data_api->database()->escape($discountCode).'"';
+			$order_query = 'SELECT DISTINCT(order_id) as id FROM '.DB_TABLE_PREFIX.'woocommerce_order_items WHERE order_item_type = "coupon" AND order_item_name = "'.$wprr_data_api->database()->escape($discountCode).'"';
 			$order_rows = $wprr_data_api->database()->query($order_query);
 			
 			$order_ids = array_map(function($row) {return $row['id'];}, $order_rows);

@@ -209,7 +209,7 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
-			$result = $db->query_first('SELECT option_value as id FROM wp_options WHERE option_name = "page_on_front"');
+			$result = $db->query_first('SELECT option_value as id FROM '.DB_TABLE_PREFIX.'options WHERE option_name = "page_on_front"');
 			if($result) {
 				return (int)$result['id'];
 			}

@@ -99,7 +99,7 @@
 		}
 		
 		public function get_roles() {
-			$capabilites = $this->get_meta('wp_capabilities');
+			$capabilites = $this->get_meta(DB_TABLE_PREFIX.'capabilities');
 			
 			$return_array = array();
 			foreach($capabilites as $name => $active) {

@@ -88,7 +88,7 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
-			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value = "'.$db->escape($value).'"';
+			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value = "'.$db->escape($value).'"';
 			
 			$posts = $db->query($query);
 		
@@ -111,7 +111,7 @@
 				$encoded_values[] = '"'.$db->escape($value).'"';
 			}
 			
-			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value IN ('.implode(',', $encoded_values).')';
+			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value IN ('.implode(',', $encoded_values).')';
 			$posts = $db->query($query);
 		
 			$ids = array_map(function($item) {
@@ -128,7 +128,7 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
-			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value BETWEEN "'.$db->escape($low_value).'" AND "'.$db->escape($high_value).'"';
+			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value BETWEEN "'.$db->escape($low_value).'" AND "'.$db->escape($high_value).'"';
 			$posts = $db->query($query);
 		
 			$ids = array_map(function($item) {
@@ -202,8 +202,8 @@
 		}
 		
 		public function term_query($term) {
-			$this->_joins[] = 'wp_term_relationships ON wp_posts.ID = wp_term_relationships.object_id';
-			$this->_wheres[] = 'wp_term_relationships.term_taxonomy_id = '.$term->get_id();
+			$this->_joins[] = ''.DB_TABLE_PREFIX.'term_relationships ON '.DB_TABLE_PREFIX.'posts.ID = '.DB_TABLE_PREFIX.'term_relationships.object_id';
+			$this->_wheres[] = ''.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id = '.$term->get_id();
 			
 			return $this;
 		}
@@ -282,7 +282,7 @@
 			$db = $wprr_data_api->database();
 			
 			$has_query = false;
-			$query = "SELECT ID as id FROM wp_posts";
+			$query = "SELECT ID as id FROM ".DB_TABLE_PREFIX."posts";
 			
 			$where = array();
 			

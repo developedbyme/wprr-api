@@ -514,6 +514,32 @@
 			
 			$code .= $this->define_varaible_code('REWRITE_POST_TYPES', $array_code, '');
 			
+			$languages = apply_filters( 'wpml_active_languages', array());
+			
+			$default_language = null;
+			
+			$site_url = get_site_url();
+			
+			$array_code = "array("."\n";
+			foreach($languages as $language_code => $language_data) {
+				$current_url = $language_data['url'];
+				
+				if (substr($current_url, 0, strlen($site_url)) == $site_url) {
+					$current_url = substr($current_url, strlen($site_url));
+				}
+				
+				if($current_url === '') {
+					$default_language = $language_code;
+				}
+				else {
+					$array_code .= "\t'".ltrim($current_url, '/')."' => '".$language_code."',\n";
+				}
+			}
+			$array_code .= ")";
+			
+			$code .= $this->define_varaible_code('LANGUAGE_BASE_URLS', $array_code, '');
+			$code .= $this->define_varaible_code('DEFAULT_LANGUAGE', $default_language, '\'');
+			
 			return $code;
 		}
 		

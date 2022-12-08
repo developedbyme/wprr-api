@@ -162,20 +162,52 @@
 		
 		public function get_post_id_by_path($path) {
 			
+			$current_language = null;
+			$default_language = null;
+			if(defined('DEFAULT_LANGUAGE')) {
+				$current_language = DEFAULT_LANGUAGE;
+				$default_language = DEFAULT_LANGUAGE;
+			}
+			if(defined('LANGUAGE_BASE_URLS')) {
+				foreach(LANGUAGE_BASE_URLS as $language_url => $language_code) {
+					if (substr($path, 0, strlen($language_url)) == $language_url) {
+						$path = substr($path, strlen($language_url));
+						$current_language = $language_code;
+						break;
+					}
+				}
+			}
+			
 			if($path === '') {
+				if($current_language && $current_language !== $default_language) {
+					//METODO: get front page in language
+				}
+				
 				return $this->get_front_page_id();
+				
+			}
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$ids_in_language = array();
+			if($current_language) {
+				$ids_in_language_result = $db->query_without_storage('SELECT element_id as id FROM wp_icl_translations WHERE language_code = \''.$db->escape($current_language).'\'');
+				$ids_in_language = array_map(function($item) {return $item['id'];}, $ids_in_language_result);
 			}
 			
 			$slugs = explode('/', $path);
 			
-			global $wprr_data_api;
-			$db = $wprr_data_api->database();
+			
 			
 			$current_id = 0;
 			foreach($slugs as $slug) {
 				$query = $db->new_select_query();
 				$query->set_post_types(PUBLIC_POST_TYPES);
 				$query->with_parent($current_id);
+				if(!$current_id && $current_language) {
+					$query->include_only($ids_in_language);
+				}
 				$query->with_slug($slug);
 				$new_id = $query->get_id();
 				$current_id = $new_id;
@@ -192,6 +224,9 @@
 						$query = $db->new_select_query();
 						$query->set_post_types(array($current_post_type));
 						$query->with_parent($current_id);
+						if(!$current_id && $current_language) {
+							$query->include_only($ids_in_language);
+						}
 						$query->with_slug($slug);
 						$new_id = $query->get_id();
 						$current_id = $new_id;

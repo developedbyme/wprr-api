@@ -192,7 +192,7 @@
 			
 			$ids_in_language = array();
 			if($current_language) {
-				$ids_in_language_result = $db->query_without_storage('SELECT element_id as id FROM wp_icl_translations WHERE language_code = \''.$db->escape($current_language).'\'');
+				$ids_in_language_result = $db->query_without_storage('SELECT element_id as id FROM '.DB_TABLE_PREFIX.'icl_translations WHERE language_code = \''.$db->escape($current_language).'\'');
 				$ids_in_language = array_map(function($item) {return $item['id'];}, $ids_in_language_result);
 			}
 			

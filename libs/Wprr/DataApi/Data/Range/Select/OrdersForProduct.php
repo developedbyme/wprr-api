@@ -25,12 +25,12 @@
 				throw(new \Exception('User '.$user->get_id().' is not allowed to get orders'));
 			}
 			
-			$meta_query = 'SELECT order_item_id as id FROM wp_woocommerce_order_itemmeta WHERE meta_key = "_product_id" AND meta_value = '.$product;
+			$meta_query = 'SELECT order_item_id as id FROM '.DB_TABLE_PREFIX.'woocommerce_order_itemmeta WHERE meta_key = "_product_id" AND meta_value = '.$product;
 			$meta_rows = $wprr_data_api->database()->query($meta_query);
 			
 			$order_item_ids = array_map(function($row) {return $row['id'];}, $meta_rows);
 			
-			$order_query = 'SELECT DISTINCT(order_id) as id FROM wp_woocommerce_order_items WHERE order_item_id IN ('.implode(',', $order_item_ids).')';
+			$order_query = 'SELECT DISTINCT(order_id) as id FROM '.DB_TABLE_PREFIX.'woocommerce_order_items WHERE order_item_id IN ('.implode(',', $order_item_ids).')';
 			$order_rows = $wprr_data_api->database()->query($order_query);
 			
 			$order_ids = array_map(function($row) {return $row['id'];}, $order_rows);

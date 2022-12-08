@@ -75,7 +75,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 			
-				$query = 'SELECT post_id as id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN ('.implode(',', $ids_to_load).')';
+				$query = 'SELECT post_id as id, meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE post_id IN ('.implode(',', $ids_to_load).')';
 				$meta_fields = $db->query($query);
 			
 				foreach($meta_fields as $meta_field) {
@@ -108,7 +108,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT wp_term_relationships.object_id as id, wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id IN ('.implode(',', $ids_to_load).')';
+				$query = 'SELECT '.DB_TABLE_PREFIX.'term_relationships.object_id as id, '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id, '.DB_TABLE_PREFIX.'term_taxonomy.taxonomy FROM '.DB_TABLE_PREFIX.'term_relationships INNER JOIN '.DB_TABLE_PREFIX.'term_taxonomy WHERE '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id = '.DB_TABLE_PREFIX.'term_taxonomy.term_taxonomy_id AND '.DB_TABLE_PREFIX.'term_relationships.object_id IN ('.implode(',', $ids_to_load).')';
 				
 				$rows = $db->query($query);
 			
@@ -244,7 +244,7 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
-			$result = $db->query_first('SELECT option_value as id FROM wp_options WHERE option_name = "page_on_front"');
+			$result = $db->query_first('SELECT option_value as id FROM '.DB_TABLE_PREFIX.'options WHERE option_name = "page_on_front"');
 			if($result) {
 				return (int)$result['id'];
 			}

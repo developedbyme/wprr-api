@@ -459,11 +459,14 @@
 		
 		public function filter_data_api_generate_settings($code) {
 			
+			global $wpdb;
+			
 			$code .= $this->define_varaible_code('DB_NAME', DB_NAME);
 			$code .= $this->define_varaible_code('DB_USER', DB_USER);
 			$code .= $this->define_varaible_code('DB_PASSWORD', DB_PASSWORD);
 			$code .= $this->define_varaible_code('DB_HOST', DB_HOST);
 			$code .= $this->define_varaible_code('DB_CHARSET', DB_CHARSET);
+			$code .= $this->define_varaible_code('DB_TABLE_PREFIX', $wpdb->prefix);
 			
 			$code .= $this->define_varaible_code('THEME_NAME', basename(get_template_directory()));
 	

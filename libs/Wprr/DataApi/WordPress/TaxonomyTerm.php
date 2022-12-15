@@ -77,7 +77,7 @@
 				
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT object_id as id FROM wp_term_relationships WHERE term_taxonomy_id = "'.$this->_data['id'].'"';
+				$query = 'SELECT object_id as id FROM '.DB_TABLE_PREFIX.'term_relationships WHERE term_taxonomy_id = "'.$this->_data['id'].'"';
 				$posts = $db->query($query);
 				
 				$this->_ids = array_map(function($item) {

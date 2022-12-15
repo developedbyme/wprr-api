@@ -32,7 +32,7 @@
 	
 						if($expiration > time()) {
 		
-							$user_data = $db->query_first('SELECT ID as id, user_pass, user_email as email, display_name as name FROM wp_users WHERE user_login = "'.$db->escape($user_login).'" LIMIT 1');
+							$user_data = $db->query_first('SELECT ID as id, user_pass, user_email as email, display_name as name FROM '.DB_TABLE_PREFIX.'users WHERE user_login = "'.$db->escape($user_login).'" LIMIT 1');
 				
 							$user_data['id'] = (int)$user_data['id'];
 							$user_data['login'] = $user_login;
@@ -49,7 +49,7 @@
 							if($hash === $hmac) {
 								$hashed_token = hash( 'sha256', $token );
 			
-								$session_tokens = unserialize($db->query_first('SELECT meta_value FROM wp_usermeta WHERE user_id = '.$user_data['id'].' AND meta_key = "session_tokens" LIMIT 1')['meta_value']);
+								$session_tokens = unserialize($db->query_first('SELECT meta_value FROM '.DB_TABLE_PREFIX.'usermeta WHERE user_id = '.$user_data['id'].' AND meta_key = "session_tokens" LIMIT 1')['meta_value']);
 								
 								if(isset($session_tokens[$hashed_token])) {
 									$this->_user_data = $user_data;

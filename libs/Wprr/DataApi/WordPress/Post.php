@@ -36,7 +36,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT * FROM wp_posts WHERE ID = "'.$this->_id.'"';
+				$query = 'SELECT * FROM '.DB_TABLE_PREFIX.'posts WHERE ID = "'.$this->_id.'"';
 				$this->_database_data = $db->query_first($query);
 			}
 			
@@ -52,7 +52,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT meta_key, meta_value FROM wp_postmeta WHERE post_id = "'.$this->_id.'"';
+				$query = 'SELECT meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE post_id = "'.$this->_id.'"';
 				$this->_database_meta = $db->query_without_storage($query);
 			}
 			
@@ -74,7 +74,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id = "'.$this->_id.'"';
+				$query = 'SELECT '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id, '.DB_TABLE_PREFIX.'term_taxonomy.taxonomy FROM '.DB_TABLE_PREFIX.'term_relationships INNER JOIN '.DB_TABLE_PREFIX.'term_taxonomy WHERE '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id = '.DB_TABLE_PREFIX.'term_taxonomy.term_taxonomy_id AND '.DB_TABLE_PREFIX.'term_relationships.object_id = "'.$this->_id.'"';
 				$this->_database_taxonomy_terms = $db->query_without_storage($query);
 			}
 			

@@ -18,7 +18,7 @@
 			}
 			
 			$theme_name = THEME_NAME;
-			$theme_mods = unserialize($wprr_data_api->database()->query_first('SELECT option_value FROM wp_options WHERE option_name = "theme_mods_'.$theme_name.'"')['option_value']);
+			$theme_mods = unserialize($wprr_data_api->database()->query_first('SELECT option_value FROM '.DB_TABLE_PREFIX.'options WHERE option_name = "theme_mods_'.$theme_name.'"')['option_value']);
 			
 			if(!isset($theme_mods['nav_menu_locations'][$data['location']])) {
 				throw(new \Exception('No menu at location '.$data['location']));

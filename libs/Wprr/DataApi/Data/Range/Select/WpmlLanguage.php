@@ -24,7 +24,7 @@
 			
 			$language = $data['language'];
 			
-			$query = 'SELECT element_id as id, element_type as type, language_code as language FROM wp_icl_translations WHERE element_id IN ('.implode(',', $post_ids).')';
+			$query = 'SELECT element_id as id, element_type as type, language_code as language FROM '.DB_TABLE_PREFIX.'icl_translations WHERE element_id IN ('.implode(',', $post_ids).')';
 			$results = $db->query($query);
 			
 			$language_map = array();

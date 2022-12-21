@@ -3,9 +3,21 @@
 
 	// \Wprr\DataApi\WordPress\WordPress\Editor
 	class Editor {
-
+		
+		protected $_posts = array();
+		
 		function __construct() {
 			
+		}
+		
+		public function get_post_editor($id) {
+			if(!isset($this->_posts[$id])) {
+				$new_post = new \Wprr\DataApi\WordPress\Editor\PostEditor();
+				$new_post->setup($id);
+				$this->_posts[$id] = $new_post;
+			}
+			
+			return $this->_posts[$id];
 		}
 		
 		public function create_post($type, $title, $parent = 0) {
@@ -62,7 +74,7 @@
 				$keys[] = $key;
 				
 				if($value !== null) {
-					$values[] = json_encode($db->escape($value));
+					$values[] = "'".$db->escape($value)."'";
 				}
 				else {
 					$values[] = "null";

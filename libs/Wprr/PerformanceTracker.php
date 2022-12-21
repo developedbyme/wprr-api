@@ -45,8 +45,8 @@
 				
 					$return_object[$type] = array(
 						'numberOfCalls' => $number_of_calls,
-						'total' => $total_time,
-						'average' => $average_time
+						'total' => round($total_time, 3),
+						'average' => round($average_time, 3)
 					);
 				}
 				else {

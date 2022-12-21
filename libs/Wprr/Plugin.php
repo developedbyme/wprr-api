@@ -581,6 +581,7 @@
 				'globalObjectRelation' => 'GlobalObjectRelation',
 				'typeObjectRelation' => 'TypeObjectRelation',
 				'openSignupInvitation' => 'OpenSignupInvitation',
+				'parentsOf' => 'ParentsOf',
 			);
 			
 			foreach($selections as $id => $class_name) {

@@ -21,7 +21,7 @@
 			$post = $wprr_data_api->wordpress()->get_post($id);
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
-			$parent_term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term('object-relation');
+			$parent_term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term('object-user-relation');
 			$type_term = $post->get_single_term_in_with_descendants($parent_term);
 			
 			$encoded_data->data['type'] = $wprr_data_api->range()->encode_term($type_term);

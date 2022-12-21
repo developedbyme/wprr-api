@@ -10,6 +10,7 @@
 		protected $_fields_structures = array();
 		protected $_trusted_roles = array();
 		protected $_woocommerce = null;
+		protected $_editor = null;
 
 		function __construct() {
 			$this->add_trusted_role('administrator');
@@ -27,6 +28,14 @@
 			}
 			
 			return $this->_woocommerce;
+		}
+		
+		public function editor() {
+			if(!$this->_editor) {
+				$this->_editor = new \Wprr\DataApi\WordPress\Editor\Editor();
+			}
+			
+			return $this->_editor;
 		}
 		
 		public function get_taxonomy($name) {

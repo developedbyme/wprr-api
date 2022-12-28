@@ -583,6 +583,7 @@
 				'openSignupInvitation' => 'OpenSignupInvitation',
 				'parentsOf' => 'ParentsOf',
 				'search' => 'Search',
+				'objectProperty' => 'ObjectProperty',
 			);
 			
 			foreach($selections as $id => $class_name) {

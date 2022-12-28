@@ -61,6 +61,25 @@
 			return null;
 		}
 		
+		public function create_relation($from_post, $to_post, $type_term, $start_time = -1) {
+			global $wprr_data_api;
+			
+			$relation_post = $this->create_post('dbm_object_relation', $from_post->get_id().' '.$type_term->get_slug().' '.$to_post->get_id());
+			
+			$editor = $relation_post->editor();
+			
+			$editor->add_term($wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term('object-relation'));
+			$editor->add_term($type_term);
+			
+			$editor->add_meta('startAt', $start_time);
+			$editor->add_meta('endAt', -1);
+			
+			$editor->add_meta('fromId', $from_post->get_id());
+			$editor->add_meta('toId', $to_post->get_id());
+			
+			return $relation_post;
+		}
+		
 		public function get_insert_statement($fields) {
 			
 			global $wprr_data_api;

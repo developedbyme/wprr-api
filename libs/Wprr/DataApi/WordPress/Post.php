@@ -31,6 +31,11 @@
 			return $this->_id;
 		}
 		
+		public function editor() {
+			global $wprr_data_api;
+			return $wprr_data_api->wordpress()->editor()->get_post_editor($this->get_id());
+		}
+		
 		public function get_database_data() {
 			if(!$this->_database_data) {
 				global $wprr_data_api;
@@ -61,6 +66,13 @@
 		
 		public function set_database_meta_data($data) {
 			$this->_database_meta = $data;
+			
+			return $this;
+		}
+		
+		public function invalidate_meta() {
+			$this->_database_meta = null;
+			$this->_meta = array();
 			
 			return $this;
 		}

@@ -22,8 +22,23 @@
 			return $this->_post->get_id();
 		}
 		
+		public function post() {
+			return $this->_post;
+		}
+		
 		public function get_type() {
 			return $this->_type;
+		}
+		
+		public function __get($name) {
+			switch($name) {
+				case 'start_at':
+					return (int)$this->_post->get_meta('startAt');
+					break;
+				case 'end_at':
+					return (int)$this->_post->get_meta('endAt');
+					break;
+			}
 		}
 		
 		public function has_object_type($term) {

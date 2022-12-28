@@ -86,21 +86,39 @@
 			global $wprr_data_api;
 			
 			$this->start_session();
-			$wprr_data_api->performance()->count('Database::raw_query query');
+			$wprr_data_api->performance()->count('Database::insert query');
 			
-			$wprr_data_api->performance()->start_meassure('Database::raw_query query');
+			$wprr_data_api->performance()->start_meassure('Database::insert query');
 			try {
 				$result = $this->_db->query($query);
 			}
 			catch(\Exception $exception) {
 				throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
 			}
-			$wprr_data_api->performance()->stop_meassure('Database::raw_query query');
+			$wprr_data_api->performance()->stop_meassure('Database::insert query');
 			if($result === true) {
 				return $this->_db->insert_id;
 			}
 			
 			return null;
+		}
+		
+		public function update($query) {
+			global $wprr_data_api;
+			
+			$this->start_session();
+			$wprr_data_api->performance()->count('Database::update query');
+			
+			$wprr_data_api->performance()->start_meassure('Database::update query');
+			try {
+				$result = $this->_db->query($query);
+			}
+			catch(\Exception $exception) {
+				throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
+			}
+			$wprr_data_api->performance()->stop_meassure('Database::update query');
+			
+			return $result;
 		}
 		
 		public function end_session() {

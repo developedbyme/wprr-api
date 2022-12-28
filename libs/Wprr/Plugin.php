@@ -582,6 +582,7 @@
 				'typeObjectRelation' => 'TypeObjectRelation',
 				'openSignupInvitation' => 'OpenSignupInvitation',
 				'parentsOf' => 'ParentsOf',
+				'search' => 'Search',
 			);
 			
 			foreach($selections as $id => $class_name) {

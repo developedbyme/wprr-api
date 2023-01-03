@@ -618,6 +618,7 @@
 				'internalMessage/change-comment' => 'InternalMessageTypes/ChangeComment',
 				'internalMessage/field-changed' => 'InternalMessageTypes/FieldChanged',
 				'fields' => 'Fields',
+				'fields/translations' => 'FieldsTranslations',
 				'fieldTemplate' => 'FieldTemplate',
 				'fieldTemplate/relation' => 'FieldTemplateTypes/Relation',
 				'relations' => 'Relations',

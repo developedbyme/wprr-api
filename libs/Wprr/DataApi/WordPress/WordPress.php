@@ -169,22 +169,33 @@
 			return $this->_fields_structures[$type];
 		}
 		
+		public function get_language_by_path($path) {
+			$current_language = null;
+			
+			if(defined('DEFAULT_LANGUAGE')) {
+				$current_language = DEFAULT_LANGUAGE;
+				
+				if(defined('LANGUAGE_BASE_URLS')) {
+					foreach(LANGUAGE_BASE_URLS as $language_url => $language_code) {
+						if (substr($path, 0, strlen($language_url)) == $language_url) {
+							$path = substr($path, strlen($language_url));
+							$current_language = $language_code;
+							break;
+						}
+					}
+				}
+			}
+			
+			return $current_language;
+		}
+		
 		public function get_post_id_by_path($path) {
 			
 			$current_language = null;
 			$default_language = null;
 			if(defined('DEFAULT_LANGUAGE')) {
-				$current_language = DEFAULT_LANGUAGE;
+				$current_language = $this->get_language_by_path($path);
 				$default_language = DEFAULT_LANGUAGE;
-			}
-			if(defined('LANGUAGE_BASE_URLS')) {
-				foreach(LANGUAGE_BASE_URLS as $language_url => $language_code) {
-					if (substr($path, 0, strlen($language_url)) == $language_url) {
-						$path = substr($path, strlen($language_url));
-						$current_language = $language_code;
-						break;
-					}
-				}
 			}
 			
 			if($path === '') {

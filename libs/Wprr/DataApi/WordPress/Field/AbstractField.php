@@ -177,6 +177,10 @@
 			return $value;
 		}
 		
+		public function get_translations() {
+			return null;
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\AbstractField<br />");
 		}

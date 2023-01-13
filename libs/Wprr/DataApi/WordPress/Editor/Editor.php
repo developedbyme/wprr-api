@@ -28,6 +28,7 @@
 			$db = $wprr_data_api->database();
 			
 			$date = date('Y-m-d H:i:s');
+			$gmt_date = gmdate('Y-m-d H:i:s');
 			
 			$fields = array(
 				'post_type' => $type,
@@ -36,9 +37,9 @@
 				'post_content' => '',
 				'post_parent' => $parent,
 				'post_date' => $date,
-				'post_date_gmt' => $date,
+				'post_date_gmt' => $gmt_date,
 				'post_modified' => $date,
-				'post_modified_gmt' => $date,
+				'post_modified_gmt' => $gmt_date,
 				'post_status' => 'draft',
 				'to_ping' => '',
 				'pinged' => '',

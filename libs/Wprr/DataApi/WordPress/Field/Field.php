@@ -197,6 +197,10 @@
 			return $value;
 		}
 		
+		public function get_translations() {
+			return $this->get_post()->get_meta('dbmtc_value_translations');
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Field<br />");
 		}

@@ -49,12 +49,14 @@
 					$terms[$term['id']] = $term;
 				}
 				
-				$query = 'SELECT term_id as id, name, slug FROM '.DB_TABLE_PREFIX.'terms WHERE term_id IN ('.implode(',', $term_ids).')';
-				$term_names = $db->query($query);
+				if(!empty($term_ids)) {
+					$query = 'SELECT term_id as id, name, slug FROM '.DB_TABLE_PREFIX.'terms WHERE term_id IN ('.implode(',', $term_ids).')';
+					$term_names = $db->query($query);
 				
-				foreach($term_names as $term_name) {
-					$terms[$term_map[$term_name['id']]]['name'] = $term_name['name'];
-					$terms[$term_map[$term_name['id']]]['slug'] = $term_name['slug'];
+					foreach($term_names as $term_name) {
+						$terms[$term_map[$term_name['id']]]['name'] = $term_name['name'];
+						$terms[$term_map[$term_name['id']]]['slug'] = $term_name['slug'];
+					}
 				}
 				
 				$this->_term_data = $terms;

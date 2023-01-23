@@ -201,6 +201,14 @@
 			return $this->get_post()->get_meta('dbmtc_value_translations');
 		}
 		
+		public function get_translated_value($language_code) {
+			$translations = $this->get_translations();
+			if($translations && isset($translations[$language_code])) {
+				return $translations[$language_code];
+			}
+			return $this->get_value();
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Field<br />");
 		}

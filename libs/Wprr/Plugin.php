@@ -584,6 +584,7 @@
 				'parentsOf' => 'ParentsOf',
 				'search' => 'Search',
 				'objectProperty' => 'ObjectProperty',
+				'unpaidOrderByKey' => 'UnpaidOrderByKey',
 			);
 			
 			foreach($selections as $id => $class_name) {

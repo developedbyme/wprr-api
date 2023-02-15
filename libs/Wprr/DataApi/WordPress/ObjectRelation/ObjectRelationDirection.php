@@ -67,22 +67,24 @@
 				$query->meta_query($field, $this->_post->get_id());
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 3');
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 4');
-				$ids = $query->get_ids();
+				$ids = $query->get_ids_without_storage();
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 4');
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids');
 				
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get terms');
 				$wp = $wprr_data_api->wordpress();
 				$group_term = $wp->get_taxonomy('dbm_type')->get_term('object-relation');
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get terms');
 				
-				$wp->load_meta_for_posts($ids);
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types load relation terms');
 				$wp->load_taxonomy_terms_for_posts($ids);
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types load relation terms');
 				
 				$reference_ids = array();
 				
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types setup relations');
 				foreach($ids as $id) {
 					$post = $wp->get_post($id);
-					$reference_ids[] = (int)$post->get_meta($reverse_field);
 					
 					$type_terms = $post->get_terms_in($group_term);
 					
@@ -94,8 +96,6 @@
 					}
 				}
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types setup relations');
-				
-				$wp->load_taxonomy_terms_for_posts($reference_ids);
 				
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types');
 			}

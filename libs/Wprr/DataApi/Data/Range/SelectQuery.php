@@ -9,6 +9,7 @@
 		protected $_post_types = null;
 		protected $_joins = array();
 		protected $_wheres = array();
+		protected $_store = true;
 
 		function __construct() {
 			
@@ -16,6 +17,12 @@
 		
 		public function set_post_type($post_type) {
 			$this->_post_types = array($post_type);
+			
+			return $this;
+		}
+		
+		public function skip_storage() {
+			$this->_store = false;
 			
 			return $this;
 		}
@@ -57,6 +64,13 @@
 			return $this;
 		}
 		
+		public function include_all_exisiting_statuses() {
+			$this->_statuses = null;
+			$this->_wheres[] = 'post_status NOT IN ("draft", "trash")';
+			
+			return $this;
+		}
+		
 		public function set_status($status) {
 			$this->_statuses = array($status);
 			
@@ -74,9 +88,9 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
-			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value = "'.$db->escape($value).'"';
+			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value = "'.$db->escape($value).'"';
 			
-			$posts = $db->query($query);
+			$posts = $db->query_without_storage($query);
 		
 			$ids = array_map(function($item) {
 				return (int)$item['id'];
@@ -97,8 +111,8 @@
 				$encoded_values[] = '"'.$db->escape($value).'"';
 			}
 			
-			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value IN ('.implode(',', $encoded_values).')';
-			$posts = $db->query($query);
+			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value IN ('.implode(',', $encoded_values).')';
+			$posts = $db->query_without_storage($query);
 		
 			$ids = array_map(function($item) {
 				return (int)$item['id'];
@@ -114,8 +128,8 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
-			$query = 'SELECT post_id as id FROM wp_postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value BETWEEN "'.$db->escape($low_value).'" AND "'.$db->escape($high_value).'"';
-			$posts = $db->query($query);
+			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND meta_value BETWEEN "'.$db->escape($low_value).'" AND "'.$db->escape($high_value).'"';
+			$posts = $db->query_without_storage($query);
 		
 			$ids = array_map(function($item) {
 				return (int)$item['id'];
@@ -142,6 +156,8 @@
 			$db = $wprr_data_api->database();
 			
 			$this->_wheres[] = 'post_parent = '.$db->escape($parent_id);
+			
+			return $this;
 		}
 		
 		public function with_slug($slug) {
@@ -150,6 +166,18 @@
 			$db = $wprr_data_api->database();
 			
 			$this->_wheres[] = 'post_name = "'.$db->escape($slug).'"';
+			
+			return $this;
+		}
+		
+		public function with_title($title) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$this->_wheres[] = 'post_title = "'.$db->escape($title).'"';
+			
+			return $this;
 		}
 		
 		public function include_term($term) {
@@ -174,8 +202,8 @@
 		}
 		
 		public function term_query($term) {
-			$this->_joins[] = 'wp_term_relationships ON wp_posts.ID = wp_term_relationships.object_id';
-			$this->_wheres[] = 'wp_term_relationships.term_taxonomy_id = '.$term->get_id();
+			$this->_joins[] = ''.DB_TABLE_PREFIX.'term_relationships ON '.DB_TABLE_PREFIX.'posts.ID = '.DB_TABLE_PREFIX.'term_relationships.object_id';
+			$this->_wheres[] = ''.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id = '.$term->get_id();
 			
 			return $this;
 		}
@@ -254,7 +282,7 @@
 			$db = $wprr_data_api->database();
 			
 			$has_query = false;
-			$query = "SELECT ID as id FROM wp_posts";
+			$query = "SELECT ID as id FROM ".DB_TABLE_PREFIX."posts";
 			
 			$where = array();
 			
@@ -309,7 +337,28 @@
 			$db = $wprr_data_api->database();
 			$query = $this->get_query();
 			
-			$posts = $db->query($query);
+			if($this->_store) {
+				$posts = $db->query($query);
+			}
+			else {
+				$posts = $db->query_without_storage($query);
+			}
+			
+			return array_map(function($item) {
+				return (int)$item['id'];
+			}, $posts);
+		}
+		
+		public function get_ids_without_storage() {
+			if($this->_only !== null && empty($this->_only)) {
+				return array();
+			}
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			$query = $this->get_query();
+			
+			$posts = $db->query_without_storage($query);
 			
 			return array_map(function($item) {
 				return (int)$item['id'];
@@ -325,7 +374,12 @@
 			$db = $wprr_data_api->database();
 			$query = $this->get_query().' LIMIT 1';
 			
-			$posts = $db->query($query);
+			if($this->_store) {
+				$posts = $db->query($query);
+			}
+			else {
+				$posts = $db->query_without_storage($query);
+			}
 			
 			if(!empty($posts)) {
 				return (int)$posts[0]['id'];

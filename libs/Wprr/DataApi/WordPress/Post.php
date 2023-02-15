@@ -31,12 +31,17 @@
 			return $this->_id;
 		}
 		
+		public function editor() {
+			global $wprr_data_api;
+			return $wprr_data_api->wordpress()->editor()->get_post_editor($this->get_id());
+		}
+		
 		public function get_database_data() {
 			if(!$this->_database_data) {
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT * FROM wp_posts WHERE ID = "'.$this->_id.'"';
+				$query = 'SELECT * FROM '.DB_TABLE_PREFIX.'posts WHERE ID = "'.$this->_id.'"';
 				$this->_database_data = $db->query_first($query);
 			}
 			
@@ -52,8 +57,8 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT meta_key, meta_value FROM wp_postmeta WHERE post_id = "'.$this->_id.'"';
-				$this->_database_meta = $db->query($query);
+				$query = 'SELECT meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE post_id = "'.$this->_id.'"';
+				$this->_database_meta = $db->query_without_storage($query);
 			}
 			
 			return $this->_database_meta;
@@ -61,6 +66,13 @@
 		
 		public function set_database_meta_data($data) {
 			$this->_database_meta = $data;
+			
+			return $this;
+		}
+		
+		public function invalidate_meta() {
+			$this->_database_meta = null;
+			$this->_meta = array();
 			
 			return $this;
 		}
@@ -74,8 +86,8 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id = "'.$this->_id.'"';
-				$this->_database_taxonomy_terms = $db->query($query);
+				$query = 'SELECT '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id, '.DB_TABLE_PREFIX.'term_taxonomy.taxonomy FROM '.DB_TABLE_PREFIX.'term_relationships INNER JOIN '.DB_TABLE_PREFIX.'term_taxonomy WHERE '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id = '.DB_TABLE_PREFIX.'term_taxonomy.term_taxonomy_id AND '.DB_TABLE_PREFIX.'term_relationships.object_id = "'.$this->_id.'"';
+				$this->_database_taxonomy_terms = $db->query_without_storage($query);
 			}
 			
 			return $this->_database_taxonomy_terms;
@@ -123,6 +135,10 @@
 				}
 				
 				$this->_meta[$name] = $selected_meta;
+			}
+			
+			if(empty($this->_meta[$name])) {
+				return null;
 			}
 			
 			return $this->_meta[$name][0];
@@ -351,7 +367,69 @@
 			
 			return $this->_fields;
 		}
-
+		
+		public function has_object_relation($path) {
+			$items = $this->object_relation_query($path);
+			
+			return !empty($items);
+		}
+		
+		public function object_relation_query($path) {
+			return \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_posts(array($this), $path);
+		}
+		
+		public function single_object_relation_query($path) {
+			return \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_single_post($this, $path);
+		}
+		
+		public function has_object_relation_meta($path, $key, $value) {
+			$items = $this->object_relation_query($path);
+			
+			foreach($items as $item) {
+				if($item->get_meta($key) == $value) {
+					return true;
+				}
+			}
+			
+			return false;
+		}
+		
+		public function object_relation_query_with_meta_filter($path, $key, $value) {
+			$items = $this->object_relation_query($path);
+			
+			$matching_items = array();
+			
+			foreach($items as $item) {
+				if($item->get_meta($key) == $value) {
+					$matching_items[] = $item;
+				}
+			}
+			
+			return $matching_items;
+		}
+		
+		public function single_object_relation_query_with_meta_filter($path, $key, $value) {
+			$items = $this->object_relation_query($path);
+			
+			$matching_items = array();
+			
+			foreach($items as $item) {
+				if($item->get_meta($key) == $value) {
+					return $item;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function clear_object_relation_cache() {
+			$this->_incomingRelations = null;
+			$this->_outgoingRelations = null;
+			$this->_userRelations = null;
+			
+			return $this;
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Post<br />");
 		}

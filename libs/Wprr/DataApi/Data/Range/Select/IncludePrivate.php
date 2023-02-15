@@ -15,7 +15,7 @@
 			
 			//METODO: check that user is allowed
 			$user = $wprr_data_api->user()->get_user_for_call($data);
-			$is_ok = in_array('administrator', $user->get_roles());
+			$is_ok = $user->is_trusted();
 			if(!$is_ok) {
 				throw(new \Exception('User '.$as_user.' is not allowed to get private'));
 			}

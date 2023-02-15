@@ -239,7 +239,10 @@
 		}
 		
 		public function filter_user_data_if_logged_in($null_value) {
-			if(is_user_logged_in()) {
+			
+			$encode_user_when_render = apply_filters(WPRR_DOMAIN.'/'.'encode_user_when_render', true);
+			
+			if(is_user_logged_in() && $encode_user_when_render) {
 				
 				$current_user = wp_get_current_user();
 				
@@ -361,6 +364,7 @@
 			
 			add_filter($create_post_prefix.'valid_combination', array($this, 'filter_create_post_valid_combination'), 10, 4);
 			add_filter($create_post_prefix.'insert/draft', array($this, 'filter_create_post_insert_draft'), 10, 3);
+			add_filter($create_post_prefix.'insert/orderForCheckout', array($this, 'filter_create_post_insert_orderForCheckout'), 10, 3);
 			
 			add_filter('wprr/data-api/generate-settings', array($this, 'filter_data_api_generate_settings'), 10, 1);
 			add_filter('wprr/data-api/generate-ranges', array($this, 'filter_data_api_generate_ranges'), 10, 1);
@@ -390,30 +394,99 @@
 			return $post_id;
 		}
 		
+		public function filter_create_post_insert_orderForCheckout($post_id, $title, $post_type) {
+			
+			$time_zone = get_option('timezone_string');
+			if($time_zone) {
+				date_default_timezone_set($time_zone);
+			}
+			
+			$insert_arguments = array(
+				'post_title' => $title,
+				'post_status' => 'draft',
+				'post_type' => 'shop_order',
+			);
+			
+			$post_id = wp_insert_post($insert_arguments);
+			
+			$order = wc_get_order($post_id);
+			
+			$user_id = get_current_user_id();
+			
+			if($user_id) {
+				$customer = new \WC_Customer($user_id);
+				
+				$order->set_billing_first_name($customer->get_billing_first_name());
+				$order->set_billing_last_name($customer->get_billing_last_name());
+				$order->set_billing_company($customer->get_billing_company());
+				$order->set_billing_address_1($customer->get_billing_address_1());
+				$order->set_billing_address_2($customer->get_billing_address_2());
+				$order->set_billing_postcode($customer->get_billing_postcode());
+				$order->set_billing_city($customer->get_billing_city());
+				$order->set_billing_country($customer->get_billing_country());
+				$order->set_billing_phone($customer->get_billing_phone());
+				
+				$order->set_customer_id($user_id);
+			}
+			
+			$now = time();
+			$time = date('Y-m-d', $now).'T'.date('H:i:s', $now);
+			
+			//METODO: figure this out
+			$order->set_date_created(strtotime($time));
+			$order->set_date_modified(strtotime($time));
+			
+			update_post_meta($post_id, '_created_via', 'api');
+			
+			update_post_meta($post_id, '_customer_ip_address', $_SERVER['REMOTE_ADDR']);
+			update_post_meta($post_id, '_customer_user_agent', $_SERVER['HTTP_USER_AGENT']);
+			
+			$order->set_order_key( wc_generate_order_key() );
+			
+			$order->save($post_id);
+			
+			return $post_id;
+		}
+		
+		protected function define_varaible_code($name, $value, $delimiter = '\'') {
+			$return_string = '';
+			$return_string .= "if(!defined('".$name."')) {"."\n";
+			$return_string .= "	define('".$name."', ".$delimiter.$value.$delimiter.");"."\n";
+			$return_string .= "}"."\n";
+			
+			return $return_string;
+		}
+		
 		public function filter_data_api_generate_settings($code) {
 			
-			$code .= "define('DB_NAME', '".(DB_NAME)."');"."\n";
-			$code .= "define('DB_USER', '".(DB_USER)."');"."\n";
-			$code .= "define('DB_PASSWORD', '".(DB_PASSWORD)."');"."\n";
-			$code .= "define('DB_HOST', '".(DB_HOST)."');"."\n";
-				
-			$code .= "define('THEME_NAME', '".(basename(get_template_directory()))."');"."\n";
+			global $wpdb;
+			
+			$code .= $this->define_varaible_code('DB_NAME', DB_NAME);
+			$code .= $this->define_varaible_code('DB_USER', DB_USER);
+			$code .= $this->define_varaible_code('DB_PASSWORD', DB_PASSWORD);
+			$code .= $this->define_varaible_code('DB_HOST', DB_HOST);
+			$code .= $this->define_varaible_code('DB_CHARSET', DB_CHARSET);
+			$code .= $this->define_varaible_code('DB_TABLE_PREFIX', $wpdb->prefix);
+			
+			$code .= $this->define_varaible_code('THEME_NAME', basename(get_template_directory()));
 	
-			$code .= "define('SITE_URL', '".(get_site_url())."');"."\n";
+			$code .= $this->define_varaible_code('SITE_URL', get_site_url());
 			
 			$upload_dir = wp_upload_dir(null, false);
-			$code .= "define('UPLOAD_URL', '".($upload_dir['baseurl'])."');"."\n";
+			$code .= $this->define_varaible_code('UPLOAD_URL', $upload_dir['baseurl']);
 	
-			$code .= "define('AUTH_KEY', '".(AUTH_KEY)."');"."\n";
-			$code .= "define('SECURE_AUTH_KEY', '".(SECURE_AUTH_KEY)."');"."\n";
-			$code .= "define('LOGGED_IN_KEY', '".(LOGGED_IN_KEY)."');"."\n";
-			$code .= "define('NONCE_KEY', '".(NONCE_KEY)."');"."\n";
-			$code .= "define('AUTH_SALT', '".(AUTH_SALT)."');"."\n";
-			$code .= "define('SECURE_AUTH_SALT', '".(SECURE_AUTH_SALT)."');"."\n";
-			$code .= "define('LOGGED_IN_SALT', '".(LOGGED_IN_SALT)."');"."\n";
-			$code .= "define('NONCE_SALT', '".(NONCE_SALT)."');"."\n";
-	
-			$code .= "define('NONCE_LIFE', ".(apply_filters( 'nonce_life', DAY_IN_SECONDS )).");"."\n";
+			$code .= $this->define_varaible_code('AUTH_KEY', AUTH_KEY);
+			$code .= $this->define_varaible_code('SECURE_AUTH_KEY', SECURE_AUTH_KEY);
+			$code .= $this->define_varaible_code('LOGGED_IN_KEY', LOGGED_IN_KEY);
+			$code .= $this->define_varaible_code('NONCE_KEY', NONCE_KEY);
+			$code .= $this->define_varaible_code('AUTH_SALT', AUTH_SALT);
+			$code .= $this->define_varaible_code('SECURE_AUTH_SALT', SECURE_AUTH_SALT);
+			$code .= $this->define_varaible_code('LOGGED_IN_SALT', LOGGED_IN_SALT);
+			$code .= $this->define_varaible_code('NONCE_SALT', NONCE_SALT);
+			
+			$code .= $this->define_varaible_code('LOGGED_IN_COOKIE', LOGGED_IN_COOKIE);
+			
+			$code .= $this->define_varaible_code('NONCE_LIFE', apply_filters( 'nonce_life', DAY_IN_SECONDS ), '');
 			
 			$post_types = get_post_types();
 			
@@ -425,7 +498,7 @@
 				if($post_type_data->public) {
 					
 					if($post_type_data->rewrite) {
-						$rewrites[$post_type_data->rewrite["slug"]] = $post_type;
+						$rewrites[trim($post_type_data->rewrite["slug"], "/")] = $post_type;
 					}
 					else {
 						$public_types[] = $post_type;
@@ -434,13 +507,41 @@
 				
 			}
 			
-			$code .= "define('PUBLIC_POST_TYPES', array('".implode('\',\'', $public_types)."'));"."\n";
+			$code .= $this->define_varaible_code('PUBLIC_POST_TYPES', "array('".implode('\',\'', $public_types)."')", '');
 			
-			$code .= "define('REWRITE_POST_TYPES', array("."\n";
+			$array_code = "array("."\n";
 			foreach($rewrites as $slug => $type) {
-				$code .= "\t'".$slug."' => '".$type."',\n";
+				$array_code .= "\t'".$slug."' => '".$type."',\n";
 			}
-			$code .= "));"."\n";
+			$array_code .= ")";
+			
+			$code .= $this->define_varaible_code('REWRITE_POST_TYPES', $array_code, '');
+			
+			$languages = apply_filters( 'wpml_active_languages', array());
+			
+			$default_language = null;
+			
+			$site_url = get_site_url();
+			
+			$array_code = "array("."\n";
+			foreach($languages as $language_code => $language_data) {
+				$current_url = $language_data['url'];
+				
+				if (substr($current_url, 0, strlen($site_url)) == $site_url) {
+					$current_url = substr($current_url, strlen($site_url));
+				}
+				
+				if($current_url === '') {
+					$default_language = $language_code;
+				}
+				else {
+					$array_code .= "\t'".ltrim($current_url, '/')."' => '".$language_code."',\n";
+				}
+			}
+			$array_code .= ")";
+			
+			$code .= $this->define_varaible_code('LANGUAGE_BASE_URLS', $array_code, '');
+			$code .= $this->define_varaible_code('DEFAULT_LANGUAGE', $default_language, '\'');
 			
 			return $code;
 		}
@@ -465,6 +566,25 @@
 				'inDateRange' => 'InDateRange',
 				'products' => 'Products',
 				'includePrivate' => 'IncludePrivate',
+				'subscriptionsForProduct' => 'SubscriptionsForProduct',
+				'subscriptionsForUser' => 'SubscriptionsForUser',
+				'ordersForProduct' => 'OrdersForProduct',
+				'mySubscriptions' => 'MySubscriptions',
+				'myOrders' => 'MyOrders',
+				'myDraftOrders' => 'MyDraftOrders',
+				'orders' => 'Orders',
+				'subscriptions' => 'Subscriptions',
+				'byPostType' => 'ByPostType',
+				'ordersForDiscountCode' => 'OrdersForDiscountCode',
+				'objectRelation' => 'ObjectRelation',
+				'ordersForSubscriptions' => 'OrdersForSubscriptions',
+				'globalObjectRelation' => 'GlobalObjectRelation',
+				'typeObjectRelation' => 'TypeObjectRelation',
+				'openSignupInvitation' => 'OpenSignupInvitation',
+				'parentsOf' => 'ParentsOf',
+				'search' => 'Search',
+				'objectProperty' => 'ObjectProperty',
+				'unpaidOrderByKey' => 'UnpaidOrderByKey',
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -482,13 +602,17 @@
 				'permalink' => 'Permalink',
 				'preview' => 'Preview',
 				'image' => 'Image',
-				'menuItem' => 'MenuItem',
+				'menuItem' => 'MenuItem/MenuItem',
+				'menuItem/post_type' => 'MenuItem/Types/PostType',
+				'menuItem/custom' => 'MenuItem/Types/Custom',
+				'menuItem/taxonomy' => 'MenuItem/Types/Taxonomy',
 				'postContent' => 'PostContent',
 				'page' => 'Page',
 				'postExcerpt' => 'PostExcerpt',
 				'pageSettings' => 'PageSettings',
 				'pageSetting' => 'PageSetting',
 				'type' => 'Type',
+				'type/translations' => 'TypeTranslations',
 				'pageDataSources' => 'PageDataSources',
 				'dataSource' => 'DataSource',
 				'messagesInGroup' => 'MessagesInGroup',
@@ -496,10 +620,12 @@
 				'internalMessage/change-comment' => 'InternalMessageTypes/ChangeComment',
 				'internalMessage/field-changed' => 'InternalMessageTypes/FieldChanged',
 				'fields' => 'Fields',
+				'fields/translations' => 'FieldsTranslations',
 				'fieldTemplate' => 'FieldTemplate',
 				'fieldTemplate/relation' => 'FieldTemplateTypes/Relation',
 				'relations' => 'Relations',
 				'relation' => 'Relation',
+				'relationOrder' => 'RelationOrder',
 				'userRelation' => 'UserRelation',
 				'objectTypes' => 'ObjectTypes',
 				'postStatus' => 'PostStatus',
@@ -512,6 +638,9 @@
 				'order/details' => 'Order/Details',
 				'order/user' => 'Order/User',
 				'order/paymentMethod' => 'Order/PaymentMethod',
+				'order/paidDate' => 'Order/PaidDate',
+				'order/creationType' => 'Order/CreationType',
+				'order/subscription' => 'Order/Subscription',
 				'pageTemplate' => 'PageTemplate',
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',
@@ -521,10 +650,46 @@
 				'process' => 'Process',
 				'processPart' => 'ProcessPart',
 				'itemInProcess' => 'ItemInProcess',
+				'contentTemplate' => 'ContentTemplate',
+				'contentTemplate/translations' => 'ContentTemplateTranslations',
+				'templatePosition' => 'TemplatePosition',
+				'description' => 'Description',
+				'imagesFor' => 'ImagesFor',
+				'tags' => 'Tags',
+				'identifier' => 'Identifier',
+				'value' => 'Value',
+				'value/translations' => 'ValueTranslations',
+				'dataImage' => 'DataImage',
+				'subscription/orders' => 'Subscription/Orders',
+				'discountCode' => 'DiscountCode/DiscountCode',
+				'discountCode/recurring_percent' => 'DiscountCode/Types/RecurringPercent',
+				'triggers' => 'Triggers',
+				'trigger' => 'Trigger',
+				'action' => 'Action',
+				'group/orderedGroup' => 'Group/OrderedGroup',
+				'group/orderedTypeGroup' => 'Group/OrderedTypeGroup',
+				'group/orderedImageGroup' => 'Group/OrderedImageGroup',
+				'form/submission' => 'Form/Submission/Submission',
+				'uploadedFile' => 'UploadedFile',
+				'signupInvite' => 'SignupInvite/SignupInvite',
+				'communication/transactionalEmail' => 'Communication/TransactionalEmail',
+				'communication/content' => 'Communication/CommunicationContent',
+				'communication/title' => 'Communication/CommunicationTitle'
 			);
 			
 			foreach($encodings as $id => $class_name) {
 				$code .= wprr_get_data_api_encode_registration_code($id, $encode_prefix.$class_name.'.php', $encode_namespace.implode('\\', explode('/', $class_name)))."\n";
+			}
+			
+			$data_function_prefix = WPRR_DIR.'/libs/Wprr/DataApi/Data/Range/DataFunction/';
+			$data_function_namespace = '\\Wprr\\DataApi\\Data\\Range\\DataFunction\\';
+			
+			$data_functions = array(
+				'example' => 'Example',
+			);
+			
+			foreach($data_functions as $id => $class_name) {
+				$code .= wprr_get_data_api_data_function_registration_code($id, $data_function_prefix.$class_name.'.php', $data_function_namespace.implode('\\', explode('/', $class_name)))."\n";
 			}
 			
 			return $code;

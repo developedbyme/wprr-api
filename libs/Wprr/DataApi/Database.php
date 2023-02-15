@@ -15,7 +15,7 @@
 			if(!$this->_db) {
 				mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 				$this->_db = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-				mysqli_set_charset($this->_db, "utf8");
+				$this->_db->set_charset("utf8mb4"); //METODO: have this as a variable
 			}
 			
 			return $this;
@@ -37,7 +37,12 @@
 				//$wprr_data_api->performance()->count($query);
 				
 				$wprr_data_api->performance()->start_meassure('Database::query query');
-				$result = $this->_db->query($query);
+				try {
+					$result = $this->_db->query($query);
+				}
+				catch(\Exception $exception) {
+					throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
+				}
 				$wprr_data_api->performance()->stop_meassure('Database::query query');
 				
 				$wprr_data_api->performance()->start_meassure('Database::query fetch');
@@ -53,6 +58,67 @@
 		
 		public function query_first($query) {
 			return $this->query($query)[0];
+		}
+		
+		public function query_without_storage($query) {
+			global $wprr_data_api;
+			
+			$this->start_session();
+			$wprr_data_api->performance()->count('Database::query_without_storage query');
+			
+			$wprr_data_api->performance()->start_meassure('Database::query_without_storage query');
+			try {
+				$result = $this->_db->query($query);
+			}
+			catch(\Exception $exception) {
+				throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
+			}
+			$wprr_data_api->performance()->stop_meassure('Database::query_without_storage query');
+			
+			$wprr_data_api->performance()->start_meassure('Database::query_without_storage fetch');
+			$rows = $result->fetch_all(MYSQLI_ASSOC);
+			$wprr_data_api->performance()->stop_meassure('Database::query_without_storage fetch');
+			
+			return $rows;
+		}
+		
+		public function insert($query) {
+			global $wprr_data_api;
+			
+			$this->start_session();
+			$wprr_data_api->performance()->count('Database::insert query');
+			
+			$wprr_data_api->performance()->start_meassure('Database::insert query');
+			try {
+				$result = $this->_db->query($query);
+			}
+			catch(\Exception $exception) {
+				throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
+			}
+			$wprr_data_api->performance()->stop_meassure('Database::insert query');
+			if($result === true) {
+				return $this->_db->insert_id;
+			}
+			
+			return null;
+		}
+		
+		public function update($query) {
+			global $wprr_data_api;
+			
+			$this->start_session();
+			$wprr_data_api->performance()->count('Database::update query');
+			
+			$wprr_data_api->performance()->start_meassure('Database::update query');
+			try {
+				$result = $this->_db->query($query);
+			}
+			catch(\Exception $exception) {
+				throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
+			}
+			$wprr_data_api->performance()->stop_meassure('Database::update query');
+			
+			return $result;
 		}
 		
 		public function end_session() {

@@ -24,12 +24,17 @@
 			return $this->_id;
 		}
 		
+		public function is_trusted() {
+			global $wprr_data_api;
+			return $wprr_data_api->wordpress()->is_user_trusted($this);
+		}
+		
 		public function get_database_data() {
 			if(!$this->_database_data) {
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT * FROM wp_users WHERE ID = "'.$this->_id.'"';
+				$query = 'SELECT * FROM '.DB_TABLE_PREFIX.'users WHERE ID = "'.$this->_id.'"';
 				$this->_database_data = $db->query_first($query);
 			}
 			
@@ -41,7 +46,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT meta_key, meta_value FROM wp_usermeta WHERE user_id = "'.$this->_id.'"';
+				$query = 'SELECT meta_key, meta_value FROM '.DB_TABLE_PREFIX.'usermeta WHERE user_id = "'.$this->_id.'"';
 				$this->_database_meta = $db->query($query);
 			}
 			
@@ -94,7 +99,7 @@
 		}
 		
 		public function get_roles() {
-			$capabilites = $this->get_meta('wp_capabilities');
+			$capabilites = $this->get_meta(DB_TABLE_PREFIX.'capabilities');
 			
 			$return_array = array();
 			foreach($capabilites as $name => $active) {

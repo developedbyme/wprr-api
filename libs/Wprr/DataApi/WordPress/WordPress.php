@@ -8,9 +8,34 @@
 		protected $_posts = array();
 		protected $_users = array();
 		protected $_fields_structures = array();
+		protected $_trusted_roles = array();
+		protected $_woocommerce = null;
+		protected $_editor = null;
 
 		function __construct() {
+			$this->add_trusted_role('administrator');
+		}
+		
+		public function add_trusted_role($role) {
+			$this->_trusted_roles[] = $role;
 			
+			return $this;
+		}
+		
+		public function woocommerce() {
+			if(!$this->_woocommerce) {
+				$this->_woocommerce = new \Wprr\DataApi\WordPress\WooCommerce\WooCommerce();
+			}
+			
+			return $this->_woocommerce;
+		}
+		
+		public function editor() {
+			if(!$this->_editor) {
+				$this->_editor = new \Wprr\DataApi\WordPress\Editor\Editor();
+			}
+			
+			return $this->_editor;
 		}
 		
 		public function get_taxonomy($name) {
@@ -33,6 +58,16 @@
 			return $this->_posts[$id];
 		}
 		
+		public function get_posts($ids) {
+			$return_array = array();
+			
+			foreach($ids as $id) {
+				$return_array[] = $this->get_post($id);
+			}
+			
+			return $return_array;
+		}
+		
 		public function load_meta_for_posts($ids) {
 			$ids_to_load = array();
 			
@@ -49,7 +84,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 			
-				$query = 'SELECT post_id as id, meta_key, meta_value FROM wp_postmeta WHERE post_id IN ('.implode(',', $ids_to_load).')';
+				$query = 'SELECT post_id as id, meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE post_id IN ('.implode(',', $ids_to_load).')';
 				$meta_fields = $db->query($query);
 			
 				foreach($meta_fields as $meta_field) {
@@ -82,7 +117,7 @@
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
 				
-				$query = 'SELECT wp_term_relationships.object_id as id, wp_term_relationships.term_taxonomy_id, wp_term_taxonomy.taxonomy FROM wp_term_relationships INNER JOIN wp_term_taxonomy WHERE wp_term_relationships.term_taxonomy_id = wp_term_taxonomy.term_taxonomy_id AND wp_term_relationships.object_id IN ('.implode(',', $ids_to_load).')';
+				$query = 'SELECT '.DB_TABLE_PREFIX.'term_relationships.object_id as id, '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id, '.DB_TABLE_PREFIX.'term_taxonomy.taxonomy FROM '.DB_TABLE_PREFIX.'term_relationships INNER JOIN '.DB_TABLE_PREFIX.'term_taxonomy WHERE '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id = '.DB_TABLE_PREFIX.'term_taxonomy.term_taxonomy_id AND '.DB_TABLE_PREFIX.'term_relationships.object_id IN ('.implode(',', $ids_to_load).')';
 				
 				$rows = $db->query($query);
 			
@@ -107,6 +142,23 @@
 			return $this->_users[$id];
 		}
 		
+		public function get_users($ids) {
+			
+			$return_array = array();
+			
+			foreach($ids as $id) {
+				if(!isset($this->_users[$id])) {
+					$new_user = new \Wprr\DataApi\WordPress\User();
+					$new_user->setup($id);
+					$this->_users[$id] = $new_user;
+				}
+				
+				$return_array[] = $this->_users[$id];
+			}
+			
+			return $return_array;
+		}
+		
 		public function get_fields_structure($type) {
 			if(!isset($this->_fields_structures[$type])) {
 				$new_fields_structure = new \Wprr\DataApi\WordPress\Field\FieldsStructure();
@@ -117,22 +169,73 @@
 			return $this->_fields_structures[$type];
 		}
 		
+		public function get_language_by_path($path) {
+			$current_language = null;
+			
+			if(defined('DEFAULT_LANGUAGE')) {
+				$current_language = DEFAULT_LANGUAGE;
+				
+				if(defined('LANGUAGE_BASE_URLS')) {
+					foreach(LANGUAGE_BASE_URLS as $language_url => $language_code) {
+						if (substr($path, 0, strlen($language_url)) == $language_url) {
+							$current_language = $language_code;
+							break;
+						}
+					}
+				}
+			}
+			
+			return $current_language;
+		}
+		
 		public function get_post_id_by_path($path) {
 			
+			$current_language = null;
+			$default_language = null;
+			if(defined('DEFAULT_LANGUAGE')) {
+				$current_language = DEFAULT_LANGUAGE;
+				$default_language = DEFAULT_LANGUAGE;
+				if(defined('LANGUAGE_BASE_URLS')) {
+					foreach(LANGUAGE_BASE_URLS as $language_url => $language_code) {
+						if (substr($path, 0, strlen($language_url)) == $language_url) {
+							$path = substr($path, strlen($language_url));
+							$current_language = $language_code;
+							break;
+						}
+					}
+				}
+			}
+			
 			if($path === '') {
+				if($current_language && $current_language !== $default_language) {
+					//METODO: get front page in language
+				}
+				
 				return $this->get_front_page_id();
+				
+			}
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$ids_in_language = array();
+			if($current_language) {
+				$ids_in_language_result = $db->query_without_storage('SELECT element_id as id FROM '.DB_TABLE_PREFIX.'icl_translations WHERE language_code = \''.$db->escape($current_language).'\'');
+				$ids_in_language = array_map(function($item) {return $item['id'];}, $ids_in_language_result);
 			}
 			
 			$slugs = explode('/', $path);
 			
-			global $wprr_data_api;
-			$db = $wprr_data_api->database();
+			
 			
 			$current_id = 0;
 			foreach($slugs as $slug) {
 				$query = $db->new_select_query();
 				$query->set_post_types(PUBLIC_POST_TYPES);
 				$query->with_parent($current_id);
+				if(!$current_id && $current_language) {
+					$query->include_only($ids_in_language);
+				}
 				$query->with_slug($slug);
 				$new_id = $query->get_id();
 				$current_id = $new_id;
@@ -149,6 +252,9 @@
 						$query = $db->new_select_query();
 						$query->set_post_types(array($current_post_type));
 						$query->with_parent($current_id);
+						if(!$current_id && $current_language) {
+							$query->include_only($ids_in_language);
+						}
 						$query->with_slug($slug);
 						$new_id = $query->get_id();
 						$current_id = $new_id;
@@ -166,12 +272,24 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
-			$result = $db->query_first('SELECT option_value as id FROM wp_options WHERE option_name = "page_on_front"');
+			$result = $db->query_first('SELECT option_value as id FROM '.DB_TABLE_PREFIX.'options WHERE option_name = "page_on_front"');
 			if($result) {
 				return (int)$result['id'];
 			}
 			
 			return 0;
+		}
+		
+		public function is_user_trusted($user) {
+			$roles = $user->get_roles();
+			
+			foreach($this->_trusted_roles as $trusted_role) {
+				if(in_array($trusted_role, $roles)) {
+					return true;
+				}
+			}
+			
+			return false;
 		}
 
 		public static function test_import() {

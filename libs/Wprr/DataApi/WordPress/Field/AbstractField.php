@@ -177,6 +177,14 @@
 			return $value;
 		}
 		
+		public function get_translations() {
+			return null;
+		}
+		
+		public function get_translated_value($language_code) {
+			return $this->get_value();
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\AbstractField<br />");
 		}

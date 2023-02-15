@@ -54,6 +54,15 @@
 			return $original_slug;
 		}
 		
+		public static function ensure_term($path, $taxonomy) {
+			$slugs = array();
+			$path_slugs = explode('/', $path);
+			foreach($path_slugs as $slug) {
+				$slugs[] = $slug;
+				self::add_term($slug, $slugs, $taxonomy);
+			}
+		}
+		
 		public static function add_term($name, $path_slugs, $taxonomy) {
 			
 			$current_term = self::get_term_by_slugs($path_slugs, $taxonomy);

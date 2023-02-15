@@ -67,7 +67,7 @@
 			
 			$encoded_items = array();
 			
-			$return_object['coupons'] = $cart->get_applied_coupons();
+			$return_object['coupons'] = array_values($cart->get_applied_coupons());
 			$return_object['totals'] = $cart->get_totals();
 			$return_object['currency'] = get_woocommerce_currency();
 			

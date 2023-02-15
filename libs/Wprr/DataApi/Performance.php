@@ -12,7 +12,7 @@
 		}
 		
 		public function count($type) {
-			if(!$this->_counts[$type]) {
+			if(!isset($this->_counts[$type])) {
 				$this->_counts[$type] = 0;
 			}
 			$this->_counts[$type]++;
@@ -49,16 +49,23 @@
 				$total_time = array_sum($data['calls']);
 				if($number_of_calls) {
 					$average_time = $total_time/$number_of_calls;
+					
+					$return_object[$type] = array(
+						'numberOfCalls' => $number_of_calls,
+						'total' => round($total_time, 3),
+						'average' => round($average_time, 3)
+					);
 				}
 				else {
-					$number_of_calls = 0;
+					$return_object[$type] = array(
+						'numberOfCalls' => 0,
+						'total' => 0,
+						'average' => 0,
+						'message' => 'Missing end marker'
+					);
 				}
 				
-				$return_object[$type] = array(
-					'numberOfCalls' => $number_of_calls,
-					'total' => $total_time,
-					'average' => $average_time
-				);
+				
 			}
 			
 			return array(

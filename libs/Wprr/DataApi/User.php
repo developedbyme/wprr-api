@@ -13,12 +13,12 @@
 		}
 		
 		public function start_session() {
+			
 			if(!$this->_has_loaded) {
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
-			
-				$cookie_hash = 'wordpress_logged_in_' . md5( SITE_URL );
-				$cookie = $_COOKIE[ $cookie_hash ];
+				
+				$cookie = $_COOKIE[LOGGED_IN_COOKIE];
 	
 				if($cookie) {
 					$cookie_parts = explode( '|', $cookie );
@@ -32,7 +32,7 @@
 	
 						if($expiration > time()) {
 		
-							$user_data = $db->query_first('SELECT ID as id, user_pass, user_email as email, display_name as name FROM wp_users WHERE user_login = "'.$db->escape($user_login).'" LIMIT 1');
+							$user_data = $db->query_first('SELECT ID as id, user_pass, user_email as email, display_name as name FROM '.DB_TABLE_PREFIX.'users WHERE user_login = "'.$db->escape($user_login).'" LIMIT 1');
 				
 							$user_data['id'] = (int)$user_data['id'];
 							$user_data['login'] = $user_login;
@@ -49,8 +49,8 @@
 							if($hash === $hmac) {
 								$hashed_token = hash( 'sha256', $token );
 			
-								$session_tokens = unserialize($db->query_first('SELECT meta_value FROM wp_usermeta WHERE user_id = '.$user_data['id'].' AND meta_key = "session_tokens" LIMIT 1')['meta_value']);
-					
+								$session_tokens = unserialize($db->query_first('SELECT meta_value FROM '.DB_TABLE_PREFIX.'usermeta WHERE user_id = '.$user_data['id'].' AND meta_key = "session_tokens" LIMIT 1')['meta_value']);
+								
 								if(isset($session_tokens[$hashed_token])) {
 									$this->_user_data = $user_data;
 								}
@@ -71,6 +71,24 @@
 		public function get_user_data() {
 			$this->start_session();
 			return $this->_user_data;
+		}
+		
+		public function get_me_data() {
+			if($this->is_signed_in()) {
+				global $wprr_data_api;
+				$user_id = $this->get_user_data()['id'];
+				$wp_user = $wprr_data_api->wordpress()->get_user($user_id);
+				return array(
+					'id' => $user_id,
+					'name' => $wp_user->get_display_name(),
+					'firstName' => $wp_user->get_meta('first_name'),
+					'lastName' => $wp_user->get_meta('last_name'),
+					'email' => $wp_user->get_email(),
+					'gravatarHash' => $wp_user->get_gravatar_hash(),
+					'roles' => $wp_user->get_roles()
+				);
+			}
+			return null;
 		}
 		
 		public function get_rest_nonce() {
@@ -104,8 +122,7 @@
 				
 					$current_id = $as_user;
 				
-					$is_ok = in_array('administrator', $signed_in_user->get_roles());
-					//METODO: check more permissions
+					$is_ok = $signed_in_user->is_trusted();
 					if(!$is_ok) {
 						throw(new \Exception('Not allowed to impersonate user '.$as_user));
 					}

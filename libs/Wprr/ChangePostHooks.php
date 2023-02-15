@@ -38,6 +38,9 @@
 			$this->register_hook_for_type('wpml/createLanguageCopy', 'hook_wpml_createLanguageCopy');
 			
 			$this->register_hook_for_type('woocommerce/subscriptions/changeNextPayment', 'hook_woocommerce_subscriptions_changeNextPayment');
+			$this->register_hook_for_type('woocommerce/order/paymentMethod', 'hook_woocommerce_order_paymentMethod');
+			$this->register_hook_for_type('woocommerce/order/addProduct', 'hook_woocommerce_order_addProduct');
+			$this->register_hook_for_type('woocommerce/order/calculateTotals', 'hook_woocommerce_order_calculateTotals');
 		}
 		
 		protected function update_post_data($post_id, $field, $value) {
@@ -136,6 +139,11 @@
 			if(isset($data['field'])) {
 				switch($data['field']) {
 					case 'slugPath':
+						if(isset($data["create"]) && $data["create"]) {
+							foreach($terms as $term) {
+								\Wprr\OddCore\Utils\TaxonomyFunctions::ensure_term($term, $data['taxonomy']);
+							}
+						}
 						$terms = \Wprr\OddCore\Utils\TaxonomyFunctions::get_ids_from_terms(\Wprr\OddCore\Utils\TaxonomyFunctions::get_terms_by_slug_paths($terms, $data['taxonomy']));
 				}
 			}
@@ -227,6 +235,33 @@
 			
 			$time_zone = get_option('timezone_string');
 			$result = $subscription->update_dates(array('next_payment' => $value), $time_zone);
+		}
+		
+		public function hook_woocommerce_order_paymentMethod($data, $post_id, $logger) {
+			$order = wc_get_order($post_id);
+			
+			$value = $data['value'];
+			
+			$order->set_payment_method($value);
+			$order->save();
+		}
+		
+		public function hook_woocommerce_order_addProduct($data, $post_id, $logger) {
+			$order = wc_get_order($post_id);
+			
+			$value = $data['value'];
+			$quantity = $data['quantity'] ? (int)$data['quantity'] : 1;
+			
+			$product = wc_get_product($value);
+			$order->add_product($product, $quantity);
+			
+		}
+		
+		public function hook_woocommerce_order_calculateTotals($data, $post_id, $logger) {
+			$order = wc_get_order($post_id);
+			
+			$order->calculate_totals();
+			$order->save();
 		}
 		
 		public static function test_import() {

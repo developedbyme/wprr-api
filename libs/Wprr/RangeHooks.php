@@ -587,7 +587,14 @@
 			
 			$subscription = new \WC_Subscription($post_id);
 			
-			$return_object['nextDate'] = date('Y-m-d', strtotime($subscription->get_date('next_payment')));
+			try {
+				$return_object['nextDate'] = date('Y-m-d', strtotime($subscription->get_date('next_payment')));
+			}
+			catch(\exception $exception) {
+				$return_object['nextDate'] = null;
+			}
+			
+			
 			
 			return $return_object;
 		}

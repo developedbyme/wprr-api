@@ -140,6 +140,23 @@
 			return $this;
 		}
 		
+		public function meta_query_between_dates($field, $low_value, $high_value) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$query = 'SELECT post_id as id FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key = "'.$db->escape($field).'" AND DATE(meta_value) BETWEEN "'.$db->escape($low_value).'" AND "'.$db->escape($high_value).'"';
+			$posts = $db->query_without_storage($query);
+		
+			$ids = array_map(function($item) {
+				return (int)$item['id'];
+			}, $posts);
+			
+			$this->include_only($ids);
+			
+			return $this;
+		}
+		
 		public function in_date_range($start_date, $end_date) {
 			
 			global $wprr_data_api;

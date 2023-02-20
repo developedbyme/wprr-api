@@ -11,9 +11,14 @@
 			
 		}
 		
+		public function enable_error_reports() {
+			mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+			
+			return $this;
+		}
+		
 		public function start_session() {
 			if(!$this->_db) {
-				mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 				$this->_db = new \mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
 				$this->_db->set_charset("utf8mb4"); //METODO: have this as a variable
 			}

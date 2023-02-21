@@ -585,6 +585,8 @@
 				'search' => 'Search',
 				'objectProperty' => 'ObjectProperty',
 				'unpaidOrderByKey' => 'UnpaidOrderByKey',
+				'byObjectType' => 'ByObjectType',
+				'byTrigger' => 'ByTrigger',
 			);
 			
 			foreach($selections as $id => $class_name) {

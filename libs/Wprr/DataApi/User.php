@@ -72,7 +72,7 @@
 						$user_data['id'] = (int)$user_data['id'];
 						$password = preg_replace( '/[^a-z\d]/i', '', $_SERVER['PHP_AUTH_PW']);
 						
-						$passwords = $wprr_data_api->database()->get_user($user_data['id'])->get_meta('_application_passwords');
+						$passwords = $wprr_data_api->wordpress()->get_user($user_data['id'])->get_meta('_application_passwords');
 						
 						$is_ok = false;
 						

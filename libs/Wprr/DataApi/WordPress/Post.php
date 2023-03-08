@@ -113,7 +113,7 @@
 			return $data[$field];
 		}
 		
-		public function get_meta($name) {
+		public function get_meta_array($name) {
 			if(!isset($this->_meta[$name])) {
 				$meta_data = $this->get_database_meta_data();
 				
@@ -137,11 +137,18 @@
 				$this->_meta[$name] = $selected_meta;
 			}
 			
-			if(empty($this->_meta[$name])) {
+			return $this->_meta[$name];
+		}
+		
+		public function get_meta($name) {
+			
+			$return_array = $this->get_meta_array($name);
+			
+			if(empty($return_array)) {
 				return null;
 			}
 			
-			return $this->_meta[$name][0];
+			return $return_array[0];
 		}
 		
 		public function get_acf_repeater_meta($name, $fields) {

@@ -21,7 +21,15 @@
 			$post = $wprr_data_api->wordpress()->get_post($id);
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
-			$encoded_data->data['total'] = (float)$post->get_meta('_order_total');
+			$post_type = $post->get_data('post_type');
+			
+			if($post_type === 'shop_order_refund') {
+				$encoded_data->data['total'] = -1*(float)$post->get_meta('_refund_amount');
+			}
+			else {
+				$encoded_data->data['total'] = (float)$post->get_meta('_order_total');
+			}
+			
 			$encoded_data->data['tax'] = (float)$post->get_meta('_order_tax');
 			$encoded_data->data['subtotal'] = $encoded_data->data['total']-$encoded_data->data['tax'];
 		}

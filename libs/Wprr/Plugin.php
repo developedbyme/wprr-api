@@ -643,6 +643,7 @@
 				'order/paidDate' => 'Order/PaidDate',
 				'order/creationType' => 'Order/CreationType',
 				'order/subscription' => 'Order/Subscription',
+				'order/refunds' => 'Order/Refunds',
 				'pageTemplate' => 'PageTemplate',
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',

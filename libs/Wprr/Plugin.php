@@ -643,6 +643,7 @@
 				'order/paidDate' => 'Order/PaidDate',
 				'order/creationType' => 'Order/CreationType',
 				'order/subscription' => 'Order/Subscription',
+				'order/refunds' => 'Order/Refunds',
 				'pageTemplate' => 'PageTemplate',
 				'postType' => 'PostType',
 				'breadcrumb' => 'Breadcrumb',
@@ -676,7 +677,8 @@
 				'signupInvite' => 'SignupInvite/SignupInvite',
 				'communication/transactionalEmail' => 'Communication/TransactionalEmail',
 				'communication/content' => 'Communication/CommunicationContent',
-				'communication/title' => 'Communication/CommunicationTitle'
+				'communication/title' => 'Communication/CommunicationTitle',
+				'formSubmission' => 'FormSubmission'
 			);
 			
 			foreach($encodings as $id => $class_name) {

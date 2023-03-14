@@ -9,7 +9,7 @@
 		protected $_post_types = null;
 		protected $_joins = array();
 		protected $_wheres = array();
-		protected $_store = true;
+		protected $_store = false;
 
 		function __construct() {
 			

@@ -47,7 +47,7 @@
 				$db = $wprr_data_api->database();
 				
 				$query = 'SELECT meta_key, meta_value FROM '.DB_TABLE_PREFIX.'usermeta WHERE user_id = "'.$this->_id.'"';
-				$this->_database_meta = $db->query($query);
+				$this->_database_meta = $db->query_without_storage($query);
 			}
 			
 			return $this->_database_meta;

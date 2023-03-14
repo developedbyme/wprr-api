@@ -33,7 +33,7 @@
 				$db = $wprr_data_api->database();
 				
 				$query = 'SELECT term_taxonomy_id as id, term_id as termId, parent FROM '.DB_TABLE_PREFIX.'term_taxonomy WHERE taxonomy = "'.$db->escape($this->_name).'"';
-				$terms_array = $db->query($query);
+				$terms_array = $db->query_without_storage($query);
 				
 				$terms = array();
 				$term_map = array();
@@ -51,7 +51,7 @@
 				
 				if(!empty($term_ids)) {
 					$query = 'SELECT term_id as id, name, slug FROM '.DB_TABLE_PREFIX.'terms WHERE term_id IN ('.implode(',', $term_ids).')';
-					$term_names = $db->query($query);
+					$term_names = $db->query_without_storage($query);
 				
 					foreach($term_names as $term_name) {
 						$terms[$term_map[$term_name['id']]]['name'] = $term_name['name'];

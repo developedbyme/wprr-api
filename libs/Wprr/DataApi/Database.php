@@ -62,7 +62,7 @@
 		}
 		
 		public function query_first($query) {
-			return $this->query($query)[0];
+			return $this->query_without_storage($query)[0];
 		}
 		
 		public function query_without_storage($query) {

@@ -65,6 +65,7 @@
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 2');
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 3');
 				$query->meta_query($field, $this->_post->get_id());
+				//$query->meta_query_join($field, $this->_post->get_id());
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types get ids 3');
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types get ids 4');
 				$ids = $query->get_ids_without_storage();
@@ -79,6 +80,10 @@
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types load relation terms');
 				$wp->load_taxonomy_terms_for_posts($ids);
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types load relation terms');
+				
+				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types load relation meta');
+				$wp->load_meta_for_relations($ids);
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types load relation meta');
 				
 				$reference_ids = array();
 				

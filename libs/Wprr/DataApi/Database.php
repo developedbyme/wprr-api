@@ -68,6 +68,8 @@
 		public function query_without_storage($query) {
 			global $wprr_data_api;
 			
+			//var_dump($query);
+			
 			$this->start_session();
 			$wprr_data_api->performance()->count('Database::query_without_storage query');
 			

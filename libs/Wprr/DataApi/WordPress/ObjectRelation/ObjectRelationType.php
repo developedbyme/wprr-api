@@ -37,9 +37,22 @@
 			return $new_relation;
 		}
 		
+		public function load_object_types() {
+			
+			global $wprr_data_api;
+			
+			$ids = array_map(function($item) {return $item->get_object_id();}, $this->_relations);
+			
+			$wprr_data_api->wordpress()->load_taxonomy_terms_for_posts($ids);
+			
+			return $this;
+		}
+		
 		public function filter_relations_by_object_type($relations, $object_type) {
 			global $wprr_data_api;
 			$wp = $wprr_data_api->wordpress();
+			
+			$this->load_object_types();
 			
 			$return_array = array();
 			

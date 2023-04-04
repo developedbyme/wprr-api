@@ -68,6 +68,31 @@
 			return $return_array;
 		}
 		
+		public function load_meta_for_relations($ids) {
+			$ids_to_load = array();
+			
+			foreach($ids as $id) {
+				$post = $this->get_post($id);
+				if(!$post->has_parsed_meta('startAt')) {
+					$ids_to_load[] = (int)$id;
+				}
+			}
+			
+			if(!empty($ids_to_load)) {
+				global $wprr_data_api;
+				$db = $wprr_data_api->database();
+			
+				$query = 'SELECT post_id as id, meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key IN ("startAt", "endAt", "fromId", "toId") AND post_id IN ('.implode(',', $ids_to_load).')';
+				$meta_fields = $db->query_without_storage($query);
+			
+				foreach($meta_fields as $meta_field) {
+					$id = (int)$meta_field['id'];
+					
+					$this->get_post($id)->set_parsed_meta($meta_field['meta_key'], (int)$meta_field['meta_value']);
+				}
+			}
+		}
+		
 		public function load_meta_for_posts($ids) {
 			$ids_to_load = array();
 			
@@ -85,7 +110,7 @@
 				$db = $wprr_data_api->database();
 			
 				$query = 'SELECT post_id as id, meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE post_id IN ('.implode(',', $ids_to_load).')';
-				$meta_fields = $db->query($query);
+				$meta_fields = $db->query_without_storage($query);
 			
 				foreach($meta_fields as $meta_field) {
 					$id = (int)$meta_field['id'];
@@ -119,7 +144,7 @@
 				
 				$query = 'SELECT '.DB_TABLE_PREFIX.'term_relationships.object_id as id, '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id, '.DB_TABLE_PREFIX.'term_taxonomy.taxonomy FROM '.DB_TABLE_PREFIX.'term_relationships INNER JOIN '.DB_TABLE_PREFIX.'term_taxonomy WHERE '.DB_TABLE_PREFIX.'term_relationships.term_taxonomy_id = '.DB_TABLE_PREFIX.'term_taxonomy.term_taxonomy_id AND '.DB_TABLE_PREFIX.'term_relationships.object_id IN ('.implode(',', $ids_to_load).')';
 				
-				$rows = $db->query($query);
+				$rows = $db->query_without_storage($query);
 			
 				foreach($rows as $row) {
 					$id = (int)$row['id'];

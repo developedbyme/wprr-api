@@ -42,8 +42,15 @@
 		}
 		
 		public function has_object_type($term) {
+			
+			//$wprr_data_api->performance()->start_meassure('ObjectRelation::has_object_type');
+			
 			$object = $this->get_object();
-			return $object->has_term($term);
+			$has_type = $object->has_term($term);
+			
+			//$wprr_data_api->performance()->stop_meassure('ObjectRelation::has_object_type');
+			
+			return $has_type;
 		}
 		
 		public function is_active_at($time) {
@@ -54,7 +61,7 @@
 			}
 			
 			$end_time = (int)$this->_post->get_meta('endAt');
-			if($time > $end_time && $end_time !== -1) {
+			if($time >= $end_time && $end_time !== -1) {
 				return false;
 			}
 			

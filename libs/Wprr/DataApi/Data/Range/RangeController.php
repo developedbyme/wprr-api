@@ -123,13 +123,14 @@
 			$debug_counter = 0;
 			while(!empty($this->_queued_encodings)) {
 				if($debug_counter++ > 10000) {
-					//METODO: throw
+					throw(new \Exception('Encoding nhas been queued for too long'));
 					break;
 				}
 				
 				$current_encoding = array_keys($this->_queued_encodings)[0];
 				
 				$wprr_data_api->performance()->start_meassure('RangeController::encode_range '.$current_encoding);
+				//var_dump($current_encoding);
 				
 				$current_ids = $this->_queued_encodings[$current_encoding];
 				unset($this->_queued_encodings[$current_encoding]);

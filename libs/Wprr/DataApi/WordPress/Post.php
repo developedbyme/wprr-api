@@ -52,6 +52,10 @@
 			return !!$this->_database_meta;
 		}
 		
+		public function has_parsed_meta($key) {
+			return isset($this->_meta[$key]);
+		}
+		
 		public function get_database_meta_data() {
 			if(!$this->_database_meta) {
 				global $wprr_data_api;
@@ -66,6 +70,18 @@
 		
 		public function set_database_meta_data($data) {
 			$this->_database_meta = $data;
+			
+			return $this;
+		}
+		
+		public function set_parsed_meta_array($key, $array) {
+			$this->_meta[$key] = $array;
+			
+			return $this;
+		}
+		
+		public function set_parsed_meta($key, $value) {
+			$this->set_parsed_meta_array($key, array($value));
 			
 			return $this;
 		}

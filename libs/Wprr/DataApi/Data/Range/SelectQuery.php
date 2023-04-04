@@ -9,7 +9,7 @@
 		protected $_post_types = null;
 		protected $_joins = array();
 		protected $_wheres = array();
-		protected $_store = true;
+		protected $_store = false;
 
 		function __construct() {
 			
@@ -153,6 +153,18 @@
 			}, $posts);
 			
 			$this->include_only($ids);
+			
+			return $this;
+		}
+		
+		public function meta_query_join($field, $value) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$this->_joins[] = ''.DB_TABLE_PREFIX.'postmeta as postmeta ON '.DB_TABLE_PREFIX.'posts.ID = postmeta.post_id';
+			$this->_wheres[] = 'postmeta.meta_key = "'.$db->escape($field).'"';
+			$this->_wheres[] = 'postmeta.meta_value = "'.$db->escape($value).'"';
 			
 			return $this;
 		}

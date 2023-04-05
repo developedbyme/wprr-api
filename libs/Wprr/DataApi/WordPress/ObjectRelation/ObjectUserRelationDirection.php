@@ -60,6 +60,8 @@
 						$object_relation_type->add_relation($post);
 					}
 				}
+				
+				$wprr_data_api->performance()->stop_meassure('ObjectUserRelationDirection::get_types');
 			}
 			
 			return $this->_types;

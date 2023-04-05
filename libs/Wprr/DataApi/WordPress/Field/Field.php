@@ -161,8 +161,12 @@
 						break;
 					default:
 						$wprr_data_api->output()->log('Unknown field storage '.$storage_type->get_slug());
+						$return_value = $this->get_post()->get_meta('dbmtc_value');
 						break;
 				}
+			}
+			else {
+				$return_value = $this->get_post()->get_meta('dbmtc_value');
 			}
 			
 			

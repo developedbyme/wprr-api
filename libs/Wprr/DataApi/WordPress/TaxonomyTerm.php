@@ -90,6 +90,12 @@
 			return $this->_ids;
 		}
 		
+		public function invalidate() {
+			$this->_ids = null;
+			
+			return $this;
+		}
+		
 		public function __toString() {
 			return "[TaxonomyTerm id=".$this->get_id()." slug=".$this->get_slug()."]";
 		}

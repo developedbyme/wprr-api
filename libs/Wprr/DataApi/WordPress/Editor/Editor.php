@@ -104,6 +104,33 @@
 			return '('.implode(",", $keys).') VALUES ('.implode(",", $values).')';
 		}
 		
+		public function get_or_create_type($type, $identifier) {
+			global $wprr_data_api;
+			
+			$query = $wprr_data_api->database()->new_select_query();
+			
+			$specific_type_term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term($type);
+			$ids = $query->set_post_type('dbm_data')->include_private()->include_only($specific_type_term->get_ids())->meta_query('identifier', $identifier)->get_ids_without_storage();
+			
+			if(!empty($ids)) {
+				return $wprr_data_api->wordpress()->get_post($ids[0]);
+			}
+			
+			$post = $this->create_post('dbm_data', $identifier);
+			
+			$type_term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term('type');
+			$post->editor()->add_term($type_term);
+			$post->editor()->add_term($specific_type_term);
+			$post->editor()->update_meta('identifier', $identifier);
+			$post->editor()->update_meta('name', $identifier);
+			$post->editor()->change_status('private');
+			
+			$type_term->invalidate();
+			$specific_type_term->invalidate();
+			
+			return $post;
+		}
+		
 		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress\Editor<br />");

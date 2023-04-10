@@ -189,6 +189,16 @@
 			return $this;
 		}
 		
+		public function with_parents($parent_id) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$this->_wheres[] = 'post_parent IN ('.$db->escape(implode(',', $parent_id)).')';
+			
+			return $this;
+		}
+		
 		public function with_slug($slug) {
 			
 			global $wprr_data_api;

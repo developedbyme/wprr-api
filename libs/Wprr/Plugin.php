@@ -561,6 +561,7 @@
 				'postRelation' => 'PostRelation',
 				'wpmlLanguage' => 'WpmlLanguage',
 				'anyStatus' => 'AnyStatus',
+				'byPostStatus' => 'ByPostStatus',
 				'posts' => 'Posts',
 				'byTaxonomyTerm' => 'ByTaxonomyTerm',
 				'inDateRange' => 'InDateRange',

@@ -13,7 +13,6 @@
 			
 			global $wprr_data_api;
 			
-			//METODO: check that user is allowed
 			$user = $wprr_data_api->user()->get_user_for_call($data);
 			$is_ok = $user->is_trusted();
 			if(!$is_ok) {

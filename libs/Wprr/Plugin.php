@@ -581,6 +581,7 @@
 				'objectRelation' => 'ObjectRelation',
 				'ordersForSubscriptions' => 'OrdersForSubscriptions',
 				'globalObjectRelation' => 'GlobalObjectRelation',
+				'globalPointer' => 'GlobalPointer',
 				'typeObjectRelation' => 'TypeObjectRelation',
 				'openSignupInvitation' => 'OpenSignupInvitation',
 				'parentsOf' => 'ParentsOf',

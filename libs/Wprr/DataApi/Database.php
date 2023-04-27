@@ -53,6 +53,8 @@
 				$wprr_data_api->performance()->start_meassure('Database::query fetch');
 				$this->_stored_queries[$query] = $result->fetch_all(MYSQLI_ASSOC);
 				$wprr_data_api->performance()->stop_meassure('Database::query fetch');
+				
+				$result->free_result();
 			}
 			else {
 				$wprr_data_api->performance()->count('Database::query stored');
@@ -85,6 +87,8 @@
 			$wprr_data_api->performance()->start_meassure('Database::query_without_storage fetch');
 			$rows = $result->fetch_all(MYSQLI_ASSOC);
 			$wprr_data_api->performance()->stop_meassure('Database::query_without_storage fetch');
+			
+			$result->free_result();
 			
 			return $rows;
 		}

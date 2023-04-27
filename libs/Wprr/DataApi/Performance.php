@@ -70,7 +70,11 @@
 			
 			return array(
 				'speed' => $return_object,
-				'count' => $this->_counts
+				'count' => $this->_counts,
+				'memory' => array(
+					'end' => memory_get_usage(),
+					'peak' => memory_get_peak_usage()
+				)
 			);
 		}
 		

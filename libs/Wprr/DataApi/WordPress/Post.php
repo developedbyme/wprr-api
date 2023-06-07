@@ -449,6 +449,20 @@
 			return null;
 		}
 		
+		public function single_object_relation_query_with_meta_filter_ignore_case($path, $key, $value) {
+			$items = $this->object_relation_query($path);
+			
+			$matching_items = array();
+			
+			foreach($items as $item) {
+				if(strtolower($item->get_meta($key)) == strtolower($value)) {
+					return $item;
+				}
+			}
+			
+			return null;
+		}
+		
 		public function clear_object_relation_cache() {
 			$this->_incomingRelations = null;
 			$this->_outgoingRelations = null;

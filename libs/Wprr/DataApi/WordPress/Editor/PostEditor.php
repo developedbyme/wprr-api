@@ -134,6 +134,8 @@
 			return $this;
 		}
 		
+		//METODO: add generic update field
+		
 		public function change_status($status) {
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();

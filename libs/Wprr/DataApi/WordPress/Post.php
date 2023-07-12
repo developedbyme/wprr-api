@@ -36,7 +36,7 @@
 			return $wprr_data_api->wordpress()->editor()->get_post_editor($this->get_id());
 		}
 		
-		public function get_database_data() {
+		public function &get_database_data() {
 			if(!$this->_database_data) {
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
@@ -56,7 +56,7 @@
 			return isset($this->_meta[$key]);
 		}
 		
-		public function get_database_meta_data() {
+		public function &get_database_meta_data() {
 			if(!$this->_database_meta) {
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
@@ -97,7 +97,7 @@
 			return !!$this->_database_taxonomy_terms;
 		}
 		
-		public function get_database_taxonomy_terms() {
+		public function &get_database_taxonomy_terms() {
 			if(!$this->_database_taxonomy_terms) {
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
@@ -124,18 +124,18 @@
 		}
 		
 		public function get_data($field) {
-			$data = $this->get_database_data();
+			$data = &$this->get_database_data();
 			
 			return $data[$field];
 		}
 		
 		public function get_meta_array($name) {
 			if(!isset($this->_meta[$name])) {
-				$meta_data = $this->get_database_meta_data();
+				$meta_data = &$this->get_database_meta_data();
 				
 				$selected_meta = array();
 				
-				foreach($meta_data as $meta_data_row) {
+				foreach($meta_data as $key => &$meta_data_row) {
 					if($meta_data_row['meta_key'] === $name) {
 						$value = $meta_data_row['meta_value'];
 						
@@ -147,6 +147,8 @@
 						}
 						
 						$selected_meta[] = $value;
+						
+						unset($meta_data[$key]);
 					}
 				}
 				
@@ -190,13 +192,15 @@
 			if(!isset($this->_taxonomy_terms[$taxonomy_name])) {
 				global $wprr_data_api;
 				
-				$terms_data = $this->get_database_taxonomy_terms();
+				$terms_data = &$this->get_database_taxonomy_terms();
 				
 				$selected_terms = array();
-				foreach($terms_data as $terms_data_row) {
+				foreach($terms_data as $key => &$terms_data_row) {
 					if($terms_data_row['taxonomy'] === $taxonomy_name) {
 						$term_id = (int)$terms_data_row['term_taxonomy_id'];
 						$selected_terms[] = $wprr_data_api->wordpress()->get_taxonomy($taxonomy_name)->get_term_by_id($term_id);
+						
+						unset($terms_data[$key]);
 					}
 				}
 				
@@ -438,6 +442,20 @@
 			
 			foreach($items as $item) {
 				if($item->get_meta($key) == $value) {
+					return $item;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function single_object_relation_query_with_meta_filter_ignore_case($path, $key, $value) {
+			$items = $this->object_relation_query($path);
+			
+			$matching_items = array();
+			
+			foreach($items as $item) {
+				if(strtolower($item->get_meta($key)) == strtolower($value)) {
 					return $item;
 				}
 			}

@@ -41,12 +41,12 @@
 			if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN']) {
 				header('Access-Control-Allow-Origin: '.$_SERVER['HTTP_ORIGIN']);
 				header('Access-Control-Allow-Credentials: true');
-				header('Vary: Origin');
 			}
 			else {
 				header('Access-Control-Allow-Origin: *');
 			}
 			
+			header('Vary: Origin, Cookie');
 			header('Content-Type: application/json; charset=utf-8');
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Pragma: no-cache');
@@ -74,12 +74,12 @@
 			if(isset($_SERVER['HTTP_ORIGIN']) && $_SERVER['HTTP_ORIGIN']) {
 				header('Access-Control-Allow-Origin: '.$_SERVER['HTTP_ORIGIN']);
 				header('Access-Control-Allow-Credentials: true');
-				header('Vary: Origin');
 			}
 			else {
 				header('Access-Control-Allow-Origin: *');
 			}
 			
+			header('Vary: Origin, Cookie');
 			header('Content-Type: application/json; charset=utf-8');
 			header('Cache-Control: no-cache, no-store, must-revalidate');
 			header('Pragma: no-cache');

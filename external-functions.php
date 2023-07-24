@@ -24,39 +24,41 @@
 		$initial_mrouter_data = array();
 		$initial_mrouter_data['data'] = array();
 		
-		$current_data = mrouter_encode();
-		$initial_mrouter_data['data'][$protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']] = array(
-			'status' => 1,
-			'data' => $current_data['data']
-		);
+		$encode_initial_data = apply_filters(WPRR_DOMAIN.'/'.'encode_initial_data_when_render', true);
+		if($encode_initial_data) {
+			$current_data = mrouter_encode();
+			$initial_mrouter_data['data'][$protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']] = array(
+				'status' => 1,
+				'data' => $current_data['data']
+			);
 		
-		$api_calls = null;
+			$api_calls = null;
 		
-		if(is_singular()) {
-			$api_calls = get_post_meta(get_the_id(), 'mrouter_initital_load', true);
-		}
+			if(is_singular()) {
+				$api_calls = get_post_meta(get_the_id(), 'mrouter_initital_load', true);
+			}
 		
-		if($api_calls) {
+			if($api_calls) {
 			
-			$initial_mrouter_data['apiData'] = array();
+				$initial_mrouter_data['apiData'] = array();
 			
-			$rest_server = rest_get_server();
+				$rest_server = rest_get_server();
 			
-			foreach($api_calls as $api_call) {
-				$current_local_path = $api_call;
-				$current_url = get_rest_url(null, '/'.$current_local_path);
-				$api_request = \WP_REST_Request::from_url($current_url);
+				foreach($api_calls as $api_call) {
+					$current_local_path = $api_call;
+					$current_url = get_rest_url(null, '/'.$current_local_path);
+					$api_request = \WP_REST_Request::from_url($current_url);
 		
-				$api_response = $rest_server->dispatch($api_request);
+					$api_response = $rest_server->dispatch($api_request);
 		
-				//METODO: check for ok response
-				$initial_mrouter_data['apiData'][$current_local_path] = array(
-					'status' => 1,
-					'data' => $api_response->data['data']
-				);
+					//METODO: check for ok response
+					$initial_mrouter_data['apiData'][$current_local_path] = array(
+						'status' => 1,
+						'data' => $api_response->data['data']
+					);
+				}
 			}
 		}
-		
 		
 		return $initial_mrouter_data;
 	}
@@ -320,6 +322,8 @@
 	function wprr_get_configuration_data() {
 		$return_array = array();
 		
+		$encode_initial_data = apply_filters(WPRR_DOMAIN.'/'.'encode_initial_data_when_render', true);
+		
 		$return_array['paths'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_paths', array());
 		$return_array['initialMRouterData'] = get_initial_mrouter_data();
 		$return_array['imageSizes'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_image_sizes', array());
@@ -330,20 +334,22 @@
 			$return_array['admin'] = apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration_admin_data', array());
 		}
 		
-		$render_id = -1;
-		if(is_singular()) {
-			$render_id = get_the_id();
-		}
+		if($encode_initial_data) {
+			$render_id = -1;
+			if(is_singular()) {
+				$render_id = get_the_id();
+			}
 		
-		$return_array['renderId'] = $render_id;
+			$return_array['renderId'] = $render_id;
 		
-		if($return_array['userData'] === null) {
-			$render_path = $_SERVER["REQUEST_URI"];
-			$mrouter_render_settings = mrouter_get_render_settings($render_path);
-			$return_array['render'] = $mrouter_render_settings;
-		}
-		else {
-			$return_array['render'] = null;
+			if($return_array['userData'] === null) {
+				$render_path = $_SERVER["REQUEST_URI"];
+				$mrouter_render_settings = mrouter_get_render_settings($render_path);
+				$return_array['render'] = $mrouter_render_settings;
+			}
+			else {
+				$return_array['render'] = null;
+			}
 		}
 		
 		return apply_filters(M_ROUTER_DATA_DOMAIN.'/'.'configuration', $return_array);
@@ -432,7 +438,11 @@
 	function wprr_output_module_with_seo_content($name, $seo_path, $module_data = null, $classes = null) {
 		
 		$configuration_data = wprr_get_configuration_data();
-		$configuration_data['preloadedData'] = wprr_get_preloaded_data_for_url(home_url($seo_path));
+		
+		$encode_initial_data = apply_filters(WPRR_DOMAIN.'/'.'encode_initial_data_when_render', true);
+		if($encode_initial_data) {
+			$configuration_data['preloadedData'] = wprr_get_preloaded_data_for_url(home_url($seo_path));
+		}
 		
 		wprr_output_module_with_custom_data($name, $configuration_data, wprr_get_rendered_content($seo_path), $module_data, $classes);
 	}

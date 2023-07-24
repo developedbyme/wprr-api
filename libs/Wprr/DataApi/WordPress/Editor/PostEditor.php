@@ -280,6 +280,7 @@
 				$order_editor = $order->editor();
 				
 				$order_editor->add_term_by_path('dbm_type', 'relation-order');
+				$order_editor->add_meta('forType', $for_type);
 				$order_editor->make_private();
 				
 				$this->add_outgoing_relation_by_name($order, 'relation-order-by');

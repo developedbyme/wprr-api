@@ -54,6 +54,16 @@
 			return $this->add_term_by_id($term->get_id());
 		}
 		
+		public function add_term_by_path($taxonomy, $path) {
+			global $wprr_data_api;
+			
+			$term = $wprr_data_api->wordpress()->get_taxonomy($taxonomy)->get_term($path);
+			
+			$this->add_term($term);
+				
+			return $this;
+		}
+		
 		public function add_meta($key, $value) {
 			global $wprr_data_api;
 			
@@ -149,6 +159,10 @@
 			return $this;
 		}
 		
+		public function make_private() {
+			return $this->change_status('private');
+		}
+		
 		public function add_outgoing_relation_by_name($post, $name, $start_time = -1, $make_private = true) {
 			global $wprr_data_api;
 			
@@ -187,13 +201,16 @@
 			return $relation;
 		}
 		
-		public function end_all_incoming_relations_by_name($name) {
+		public function end_all_incoming_relations_by_name($name, $object_type = '*', $time = false) {
 			$post = $this->post();
 			
 			$type = $post->get_incoming_direction()->get_type($name);
-			$time = time();
 			
-			$relations = $type->get_relations('*', false);
+			if($time === false) {
+				$time = time();
+			}
+			
+			$relations = $type->get_relations($object_type, false);
 			foreach($relations as $relation) {
 				$end_time = $relation->end_at;
 				if($end_time === -1 || $end_time >= $time) {
@@ -207,13 +224,16 @@
 			//METODO: invalidate post
 		}
 		
-		public function end_all_outgoing_relations_by_name($name) {
+		public function end_all_outgoing_relations_by_name($name, $object_type = '*', $time = false) {
 			$post = $this->post();
 			
 			$type = $post->get_outgoing_direction()->get_type($name);
-			$time = time();
 			
-			$relations = $type->get_relations('*', false);
+			if($time === false) {
+				$time = time();
+			}
+			
+			$relations = $type->get_relations($object_type, false);
 			foreach($relations as $relation) {
 				$end_time = $relation->end_at;
 				if($end_time === -1 || $end_time >= $time) {
@@ -225,6 +245,49 @@
 			
 			$this->delete_meta('dbm/objectRelations/outgoing');
 			//METODO: invalidate post
+		}
+		
+		public function set_linked_property($identifier, $linked_post) {
+			$object_property = $this->post()->single_object_relation_query_with_meta_filter('in:for:object-property', 'identifier', $identifier);
+			if(!$object_property) {
+				$object_property = wprr_get_data_api()->wordpress()->editor()->create_post('dbm_data', 'Object property '.$identifier.' for '.$this->post()->get_id());
+				$object_property_editor = $object_property->editor();
+				
+				$object_property_editor->add_term_by_path('dbm_type', 'object-property');
+				$object_property_editor->add_term_by_path('dbm_type', 'object-property/linked-object-property');
+				$object_property_editor->add_term_by_path('dbm_type', 'identifiable-item');
+				
+				$object_property_editor->add_meta('identifier', $identifier);
+				$object_property_editor->change_status('private');
+				
+				$this->add_incoming_relation_by_name($object_property, 'for');
+				
+			}
+			else {
+				$object_property->editor()->end_all_outgoing_relations_by_name('pointing-to');
+			}
+			
+			$relation = $object_property->editor()->add_outgoing_relation_by_name($linked_post, 'pointing-to', time());
+			
+			return array('relation' => $relation, 'objectProperty' => $object_property);
+		}
+		
+		public function set_order($new_order, $for_type = 'order') {
+			
+			$order = $this->post()->single_object_relation_query_with_meta_filter('out:relation-order-by:relation-order', 'forType', $for_type);
+			if(!$order) {
+				$order = wprr_get_data_api()->wordpress()->editor()->create_post('dbm_data', 'Order '.$for_type.' for '.$this->post()->get_id());
+				$order_editor = $order->editor();
+				
+				$order_editor->add_term_by_path('dbm_type', 'relation-order');
+				$order_editor->make_private();
+				
+				$this->add_outgoing_relation_by_name($order, 'relation-order-by');
+			}
+			
+			$order->editor()->update_meta('order', $new_order);
+			
+			return $order;
 		}
 		
 		public function get_insert_statement($fields) {

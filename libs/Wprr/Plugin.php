@@ -591,6 +591,7 @@
 				'unpaidOrderByKey' => 'UnpaidOrderByKey',
 				'byObjectType' => 'ByObjectType',
 				'byTrigger' => 'ByTrigger',
+				'byDateMeta' => 'ByDateMeta',
 			);
 			
 			foreach($selections as $id => $class_name) {

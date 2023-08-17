@@ -162,7 +162,7 @@
 			return $return_array;
 		}
 		
-		public function get_single_object_id(string $object_type, $time = -1):array {
+		public function get_single_object_id(string $object_type, $time = -1):int {
 			$selected_relations = $this->get_relations($object_type, $time);
 			
 			if(!empty($selected_relations)) {

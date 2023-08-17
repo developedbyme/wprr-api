@@ -7,7 +7,8 @@
 		protected $_post = null;
 		protected $_direction = null;
 		
-		protected $_types = null;
+		protected array $_types = array();
+		protected bool $_has_all_types = false;
 		
 		function __construct() {
 			
@@ -39,13 +40,13 @@
 		}
 		
 		public function &get_types() {
-			if($this->_types === null) {
+			if(!$this->_has_all_types) {
 				
 				global $wprr_data_api;
 				
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types');
 				
-				$this->_types = array();
+				$this->_has_all_types = true;
 				
 				$query = new \Wprr\DataApi\Data\Range\SelectQuery();
 				
@@ -81,11 +82,7 @@
 				$wp->load_taxonomy_terms_for_posts($ids);
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types load relation terms');
 				
-				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types load relation meta');
-				$wp->load_meta_for_relations($ids);
-				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types load relation meta');
-				
-				$reference_ids = array();
+				$types_to_add = array();
 				
 				$wprr_data_api->performance()->start_meassure('ObjectRelationDirection::get_types setup relations');
 				foreach($ids as $id) {
@@ -95,11 +92,13 @@
 					
 					foreach($type_terms as $type_term) {
 						$type = $type_term->get_slug();
-						
-						$object_relation_type = $this->ensure_type($type);
-						$object_relation_type->add_relation($post);
+						$types_to_add[$type] = true;
 					}
 				}
+				foreach(array_keys($types_to_add) as $type) {
+					$object_relation_type = $this->ensure_type($type);
+				}
+				
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types setup relations');
 				
 				$wprr_data_api->performance()->stop_meassure('ObjectRelationDirection::get_types');
@@ -109,7 +108,7 @@
 		}
 		
 		public function get_type($type) {
-			$types = &$this->get_types();
+			//$types = &$this->get_types();
 			
 			return $this->ensure_type($type);
 		}

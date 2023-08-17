@@ -39,7 +39,7 @@
 			return $this->_types[$type];
 		}
 		
-		public function &get_types() {
+		public function get_types() {
 			if(!$this->_has_all_types) {
 				
 				global $wprr_data_api;
@@ -108,7 +108,6 @@
 		}
 		
 		public function get_type($type) {
-			//$types = &$this->get_types();
 			
 			return $this->ensure_type($type);
 		}

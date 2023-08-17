@@ -27,7 +27,7 @@
 			return $this;
 		}
 		
-		public function &get_all_relations():array {
+		public function get_all_relations():array {
 			global $wprr_data_api;
 			
 			if(!isset($this->_relations)) {
@@ -91,7 +91,7 @@
 			
 			global $wprr_data_api;
 			
-			$relations = &$this->get_all_relations();
+			$relations = $this->get_all_relations();
 			$ids = array_map(function($item) {return $item->get_object_id();}, $relations);
 			
 			$wprr_data_api->wordpress()->load_taxonomy_terms_for_posts($ids);
@@ -134,7 +134,8 @@
 		}
 		
 		public function get_relations(string $object_type, $time = -1):array {
-			$selected_relations = &$this->get_all_relations();
+			$selected_relations = $this->get_all_relations();
+			
 			if($object_type !== '*') {
 				$selected_relations = $this->filter_relations_by_object_type($selected_relations, $object_type);
 			}

@@ -31,6 +31,11 @@
 				'status' => 1,
 				'data' => $current_data['data']
 			);
+			
+			$output_php = apply_filters(WPRR_DOMAIN.'/'.'output_php_messages', false);
+			if($output_php) {
+				echo($current_data['metadata']['phpOutput']);
+			}
 		
 			$api_calls = null;
 		

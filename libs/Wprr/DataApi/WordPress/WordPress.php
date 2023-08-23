@@ -48,6 +48,16 @@
 			return $this->_taxonomies[$name];
 		}
 		
+		public function get_taxonomy_term($path) {
+			$temp_array = explode(':', $path);
+			$taxonomy = $temp_array[0];
+			$term_name = $temp_array[1];
+			
+			$term = $wprr_data_api->wordpress()->get_taxonomy($taxonomy)->get_term($term_name);
+			
+			return $term;
+		}
+		
 		public function get_post($id) {
 			if(!isset($this->_posts[$id])) {
 				$new_post = new \Wprr\DataApi\WordPress\Post();

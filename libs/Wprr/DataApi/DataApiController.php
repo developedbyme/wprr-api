@@ -62,6 +62,14 @@
 			
 			return $this->_performance;
 		}
+		
+		public function http_request() {
+			if(!$this->_http_requeset) {
+				$this->_http_requeset = new \Wprr\DataApi\HttpRequest();
+			}
+			
+			return $this->_http_requeset;
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\DataApiController<br />");

@@ -5,8 +5,8 @@
 	class ObjectRelationType {
 		
 		protected $_direction = null;
-		protected $_type = null;
-		protected $_relations = array();
+		protected string $_type;
+		protected array $_relations;
 		
 		function __construct() {
 			
@@ -16,15 +16,65 @@
 			return $this->_direction;
 		}
 		
-		public function get_type() {
+		public function get_type():string {
 			return $this->_type;
 		}
 		
-		public function setup($direction, $type) {
+		public function setup($direction, $type):ObjectRelationType {
 			$this->_direction = $direction;
 			$this->_type = $type;
 			
 			return $this;
+		}
+		
+		public function get_all_relations():array {
+			global $wprr_data_api;
+			
+			if(!isset($this->_relations)) {
+				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations');
+				
+				$this->_relations = array();
+				
+				$query = new \Wprr\DataApi\Data\Range\SelectQuery();
+				
+				$field = 'toId';
+				$reverse_field = 'fromId';
+				if($this->_direction->get_identifier() === 'outgoing') {
+					$field = 'fromId';
+					$reverse_field = 'toId';
+				}
+				
+				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations get ids');
+				
+				$query->set_post_type('dbm_object_relation')->include_private();
+				
+				$query->term_query_by_path('dbm_type', 'object-relation/'.$this->get_type());
+				
+				$query->meta_query($field, $this->_direction->get_post()->get_id());
+				//$query->meta_query_join($field, $this->_post->get_id());
+				
+				$ids = $query->get_ids_without_storage();
+				
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations get ids');
+				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations load meta');
+				
+				$wp = $wprr_data_api->wordpress();
+				
+				$wp->load_meta_for_relations($ids);
+				
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations load meta');
+				
+				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations setup relations');
+				foreach($ids as $id) {
+					$post = $wp->get_post($id);
+					$this->add_relation($post);
+				}
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations setup relations');
+				
+				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations');
+			}
+			
+			return $this->_relations;
 		}
 		
 		public function add_relation($post) {
@@ -37,18 +87,19 @@
 			return $new_relation;
 		}
 		
-		public function load_object_types() {
+		public function load_object_types():ObjectRelationType {
 			
 			global $wprr_data_api;
 			
-			$ids = array_map(function($item) {return $item->get_object_id();}, $this->_relations);
+			$relations = $this->get_all_relations();
+			$ids = array_map(function($item) {return $item->get_object_id();}, $relations);
 			
 			$wprr_data_api->wordpress()->load_taxonomy_terms_for_posts($ids);
 			
 			return $this;
 		}
 		
-		public function filter_relations_by_object_type($relations, $object_type) {
+		public function filter_relations_by_object_type(array $relations, string $object_type):array {
 			global $wprr_data_api;
 			$wp = $wprr_data_api->wordpress();
 			
@@ -70,7 +121,7 @@
 			return $return_array;
 		}
 		
-		public function filter_relations_by_time($relations, $time) {
+		public function filter_relations_by_time(array $relations, int $time):array {
 			$return_array = array();
 			
 			foreach($relations as $relation) {
@@ -82,8 +133,9 @@
 			return $return_array;
 		}
 		
-		public function get_relations($object_type, $time = -1) {
-			$selected_relations = $this->_relations;
+		public function get_relations(string $object_type, $time = -1):array {
+			$selected_relations = $this->get_all_relations();
+			
 			if($object_type !== '*') {
 				$selected_relations = $this->filter_relations_by_object_type($selected_relations, $object_type);
 			}
@@ -98,7 +150,7 @@
 			return $selected_relations;
 		}
 		
-		public function get_object_ids($object_type, $time = -1) {
+		public function get_object_ids(string $object_type, $time = -1):array {
 			
 			$return_array = array();
 			
@@ -111,7 +163,7 @@
 			return $return_array;
 		}
 		
-		public function get_single_object_id($object_type, $time = -1) {
+		public function get_single_object_id(string $object_type, $time = -1):int {
 			$selected_relations = $this->get_relations($object_type, $time);
 			
 			if(!empty($selected_relations)) {
@@ -121,7 +173,7 @@
 			return 0;
 		}
 		
-		public function get_object_ids_in_order($object_type, $order, $time = -1) {
+		public function get_object_ids_in_order(string $object_type, string $order, $time = -1):array {
 			$return_array = array();
 			
 			$selected_relations = $this->get_relations($object_type, $time);
@@ -149,7 +201,7 @@
 			return array_values($return_array);
 		}
 		
-		protected function _update_hierarchy_order(&$hierarchy_items, &$active_ids, &$unused_ids, &$id_map) {
+		protected function _update_hierarchy_order(&$hierarchy_items, &$active_ids, &$unused_ids, &$id_map):void {
 			//var_dump('_update_hierarchy_order', $hierarchy_items, $active_ids, $unused_ids, $id_map);
 			
 			$length = count($hierarchy_items);
@@ -175,7 +227,7 @@
 			}
 		}
 		
-		public function get_object_ids_in_hierarchy($object_type, $order, $time = -1) {
+		public function get_object_ids_in_hierarchy(string $object_type, $order, $time = -1):array {
 			$return_array = array();
 			
 			$selected_relations = $this->get_relations($object_type, $time);

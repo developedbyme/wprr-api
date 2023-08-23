@@ -53,7 +53,7 @@
 			$taxonomy = $temp_array[0];
 			$term_name = $temp_array[1];
 			
-			$term = $wprr_data_api->wordpress()->get_taxonomy($taxonomy)->get_term($term_name);
+			$term = $this->get_taxonomy($taxonomy)->get_term($term_name);
 			
 			return $term;
 		}

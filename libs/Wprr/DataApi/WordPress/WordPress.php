@@ -326,6 +326,10 @@
 			
 			return false;
 		}
+		
+		public function object_relation_query_from_ids($ids, $path) {
+			return \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_posts($this->get_posts($ids), $path);
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress<br />");

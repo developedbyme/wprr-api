@@ -78,6 +78,8 @@
 			$editor->add_meta('fromId', $from_post->get_id());
 			$editor->add_meta('toId', $to_post->get_id());
 			
+			//METODO: update custom tables
+			
 			return $relation_post;
 		}
 		

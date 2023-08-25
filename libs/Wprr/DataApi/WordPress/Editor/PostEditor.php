@@ -45,13 +45,23 @@
 			
 			$wprr_data_api->performance()->stop_meassure('PostEditor::add_term_by_id');
 			
-			//METODO: invalidate data on post
+			$this->post()->invalidate_terms();
+			
+			//METODO:
+			/*
+			if($taxonomy === 'dbm_type') {
+				$this->post()->invalidate_fields();
+			}
+			*/
 			
 			return $this;
 		}
 		
 		public function add_term($term) {
-			return $this->add_term_by_id($term->get_id());
+			
+			$this->add_term_by_id($term->get_id());
+			
+			return $this;
 		}
 		
 		public function add_term_by_path($taxonomy, $path) {
@@ -60,7 +70,9 @@
 			$term = $wprr_data_api->wordpress()->get_taxonomy($taxonomy)->get_term($path);
 			
 			$this->add_term($term);
-				
+			
+			$this->post()->invalidate_terms();
+			
 			return $this;
 		}
 		
@@ -154,7 +166,7 @@
 			
 			$result = $db->update($query);
 			
-			//METODO: invalidate post
+			$this->post()->invalidate_post_data();
 			
 			return $this;
 		}
@@ -176,7 +188,8 @@
 				$this->delete_meta('dbm/objectRelations/outgoing');
 				$post->editor()->delete_meta('dbm/objectRelations/incoming');
 				
-				//METODO: invalidate post
+				$this->post()->clear_object_relation_cache();
+				$post->clear_object_relation_cache();
 			}
 			
 			return $relation;
@@ -195,7 +208,8 @@
 				$post->editor()->delete_meta('dbm/objectRelations/outgoing');
 				$this->delete_meta('dbm/objectRelations/incoming');
 				
-				//METODO: invalidate post
+				$this->post()->clear_object_relation_cache();
+				$post->clear_object_relation_cache();
 			}
 			
 			return $relation;
@@ -216,12 +230,12 @@
 				if($end_time === -1 || $end_time >= $time) {
 					$relation->post()->editor()->update_meta('endAt', $time);
 					$relation->get_object()->editor()->delete_meta('dbm/objectRelations/outgoing');
-					//METODO: invalidate post
+					$relation->get_object()->clear_object_relation_cache();
 				}
 			}
 			
 			$this->delete_meta('dbm/objectRelations/incoming');
-			//METODO: invalidate post
+			$this->post()->clear_object_relation_cache();
 		}
 		
 		public function end_all_outgoing_relations_by_name($name, $object_type = '*', $time = false) {
@@ -239,12 +253,30 @@
 				if($end_time === -1 || $end_time >= $time) {
 					$relation->post()->editor()->update_meta('endAt', $time);
 					$relation->get_object()->editor()->delete_meta('dbm/objectRelations/incoming');
-					//METODO: invalidate post
+					$relation->get_object()->clear_object_relation_cache();
 				}
 			}
 			
 			$this->delete_meta('dbm/objectRelations/outgoing');
-			//METODO: invalidate post
+			$this->post()->clear_object_relation_cache();
+		}
+		
+		public function replace_incoming_relation_by_name($post, $name, $object_type = '*', $time = false) {
+			if($time === false) {
+				$time = time();
+			}
+			
+			$this->end_all_incoming_relations_by_name($name, $object_type, $time);
+			return $this->add_incoming_relation_by_name($post, $name, $time);
+		}
+		
+		public function replace_outgoing_relation_by_name($post, $name, $object_type = '*', $time = false) {
+			if($time === false) {
+				$time = time();
+			}
+			
+			$this->end_all_outgoing_relations_by_name($name, $object_type, $time);
+			return $this->add_outgoing_relation_by_name($post, $name, $time);
 		}
 		
 		public function set_linked_property($identifier, $linked_post) {

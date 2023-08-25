@@ -86,9 +86,30 @@
 			return $this;
 		}
 		
+		public function invalidate_post_data() {
+			
+			$this->_database_data = null;
+			
+			return $this;
+		}
+		
 		public function invalidate_meta() {
 			$this->_database_meta = null;
 			$this->_meta = array();
+			
+			return $this;
+		}
+		
+		public function invalidate_terms() {
+			$this->_database_taxonomy_terms = null;
+			$this->_taxonomy_terms = array();
+			
+			return $this;
+		}
+		
+		public function invalidate_fields() {
+			
+			//METODO
 			
 			return $this;
 		}

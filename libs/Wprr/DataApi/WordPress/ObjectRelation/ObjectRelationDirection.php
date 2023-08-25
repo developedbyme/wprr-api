@@ -112,6 +112,39 @@
 			return $this->ensure_type($type);
 		}
 		
+		public function get_all_relations():array {
+			
+			$return_array = array();
+			
+			$types = $this->get_types();
+			foreach($types as $type) {
+				
+				$relations = $type->get_all_relations();
+				
+				$return_array = array_merge($return_array, $relations);
+			}
+			
+			return $return_array;
+		}
+		
+		public function get_draft_ids():array {
+			$query = new \Wprr\DataApi\Data\Range\SelectQuery();
+			
+			$field = 'toId';
+			if($this->_direction === 'outgoing') {
+				$field = 'fromId';
+			}
+			
+			$query->set_post_type('dbm_object_relation')->set_status('draft');
+			
+			$query->term_query_by_path('dbm_type', 'object-relation');
+			$query->meta_query($field, $this->_post->get_id());
+			
+			$ids = $query->get_ids_without_storage();
+			
+			return $ids;
+		}
+		
 		public function __toString() {
 			return "[Direction identifier:".$this->_direction."]";
 		}

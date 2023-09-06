@@ -27,7 +27,7 @@
 			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
 			do_action(WPRR_DOMAIN.'/prepare_api_request', $data);
 			
-			$this->_return_data = array('id' => $post_id);
+			$this->_return_data = array();
 			
 			$post_type = sanitize_text_field($data['post_type']);
 			

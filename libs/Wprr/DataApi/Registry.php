@@ -38,6 +38,21 @@
 			return $this;
 		}
 		
+		public function apply_filters($id, $result, ...$data) {
+			$filters = $this->get_array($id);
+			
+			foreach($filters as $callable) {
+				
+				if(!is_callable($callable)) {
+					throw(new \Exception('Can\'t call '.$callable));
+				}
+				
+				$result = call_user_func_array($callable, array_merge(array($result), $data));
+			}
+			
+			return $result;
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Registry<br />");
 		}

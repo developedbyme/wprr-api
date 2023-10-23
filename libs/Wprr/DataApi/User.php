@@ -88,7 +88,7 @@
 						}
 					}
 				}
-				else {
+				else if(isset($_COOKIE[LOGGED_IN_COOKIE])) {
 					$cookie = $_COOKIE[LOGGED_IN_COOKIE];
 				
 					if($cookie) {

@@ -474,6 +474,7 @@
 			
 			$upload_dir = wp_upload_dir(null, false);
 			$code .= $this->define_varaible_code('UPLOAD_URL', $upload_dir['baseurl']);
+			$code .= $this->define_varaible_code('UPLOAD_DIR', $upload_dir['basedir']);
 	
 			$code .= $this->define_varaible_code('AUTH_KEY', AUTH_KEY);
 			$code .= $this->define_varaible_code('SECURE_AUTH_KEY', SECURE_AUTH_KEY);
@@ -701,7 +702,10 @@
 				$code .= wprr_get_data_api_data_function_registration_code($id, $data_function_prefix.$class_name.'.php', $data_function_namespace.implode('\\', explode('/', $class_name)))."\n";
 			}
 			
-			$code .= wprr_get_data_api_registry_registration_code('action/example', json_encode('\\Wprr\\DataApi\\Data\\Action\\Actions\\Example::apply_action'));
+			$action_namespace = '\\Wprr\\DataApi\\Data\\Action\\Actions\\';
+			
+			$code .= wprr_get_data_api_registry_registration_code('action/example', json_encode($action_namespace.'Example::apply_action'));
+			$code .= wprr_get_data_api_registry_registration_code('action/privateFile', json_encode($action_namespace.'PrivateFile::apply_action'));
 			
 			return $code;
 		}

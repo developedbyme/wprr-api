@@ -33,6 +33,15 @@
 			case 'json':
 				$wprr_data_api->output()->output_api_repsponse($result);
 			case 'data':
+				if($result['format'] === 'file') {
+					if(isset($result['meta']['contentType'])) {
+						header('Content-Type: '.$result['meta']['contentType']);
+					}
+					$wprr_data_api->output()->output_response($result['data']);
+				}
+				else if($result['format'] === 'redirect') {
+					$wprr_data_api->output()->redirect($result['data']);
+				}
 				$wprr_data_api->output()->output_response($result);
 			default:
 			case 'message':

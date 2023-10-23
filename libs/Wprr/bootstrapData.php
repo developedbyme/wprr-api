@@ -2,6 +2,7 @@
 
 function Wprr_Data_Autoloader( $class ) {
 	//echo("Wprr_Data_Autoloader<br />");
+	//echo($class);
 	
 	$namespace_length = strlen("Wprr");
 	
@@ -22,8 +23,10 @@ function Wprr_Data_Autoloader( $class ) {
 	
 	// Get class
 	if ( isset($class_file) && is_file( $class_file ) ) {
-
 		require_once( $class_file );
+		if(!class_exists($class)) {
+			throw(new \Exception('Class '.$class.' is not found in file '.$class_file));
+		}
 		return true;
 
 	}

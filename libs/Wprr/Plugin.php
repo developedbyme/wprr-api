@@ -701,6 +701,8 @@
 				$code .= wprr_get_data_api_data_function_registration_code($id, $data_function_prefix.$class_name.'.php', $data_function_namespace.implode('\\', explode('/', $class_name)))."\n";
 			}
 			
+			$code .= wprr_get_data_api_registry_registration_code('action/example', json_encode('\\Wprr\\DataApi\\Data\\Action\\Actions\\Example::apply_action'));
+			
 			return $code;
 		}
 		

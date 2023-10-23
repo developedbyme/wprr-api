@@ -615,6 +615,10 @@
 		return '$range_controller->register_data_function(\''.$type.'\', \''.$file_path.'\', \''.$class_path.'\');';
 	}
 	
+	function wprr_get_data_api_registry_registration_code($id, $value) {
+		return '$wprr_data_api->registry()->add_to_array(\''.$id.'\', '.$value.');';
+	}
+	
 	function wprr_get_data_api() {
 		require_once(WPRR_DIR."/data/settings-wp.php");
 		

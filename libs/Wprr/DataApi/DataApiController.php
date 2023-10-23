@@ -10,6 +10,8 @@
 		protected $_range = null;
 		protected $_wordpress = null;
 		protected $_performance = null;
+		protected $_action = null;
+		protected $_registry = null;
 
 		function __construct() {
 			
@@ -61,6 +63,22 @@
 			}
 			
 			return $this->_performance;
+		}
+		
+		public function action() {
+			if(!$this->_action) {
+				$this->_action = new \Wprr\DataApi\Data\Action\ActionController();
+			}
+			
+			return $this->_action;
+		}
+		
+		public function registry() {
+			if(!$this->_registry) {
+				$this->_registry = new \Wprr\DataApi\Registry();
+			}
+			
+			return $this->_registry;
 		}
 		
 		public function http_request() {

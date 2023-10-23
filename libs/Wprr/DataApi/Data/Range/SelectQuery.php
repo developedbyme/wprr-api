@@ -72,7 +72,7 @@
 		}
 		
 		public function set_status($status) {
-			$this->_statuses = array($status);
+			$this->_statuses = explode(",", $status);
 			
 			return $this;
 		}

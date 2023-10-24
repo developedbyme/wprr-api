@@ -619,6 +619,10 @@
 		return '$wprr_data_api->registry()->add_to_array(\''.$id.'\', '.$value.');';
 	}
 	
+	function wprr_get_data_api_auto_loader_registration_code($namespace, $directory) {
+		return '$wprr_data_api->auto_loader()->add_auto_loader(\''.$namespace.'\', \''.$directory.'\');';
+	}
+	
 	function wprr_get_data_api() {
 		require_once(WPRR_DIR."/data/settings-wp.php");
 		

@@ -12,6 +12,7 @@
 		protected $_performance = null;
 		protected $_action = null;
 		protected $_registry = null;
+		protected $_auto_loader = null;
 
 		function __construct() {
 			
@@ -87,6 +88,14 @@
 			}
 			
 			return $this->_http_requeset;
+		}
+		
+		public function auto_loader() {
+			if(!$this->_auto_loader) {
+				$this->_auto_loader = new \Wprr\DataApi\System\AutoLoaderController();
+			}
+			
+			return $this->_auto_loader;
 		}
 
 		public static function test_import() {

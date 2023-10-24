@@ -195,6 +195,16 @@
 			return $relation;
 		}
 		
+		public function add_unique_outgoing_relation_by_name($post, $name, $start_time = -1, $make_private = true) {
+			$relation = $this->get_outgoing_relation_to_if_exists($post, $name);
+			
+			if(!$relation) {
+				$relation = $this->add_outgoing_relation_by_name($post, $name, $start_time, $make_private);
+			}
+			
+			return $relation;
+		}
+		
 		public function add_incoming_relation_by_name($post, $name, $start_time = -1, $make_private = true) {
 			global $wprr_data_api;
 			
@@ -210,6 +220,16 @@
 				
 				$this->post()->clear_object_relation_cache();
 				$post->clear_object_relation_cache();
+			}
+			
+			return $relation;
+		}
+		
+		public function add_unique_incoming_relation_by_name($post, $name, $start_time = -1, $make_private = true) {
+			$relation = $this->get_incoming_relation_to_if_exists($post, $name);
+			
+			if(!$relation) {
+				$relation = $this->add_incoming_relation_by_name($post, $name, $start_time, $make_private);
 			}
 			
 			return $relation;
@@ -277,6 +297,70 @@
 			
 			$this->end_all_outgoing_relations_by_name($name, $object_type, $time);
 			return $this->add_outgoing_relation_by_name($post, $name, $time);
+		}
+		
+		public function get_incoming_relation_to_if_exists($related_post, $name) {
+			$post = $this->post();
+			
+			$type = $post->get_incoming_direction()->get_type($name);
+			
+			$relations = $type->get_relations('*');
+			foreach($relations as $relation) {
+				if($relation->get_object() === $related_post) {
+					return $relation;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function get_outgoing_relation_to_if_exists($related_post, $name) {
+			$post = $this->post();
+			
+			$type = $post->get_outgoing_direction()->get_type($name);
+			
+			$relations = $type->get_relations('*');
+			foreach($relations as $relation) {
+				if($relation->get_object() === $related_post) {
+					return $relation;
+				}
+			}
+			
+			return null;
+		}
+		
+		public function end_incoming_relation_from($post, $name, $time = false) {
+			
+			if($time === false) {
+				$time = time();
+			}
+			
+			$relation = $this->get_incoming_relation_to_if_exists($post, $name);
+			
+			if($relation) {
+				$relation->post()->editor()->update_meta('endAt', $time);
+				$relation->get_object()->editor()->delete_meta('dbm/objectRelations/outgoing');
+				$relation->get_object()->clear_object_relation_cache();
+			}
+			
+			return $this;
+		}
+		
+		public function end_outgoing_relation_to($post, $name, $time = false) {
+			
+			if($time === false) {
+				$time = time();
+			}
+			
+			$relation = $this->get_outgoing_relation_to_if_exists($post, $name);
+			
+			if($relation) {
+				$relation->post()->editor()->update_meta('endAt', $time);
+				$relation->get_object()->editor()->delete_meta('dbm/objectRelations/incoming');
+				$relation->get_object()->clear_object_relation_cache();
+			}
+			
+			return $this;
 		}
 		
 		public function set_linked_property($identifier, $linked_post) {

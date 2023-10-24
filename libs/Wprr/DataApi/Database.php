@@ -93,6 +93,24 @@
 			return $rows;
 		}
 		
+		public function query_operation($query) {
+			global $wprr_data_api;
+			
+			$this->start_session();
+			$wprr_data_api->performance()->count('Database::query_without_storage query');
+			
+			$wprr_data_api->performance()->start_meassure('Database::query_without_storage query');
+			try {
+				$this->_db->query($query);
+			}
+			catch(\Exception $exception) {
+				throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
+			}
+			$wprr_data_api->performance()->stop_meassure('Database::query_without_storage query');
+			
+			return null;
+		}
+		
 		public function insert($query) {
 			global $wprr_data_api;
 			

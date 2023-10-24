@@ -76,6 +76,48 @@
 			return $this;
 		}
 		
+		public function remove_term_by_id($term_id) {
+			global $wprr_data_api;
+			
+			$wprr_data_api->performance()->start_meassure('PostEditor::remove_term_by_id');
+			
+			$db = $wprr_data_api->database();
+			
+			$fields = array(
+				'object_id' => $this->get_id(),
+				'term_taxonomy_id' => $term_id,
+			);
+			
+			$insert_statement = $this->get_insert_statement($fields);
+			
+			$query = 'DELETE FROM '.DB_TABLE_PREFIX.'term_relationships WHERE object_id = \''.$db->escape($this->get_id()).'\' AND term_taxonomy_id = \''.$db->escape($term_id).'\'';
+			
+			$db->query_operation($query);
+			
+			$wprr_data_api->performance()->stop_meassure('PostEditor::remove_term_by_id');
+			
+			$this->post()->invalidate_terms();
+		}
+		
+		public function remove_term($term) {
+			
+			$this->remove_term_by_id($term->get_id());
+			
+			return $this;
+		}
+		
+		public function remove_term_by_path($taxonomy, $path) {
+			global $wprr_data_api;
+			
+			$term = $wprr_data_api->wordpress()->get_taxonomy($taxonomy)->get_term($path);
+			
+			$this->remove_term($term);
+			
+			$this->post()->invalidate_terms();
+			
+			return $this;
+		}
+		
 		public function add_meta($key, $value) {
 			global $wprr_data_api;
 			

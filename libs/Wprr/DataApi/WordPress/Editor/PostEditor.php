@@ -97,6 +97,8 @@
 			$wprr_data_api->performance()->stop_meassure('PostEditor::remove_term_by_id');
 			
 			$this->post()->invalidate_terms();
+			
+			return $this;
 		}
 		
 		public function remove_term($term) {
@@ -198,7 +200,25 @@
 			return $this;
 		}
 		
-		//METODO: add generic update field
+		public function update_field($field, $value) {
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$query = 'UPDATE '.DB_TABLE_PREFIX.'posts SET '.$db->escape($field).' = \''.$db->escape($value).'\' WHERE id = '.$this->get_id();
+			
+			$result = $db->update($query);
+			
+			$this->post()->invalidate_post_data();
+			
+			return $this;
+		}
+		
+		public function set_title($title) {
+			
+			$this->update_field('post_title', $title);
+			
+			return $this;
+		}
 		
 		public function change_status($status) {
 			global $wprr_data_api;
@@ -470,6 +490,29 @@
 			}
 			
 			return '('.implode(",", $keys).') VALUES ('.implode(",", $values).')';
+		}
+		
+		public function set_wpml_language($language_code) {
+			
+			global $wprr_data_api;
+			
+			$db = $wprr_data_api->database();
+			
+			$fields = array(
+				'element_type' => 'post_'.$this->post()->get_data('post_type'),
+				'element_id' => $this->post()->get_id(),
+				'trid' => $this->post()->get_id(),
+				'language_code' => $language_code,
+				'source_language_code' => NULL
+			);
+			
+			$insert_statement = $this->get_insert_statement($fields);
+			
+			$query = 'INSERT INTO '.DB_TABLE_PREFIX.'icl_translations '.$insert_statement;
+			
+			$id = $db->insert($query);
+			
+			return $this;
 		}
 		
 		public static function test_import() {

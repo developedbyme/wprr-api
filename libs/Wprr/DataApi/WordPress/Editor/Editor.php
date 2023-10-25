@@ -133,6 +133,36 @@
 			return $post;
 		}
 		
+		public function create_media($path, $parent = 0) {
+			$post = $this->create_post("attachment", $path, $parent);
+			
+			$post->editor()->change_status('inherit');
+			
+			$url = UPLOAD_URL.'/'.$path;
+			
+			$post->editor()->add_meta('_wp_attached_file', $path);
+			
+			$imagesize = getimagesize(UPLOAD_DIR.'/'.$path);
+			
+			$image_meta = array(
+				'width'    => $imagesize[0],
+				'height'   => $imagesize[1],
+				'file'     => $path,
+				'filesize' => filesize( UPLOAD_DIR.'/'.$path ),
+				'sizes'    => array(
+					'full' => array(
+						'file' => basename($path),
+						'width'    => $imagesize[0],
+						'height'   => $imagesize[1],
+						'mime-type' => $imagesize["mime"]
+					)
+				),
+			);
+			
+			$post->editor()->add_meta('_wp_attachment_metadata', $image_meta);
+			
+			return $post;
+		}
 		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress\Editor<br />");

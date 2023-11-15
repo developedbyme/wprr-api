@@ -3,7 +3,9 @@
 
 	// \Wprr\DataApi\WordPress\WordPress\WooCommerce
 	class WooCommerce {
-
+		
+		protected $cart;
+		
 		function __construct() {
 			
 		}
@@ -139,14 +141,13 @@
 			if(empty($customer_id)) {
 				return null;
 			}
-
-			// Validate hash.
+			
 			$to_hash = $customer_id . '|' . $session_expiration;
-			$wp_hash = return hash_hmac( 'md5', $to_hash, AUTH_SALT);
+			$wp_hash = hash_hmac('md5', $to_hash, AUTH_KEY.AUTH_SALT);
 			
 			$hash = hash_hmac('md5', $to_hash, $wp_hash);
-
-			if(empty( $cookie_hash ) || !hash_equals($hash, $cookie_hash)) {
+			
+			if(empty($cookie_hash) || !hash_equals($hash, $cookie_hash)) {
 				return null;
 			}
 			
@@ -154,6 +155,34 @@
 		}
 		
 		public function get_cart() {
+			
+			if($this->cart) {
+				return $this->cart;
+			}
+			
+			$session_name = $this->get_session_name();
+			
+			if(!$session_name) {
+				return null;
+			}
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$response = $db->query_first('SELECT session_value FROM '.DB_TABLE_PREFIX.'woocommerce_sessions WHERE session_key = "'.$db->escape($session_name).'"');
+			
+			if(!$response) {
+				return null;
+			}
+			
+			$cart = new \Wprr\DataApi\WordPress\WooCommerce\Cart\Cart();
+			
+			$session_data = unserialize($response['session_value']);
+			$cart->setup_from_session_data($session_data);
+			
+			$this->cart = $cart;
+			
+			return $cart;
 			
 		}
 

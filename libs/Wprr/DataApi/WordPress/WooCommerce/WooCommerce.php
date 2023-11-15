@@ -123,6 +123,39 @@
 			$coupons = $this->get_order_items($order)['coupons'];
 			return in_array($code, array_column($coupons, 'code'));
 		}
+		
+		public function get_session_name() {
+			
+			$cookie_name = 'wp_woocommerce_session_'.COOKIEHASH;
+			
+			if(!isset($_COOKIE[$cookie_name]) || !$_COOKIE[$cookie_name]) {
+				return null;
+			}
+			
+			$cookie_value = $_COOKIE[$cookie_name];
+			
+			list($customer_id, $session_expiration, $session_expiring, $cookie_hash) = explode('||', $cookie_value);
+
+			if(empty($customer_id)) {
+				return null;
+			}
+
+			// Validate hash.
+			$to_hash = $customer_id . '|' . $session_expiration;
+			$wp_hash = return hash_hmac( 'md5', $to_hash, AUTH_SALT);
+			
+			$hash = hash_hmac('md5', $to_hash, $wp_hash);
+
+			if(empty( $cookie_hash ) || !hash_equals($hash, $cookie_hash)) {
+				return null;
+			}
+			
+			return $customer_id;
+		}
+		
+		public function get_cart() {
+			
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress\WooCommerce<br />");

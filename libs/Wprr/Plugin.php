@@ -485,6 +485,7 @@
 			$code .= $this->define_varaible_code('LOGGED_IN_SALT', LOGGED_IN_SALT);
 			$code .= $this->define_varaible_code('NONCE_SALT', NONCE_SALT);
 			
+			$code .= $this->define_varaible_code('COOKIEHASH', COOKIEHASH);
 			$code .= $this->define_varaible_code('LOGGED_IN_COOKIE', LOGGED_IN_COOKIE);
 			
 			$code .= $this->define_varaible_code('NONCE_LIFE', apply_filters( 'nonce_life', DAY_IN_SECONDS ), '');
@@ -696,6 +697,7 @@
 			
 			$data_functions = array(
 				'example' => 'Example',
+				'cart' => 'Cart'
 			);
 			
 			foreach($data_functions as $id => $class_name) {

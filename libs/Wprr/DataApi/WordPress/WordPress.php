@@ -330,6 +330,26 @@
 		public function object_relation_query_from_ids($ids, $path) {
 			return \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_posts($this->get_posts($ids), $path);
 		}
+		
+		public function get_global_object($identifier) {
+			global $wprr_data_api;
+			$post_id = $wprr_data_api->range()->new_query()->include_private()->include_term_by_path('dbm_type', 'global-item')->meta_query('identifier', $identifier)->get_id(); 
+			
+			if($post_id) {
+				return $this->get_post($post_id);
+			}
+			
+			return null;
+		}
+		
+		public function get_linked_global_object($identifier) {
+			$global_post = $this->get_global_object($identifier);
+			if($global_post) {
+				return $global_post->single_object_relation_query('out:pointing-to:*');
+			}
+			
+			return null;
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress<br />");

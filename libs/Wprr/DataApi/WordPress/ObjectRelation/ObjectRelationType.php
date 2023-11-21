@@ -5,8 +5,8 @@
 	class ObjectRelationType {
 		
 		protected $_direction = null;
-		protected string $_type;
-		protected array $_relations;
+		protected $_type;
+		protected $_relations;
 		
 		function __construct() {
 			

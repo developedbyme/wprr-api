@@ -7,8 +7,8 @@
 		protected $_post = null;
 		protected $_direction = null;
 		
-		protected array $_types = array();
-		protected bool $_has_all_types = false;
+		protected $_types = array();
+		protected $_has_all_types = false;
 		
 		function __construct() {
 			

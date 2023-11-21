@@ -31,9 +31,13 @@
 		}
 		
 		public function get_products() {
-			return array_map(function($item) {
-				return $item->get_product();
-			}, $this->_line_items);
+			$return_array = array();
+			
+			foreach($this->_line_items as $key => $item) {
+				$return_array[] = $item->get_product();
+			}
+			
+			return $return_array;
 		}
 		
 		public function get_line_items() {

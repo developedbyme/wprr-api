@@ -100,7 +100,7 @@
 			return "[TaxonomyTerm id=".$this->get_id()." slug=".$this->get_slug()."]";
 		}
 		
-		public function jsonSerialize() {
+		public function jsonSerialize():mixed {
 			return $this->get_identifier();
 		}
 

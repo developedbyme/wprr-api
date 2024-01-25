@@ -26,6 +26,7 @@
 			
 			$encoded_data->data['refunds'] = $wprr_data_api->range()->encode_objects_as($related_ids, 'order/totals');
 			$wprr_data_api->range()->encode_objects_as($related_ids, 'order/items');
+			$wprr_data_api->range()->encode_objects_as($related_ids, 'publishDate');
 		}
 		
 		public static function test_import() {

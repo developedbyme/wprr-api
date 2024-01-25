@@ -25,7 +25,12 @@
 			
 			$from_posts = $wprr_data_api->wordpress()->get_posts($from_ids);
 			
-			$posts = \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_posts($from_posts, $data['path']);
+			if($data['path'] === "root") {
+				$posts = $from_posts;
+			}
+			else {
+				$posts = \Wprr\DataApi\WordPress\ObjectRelation\ObjectRelationQuery::get_posts($from_posts, $data['path']);
+			}
 			
 			$ids = array_map(function($post) {return $post->get_id();}, $posts);
 			

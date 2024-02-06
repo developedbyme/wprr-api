@@ -143,23 +143,42 @@
 			$post->editor()->add_meta('_wp_attached_file', $path);
 			
 			$imagesize = getimagesize(UPLOAD_DIR.'/'.$path);
+			$post->editor()->update_field('post_mime_type', $imagesize["mime"]);
 			
 			$image_meta = array(
-				'width'    => $imagesize[0],
-				'height'   => $imagesize[1],
-				'file'     => $path,
+				'width' => $imagesize[0],
+				'height' => $imagesize[1],
+				'file' => $path,
 				'filesize' => filesize( UPLOAD_DIR.'/'.$path ),
-				'sizes'    => array(
+				'image_meta' => array(
+					'aperture' => "0",
+					'camera' => "",
+					'caption' => "",
+					'copyright' => "",
+					'created_timestamp' => "0",
+					'credit' => "",
+					'focal_length' => "0",
+					'iso' => "0",
+					'keywords' => array(),
+					'orientation' => "0",
+					'shutter_speed' => "0",
+					'title' => "",
+				),
+				'sizes' => array(
 					'full' => array(
 						'file' => basename($path),
-						'width'    => $imagesize[0],
-						'height'   => $imagesize[1],
+						'width' => $imagesize[0],
+						'height' => $imagesize[1],
 						'mime-type' => $imagesize["mime"]
 					)
 				),
 			);
 			
 			$post->editor()->add_meta('_wp_attachment_metadata', $image_meta);
+			
+			if($parent) {
+				$post->editor()->add_meta('_wpml_media_usage', array('posts' => $parent));
+			}
 			
 			return $post;
 		}

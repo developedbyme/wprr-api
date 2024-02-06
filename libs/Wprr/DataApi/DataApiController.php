@@ -5,6 +5,7 @@
 	class DataApiController {
 
 		protected $_database = null;
+		protected $_files = null;
 		protected $_user = null;
 		protected $_output = null;
 		protected $_range = null;
@@ -24,6 +25,14 @@
 			}
 			
 			return $this->_database;
+		}
+		
+		public function files() {
+			if(!$this->_files) {
+				$this->_files = new \Wprr\DataApi\Files();
+			}
+			
+			return $this->_files;
 		}
 		
 		public function user() {

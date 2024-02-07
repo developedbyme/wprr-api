@@ -38,7 +38,6 @@
 			add_action('wprr/api_action/user/set-email', array($this, 'hook_user_set_email'), 10, 2);
 			add_action('wprr/api_action/user/set-password', array($this, 'hook_user_set_password'), 10, 2);
 			
-			add_action('wprr/api_action/wprr/save-initial-load-cache', array($this, 'hook_wprr_save_initial_load_cache'), 10, 2);
 		}
 		
 		public function add_item_to_cart($data) {
@@ -470,35 +469,6 @@
 			foreach($subscription_ids as $post_id) {
 				$this->_update_product_link($post_id);
 			}
-		}
-		
-		public function hook_wprr_save_initial_load_cache($data, &$response_data) {
-			$upload_dir = wp_upload_dir(null, false);
-			
-			$paths = $data['paths'];
-			$permalink = $data['permalink'];
-			
-			$valid_paths = array();
-			foreach($paths as $path) {
-				$valid = apply_filters('wprr/initial-load-cache/can-store-path', true, $path);
-				if($valid) {
-					$valid_paths[] = $path;
-				}
-			}
-			
-			$salt = apply_filters('wprr/initial-load-cache/salt', 'wvIUIAULTxKicDpbkzyPpVi5wskSe6Yxy0Uq4wCqbAui1wVKAKmsVhN7JOhGbFQohVs9pnpQoS1dWGkL');
-			
-			$upload_path = $upload_dir['basedir'].'/wprr-initial-load-cache/'.md5($permalink.$salt).'.json';
-			
-			$parent_directory = dirname($upload_path);
-		
-			if (!file_exists($parent_directory)) {
-				mkdir($parent_directory, 0755, true);
-			}
-			
-			$file = fopen($upload_path, 'w');
-			fwrite($file, json_encode($valid_paths));
-			fclose($file);
 		}
 		
 		public static function test_import() {

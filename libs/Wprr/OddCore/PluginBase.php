@@ -435,7 +435,7 @@
 
 		public function hook_wp_enqueue_scripts() {
 			foreach($this->javascript_files as $id => $path) {
-				wp_enqueue_script($id, $path, array(), "wp-".get_bloginfo('version').','.M_ROUTER_DATA_DOMAIN.'-'.WPRR_VERSION);
+				wp_enqueue_script($id, $path, array(), "wp-".get_bloginfo('version').','.WPRR_DOMAIN.'-'.WPRR_VERSION);
 			}
 		}
 

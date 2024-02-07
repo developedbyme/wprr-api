@@ -3,10 +3,6 @@
 		return wprr_get_data_api()->performance();
 	}
 	
-	function wprr_get_logger() {
-		return new \Wprr\Logger();
-	}
-	
 	function wprr_get_configuration_data() {
 		$return_array = array();
 		

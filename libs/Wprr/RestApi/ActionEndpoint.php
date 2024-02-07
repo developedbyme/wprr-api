@@ -1,7 +1,6 @@
 <?php
 	namespace Wprr\RestApi;
 
-	use \WP_Query;
 	use \Wprr\Core\RestApi\EndPoint as EndPoint;
 
 	// \Wprr\RestApi\ActionEndpoint

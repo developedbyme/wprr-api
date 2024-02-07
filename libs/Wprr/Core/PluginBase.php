@@ -7,10 +7,7 @@
 		protected $_pages = null;
 		protected $_custom_post_types = null;
 		protected $_lists = null;
-		protected $_ajax_api_end_points = null;
 		protected $_rest_api_end_points = null;
-		protected $_shortcodes = null;
-		protected $_meta_boxes = null;
 		protected $_filters = null;
 		protected $_additional_hooks = null;
 
@@ -36,7 +33,7 @@
 		}
 
 		protected function create_pages() {
-			echo("\Wprr\Core\PluginBase::create_pages<br />");
+			//echo("\Wprr\Core\PluginBase::create_pages<br />");
 
 			//MENOTE: should be overridden
 		}
@@ -159,34 +156,6 @@
 			return $this->_filters;
 		}
 
-		protected function register_ajax_api_end_points() {
-			//echo("\Wprr\Core\PluginBase::register_ajax_api_end_points<br />");
-
-			$this->_ajax_api_end_points = array();
-
-
-		}
-
-		protected function get_ajax_api_end_points() {
-			//echo("\Wprr\Core\PluginBase::get_ajax_api_end_points<br />");
-
-			if(!isset($this->_ajax_api_end_points)) {
-				$this->register_ajax_api_end_points();
-			}
-			return $this->_ajax_api_end_points;
-		}
-
-		protected function get_list_of_ajax_end_points() {
-			$returnArray = array();
-
-			$ajax_api_end_points = $this->get_ajax_api_end_points();
-			foreach($ajax_api_end_points as $current_end_point) {
-				$returnArray[] = $current_end_point->get_system_name();
-			}
-
-			return $returnArray;
-		}
-
 		protected function create_rest_api_end_point($new_end_point, $path, $namespace, $headers, $type = 'GET') {
 			$new_end_point->add_headers($headers);
 			$new_end_point->setup($path, $namespace, 1, $type);
@@ -217,64 +186,6 @@
 			return $this->_rest_api_end_points;
 		}
 
-		protected function add_shortcode($shortcode) {
-			//echo("\Wprr\Core\PluginBase::add_shortcode<br />");
-
-			$this->_shortcodes[] = $shortcode;
-		}
-
-		protected function create_shortcodes() {
-			//echo("\Wprr\Core\PluginBase::create_shortcodes<br />");
-
-			//MENOTE: should be overridden
-		}
-
-		protected function register_shortcodes() {
-			//echo("\Wprr\Core\PluginBase::register_shortcodes<br />");
-
-			$this->_shortcodes = array();
-			$this->create_shortcodes();
-		}
-
-		protected function get_shortcodes() {
-			//echo("\Wprr\Core\PluginBase::get_shortcodes<br />");
-
-			if(!isset($this->_shortcodes)) {
-				$this->register_shortcodes();
-			}
-			return $this->_shortcodes;
-		}
-
-		protected function add_meta_box($system_name, $box, $post_type = 'post', $context = 'advanced', $priority = 'default') {
-			$new_registration = new \Wprr\Core\Admin\MetaData\PostMetaDataBoxRegistration();
-
-			$new_registration->setup($system_name, $box, $post_type, $context, $priority);
-
-			$this->_meta_boxes[] = $new_registration;
-		}
-
-		protected function create_meta_boxes() {
-			//echo("\Wprr\Core\PluginBase::create_meta_boxes<br />");
-
-			//MENOTE: should be overridden
-		}
-
-		protected function register_meta_boxes() {
-			//echo("\Wprr\Core\PluginBase::register_meta_boxes<br />");
-
-			$this->_meta_boxes = array();
-			$this->create_meta_boxes();
-		}
-
-		protected function get_meta_boxes() {
-			//echo("\Wprr\Core\PluginBase::get_meta_boxes<br />");
-
-			if(!isset($this->_meta_boxes)) {
-				$this->register_meta_boxes();
-			}
-			return $this->_meta_boxes;
-		}
-
 		public function add_javascript($id, $path) {
 			if(isset($this->javascript_files[$id])) {
 				//METODO: error message
@@ -299,32 +210,14 @@
 			add_action('admin_menu', array($this, 'hook_admin_menu'));
 			add_action('admin_enqueue_scripts', array($this, 'hook_admin_enqueue_scripts'));
 			add_action('rest_api_init', array($this, 'hook_rest_api_init'));
-			add_action('edit_form_after_title', array($this, 'hook_edit_form_after_title'));
-			add_action('edit_form_after_editor', array($this, 'hook_edit_form_after_editor'));
 			add_action('save_post', array($this, 'hook_save_post'), 10, 3);
-			add_action('add_meta_boxes', array($this, 'hook_add_meta_boxes'));
 			add_action('wp_enqueue_scripts', array($this, 'hook_wp_enqueue_scripts'));
-
-			$ajax_api_end_points = $this->get_ajax_api_end_points();
-			foreach($ajax_api_end_points as $current_end_point) {
-				$current_end_point->register_hooks();
-			}
-
-			$shortcodes = $this->get_shortcodes();
-			foreach($shortcodes as $shortcode) {
-				$shortcode->register();
-			}
-
-			$meta_boxes = $this->get_meta_boxes();
-			foreach($meta_boxes as $meta_box) {
-				$meta_box->register_save_hook();
-			}
-
+			
 			$filters = $this->get_filters();
 			foreach($filters as $filter) {
 				$filter->register();
 			}
-
+			
 			$additional_hooks = $this->get_additional_hooks();
 			foreach($additional_hooks as $additional_hook) {
 				$additional_hook->register();
@@ -337,14 +230,6 @@
 			$custom_post_types = $this->get_custom_post_types();
 			foreach($custom_post_types as $custom_post_type) {
 				$custom_post_type->register();
-			}
-		}
-
-		public function hook_add_meta_boxes() {
-
-			$meta_boxes = $this->get_meta_boxes();
-			foreach($meta_boxes as $meta_box) {
-				$meta_box->register();
 			}
 		}
 

@@ -2,7 +2,7 @@
 	namespace Wprr\RestApi\Admin;
 
 	use \WP_Query;
-	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\Core\RestApi\EndPoint as EndPoint;
 
 	// \Wprr\RestApi\Admin\CreatePostEndpoint
 	class CreatePostEndpoint extends EndPoint {
@@ -84,7 +84,7 @@
 		}
 
 		public static function test_import() {
-			echo("Imported \OddCore\RestApi\CreateEditPostEndpoint<br />");
+			echo("Imported \Core\RestApi\CreateEditPostEndpoint<br />");
 		}
 	}
 ?>

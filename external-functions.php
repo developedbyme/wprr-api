@@ -99,7 +99,7 @@
 	
 	
 	function wprr_ensure_wc_has_cart() {
-		\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
+		\Wprr\Core\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 	}
 	
 	function wprr_enqueue_admin_data($script_name) {

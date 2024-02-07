@@ -141,10 +141,10 @@
 					case 'slugPath':
 						if(isset($data["create"]) && $data["create"]) {
 							foreach($terms as $term) {
-								\Wprr\OddCore\Utils\TaxonomyFunctions::ensure_term($term, $data['taxonomy']);
+								\Wprr\Core\Utils\TaxonomyFunctions::ensure_term($term, $data['taxonomy']);
 							}
 						}
-						$terms = \Wprr\OddCore\Utils\TaxonomyFunctions::get_ids_from_terms(\Wprr\OddCore\Utils\TaxonomyFunctions::get_terms_by_slug_paths($terms, $data['taxonomy']));
+						$terms = \Wprr\Core\Utils\TaxonomyFunctions::get_ids_from_terms(\Wprr\Core\Utils\TaxonomyFunctions::get_terms_by_slug_paths($terms, $data['taxonomy']));
 				}
 			}
 			

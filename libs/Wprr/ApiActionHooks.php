@@ -203,7 +203,7 @@
 		
 		protected function ensure_wc_has_cart() {
 			wc_maybe_define_constant( 'WOOCOMMERCE_CART', true );
-			\Wprr\OddCore\Utils\WoocommerceFunctions::ensure_wc_has_cart();
+			\Wprr\Core\Utils\WoocommerceFunctions::ensure_wc_has_cart();
 		}
 		
 		public function hook_woocommerce_empty_cart($data, &$response_data) {

@@ -2,19 +2,19 @@
 	namespace Wprr\RestApi;
 
 	use \WP_Query;
-	use \Wprr\OddCore\RestApi\EndPoint as EndPoint;
+	use \Wprr\Core\RestApi\EndPoint as EndPoint;
 
 	// \Wprr\RestApi\ActionEndpoint
 	class ActionEndpoint extends EndPoint {
 
 		function __construct() {
-			// echo("\OddCore\RestApi\ActionEndpoint::__construct<br />");
+			// echo("\Core\RestApi\ActionEndpoint::__construct<br />");
 			
 			parent::__construct();
 		}
 
 		public function perform_call($data) {
-			// echo("\OddCore\RestApi\ActionEndpoint::perform_call<br />");
+			// echo("\Core\RestApi\ActionEndpoint::perform_call<br />");
 			
 			do_action(WPRR_DOMAIN.'/prepare_api_user', $data);
 			
@@ -46,6 +46,6 @@
 		}
 
 		public static function test_import() {
-			echo("Imported \OddCore\RestApi\ActionEndpoint<br />");
+			echo("Imported \Core\RestApi\ActionEndpoint<br />");
 		}
 	}

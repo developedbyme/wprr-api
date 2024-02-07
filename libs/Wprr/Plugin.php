@@ -1,7 +1,7 @@
 <?php
 	namespace Wprr;
 
-	use \Wprr\OddCore\PluginBase;
+	use \Wprr\Core\PluginBase;
 
 	class Plugin extends PluginBase {
 

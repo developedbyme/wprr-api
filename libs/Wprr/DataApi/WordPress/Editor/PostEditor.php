@@ -514,11 +514,11 @@
 		public function set_object_relation_field($field, $value) {
 			//var_dump('set_object_relation_field');
 			
-			if(true) {
+			if(!defined("SKIP_OBJECT_RELATION_META") || !SKIP_OBJECT_RELATION_META) {
 				$this->update_meta($field, $value);
 			}
 			
-			if(true) {
+			if(defined("WRITE_OBJECT_RELATION_TABLES") && WRITE_OBJECT_RELATION_TABLES) {
 				
 				global $wprr_data_api;
 			

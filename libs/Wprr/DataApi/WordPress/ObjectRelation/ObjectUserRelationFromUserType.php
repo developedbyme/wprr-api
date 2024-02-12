@@ -23,6 +23,56 @@
 			return $this;
 		}
 		
+		public function get_all_relations():array {
+			global $wprr_data_api;
+			
+			if(!isset($this->_relations)) {
+				
+				$wp = $wprr_data_api->wordpress();
+				
+				$this->_relations = array();
+				
+				if(defined("READ_OBJECT_RELATION_TABLES") && READ_OBJECT_RELATION_TABLES) {
+					
+					$user_id = $this->_user->get_id();
+					$sql = "SELECT ".DB_TABLE_PREFIX."dbm_object_user_relations.id as id, ".DB_TABLE_PREFIX."dbm_object_user_relations.postId as linkedId, ".DB_TABLE_PREFIX."dbm_object_user_relations.startAt as startAt, ".DB_TABLE_PREFIX."dbm_object_user_relations.endAt as endAt FROM ".DB_TABLE_PREFIX."dbm_object_user_relations INNER JOIN ".DB_TABLE_PREFIX."posts ON ".DB_TABLE_PREFIX."dbm_object_user_relations.id = ".DB_TABLE_PREFIX."posts.ID INNER JOIN ".DB_TABLE_PREFIX."dbm_object_relation_types ON ".DB_TABLE_PREFIX."dbm_object_user_relations.type = ".DB_TABLE_PREFIX."dbm_object_relation_types.id WHERE ".DB_TABLE_PREFIX."dbm_object_user_relations.toId = $user_id AND ".DB_TABLE_PREFIX."posts.post_status IN ('publish', 'private') AND ".DB_TABLE_PREFIX."dbm_object_relation_types.path = '".$this->get_type()."'";
+					$relations = $wprr_data_api->database()->query_without_storage($sql);
+					
+					foreach($relations as $relation_data) {
+						$relation_post = $wp->get_post($relation_data['id']);
+						$relation_post->set_parsed_meta('fromId', (int)$relation_data['linkedId']);
+						$relation_post->set_parsed_meta('toId', $user_id);
+						$relation_post->set_parsed_meta('startAt', (int)$relation_data['startAt']);
+						$relation_post->set_parsed_meta('endAt', (int)$relation_data['endAt']);
+						$this->add_relation($relation_post);
+					}
+					
+				}
+				else {
+				
+					$query = new \Wprr\DataApi\Data\Range\SelectQuery();
+				
+					$query->set_post_type('dbm_object_relation')->include_private();
+				
+					$query->term_query_by_path('dbm_type', 'object-user-relation/'.$this->get_type());
+				
+					$query->meta_query('toId', $this->_user->get_id());
+				
+					$ids = $query->get_ids_without_storage();
+				
+					$wp->load_meta_for_relations($ids);
+					
+					foreach($ids as $id) {
+						$post = $wp->get_post($id);
+						$this->add_relation($post);
+					}
+					
+				}
+			}
+			
+			return $this->_relations;
+		}
+		
 		public function add_relation($post) {
 			
 			$new_relation = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectUserRelation();
@@ -63,7 +113,7 @@
 		}
 		
 		public function get_relations($object_type, $time = -1) {
-			$selected_relations = $this->_relations;
+			$selected_relations = $this->get_all_relations();
 			if($object_type !== '*') {
 				$selected_relations = $this->filter_relations_by_object_type($selected_relations, $object_type);
 			}

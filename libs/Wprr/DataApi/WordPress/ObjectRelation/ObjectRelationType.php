@@ -36,8 +36,6 @@
 				
 				$this->_relations = array();
 				
-				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations (tables)');
-				
 				$field = 'toId';
 				$reverse_field = 'fromId';
 				if($this->_direction->get_identifier() === 'outgoing') {
@@ -45,55 +43,57 @@
 					$reverse_field = 'toId';
 				}
 				
-				
-				$post_id = $this->_direction->get_post()->get_id();
-				$sql = "SELECT ".DB_TABLE_PREFIX."dbm_object_relations.id as id, ".DB_TABLE_PREFIX."dbm_object_relations.$reverse_field as linkedId, ".DB_TABLE_PREFIX."dbm_object_relations.startAt as startAt, ".DB_TABLE_PREFIX."dbm_object_relations.endAt as endAt FROM ".DB_TABLE_PREFIX."dbm_object_relations INNER JOIN ".DB_TABLE_PREFIX."posts ON ".DB_TABLE_PREFIX."dbm_object_relations.id = ".DB_TABLE_PREFIX."posts.ID INNER JOIN ".DB_TABLE_PREFIX."dbm_object_relation_types ON ".DB_TABLE_PREFIX."dbm_object_relations.type = ".DB_TABLE_PREFIX."dbm_object_relation_types.id WHERE ".DB_TABLE_PREFIX."dbm_object_relations.$field = $post_id AND ".DB_TABLE_PREFIX."posts.post_status IN ('publish', 'private') AND ".DB_TABLE_PREFIX."dbm_object_relation_types.path = '".$this->get_type()."'";
-				$relations = $wprr_data_api->database()->query_without_storage($sql);
-				
-				foreach($relations as $relation_data) {
-					$relation_post = $wp->get_post($relation_data['id']);
-					$relation_post->set_parsed_meta($field, $post_id);
-					$relation_post->set_parsed_meta($reverse_field, (int)$relation_data['linkedId']);
-					$relation_post->set_parsed_meta('startAt', (int)$relation_data['startAt']);
-					$relation_post->set_parsed_meta('endAt', (int)$relation_data['endAt']);
-					$this->add_relation($relation_post);
+				if(defined("READ_OBJECT_RELATION_TABLES") && READ_OBJECT_RELATION_TABLES) {
+					$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations (tables)');
+					
+					$post_id = $this->_direction->get_post()->get_id();
+					$sql = "SELECT ".DB_TABLE_PREFIX."dbm_object_relations.id as id, ".DB_TABLE_PREFIX."dbm_object_relations.$reverse_field as linkedId, ".DB_TABLE_PREFIX."dbm_object_relations.startAt as startAt, ".DB_TABLE_PREFIX."dbm_object_relations.endAt as endAt FROM ".DB_TABLE_PREFIX."dbm_object_relations INNER JOIN ".DB_TABLE_PREFIX."posts ON ".DB_TABLE_PREFIX."dbm_object_relations.id = ".DB_TABLE_PREFIX."posts.ID INNER JOIN ".DB_TABLE_PREFIX."dbm_object_relation_types ON ".DB_TABLE_PREFIX."dbm_object_relations.type = ".DB_TABLE_PREFIX."dbm_object_relation_types.id WHERE ".DB_TABLE_PREFIX."dbm_object_relations.$field = $post_id AND ".DB_TABLE_PREFIX."posts.post_status IN ('publish', 'private') AND ".DB_TABLE_PREFIX."dbm_object_relation_types.path = '".$this->get_type()."'";
+					$relations = $wprr_data_api->database()->query_without_storage($sql);
+					
+					foreach($relations as $relation_data) {
+						$relation_post = $wp->get_post((int)$relation_data['id']);
+						$relation_post->set_parsed_meta($field, $post_id);
+						$relation_post->set_parsed_meta($reverse_field, (int)$relation_data['linkedId']);
+						$relation_post->set_parsed_meta('startAt', (int)$relation_data['startAt']);
+						$relation_post->set_parsed_meta('endAt', (int)$relation_data['endAt']);
+						$this->add_relation($relation_post);
+					}
+					
+					$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations (tables)');
 				}
+				else {
 				
+					$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations');
 				
-				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations (tables)');
+					$query = new \Wprr\DataApi\Data\Range\SelectQuery();
 				
-				/*
-				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations');
+					$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations get ids');
 				
-				$query = new \Wprr\DataApi\Data\Range\SelectQuery();
+					$query->set_post_type('dbm_object_relation')->include_private();
 				
-				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations get ids');
+					$query->term_query_by_path('dbm_type', 'object-relation/'.$this->get_type());
 				
-				$query->set_post_type('dbm_object_relation')->include_private();
+					$query->meta_query($field, $this->_direction->get_post()->get_id());
+					//$query->meta_query_join($field, $this->_post->get_id());
 				
-				$query->term_query_by_path('dbm_type', 'object-relation/'.$this->get_type());
+					$ids = $query->get_ids_without_storage();
 				
-				$query->meta_query($field, $this->_direction->get_post()->get_id());
-				//$query->meta_query_join($field, $this->_post->get_id());
+					$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations get ids');
+					$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations load meta');
 				
-				$ids = $query->get_ids_without_storage();
+					$wp->load_meta_for_relations($ids);
 				
-				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations get ids');
-				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations load meta');
+					$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations load meta');
 				
-				$wp->load_meta_for_relations($ids);
+					$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations setup relations');
+					foreach($ids as $id) {
+						$post = $wp->get_post($id);
+						$this->add_relation($post);
+					}
+					$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations setup relations');
 				
-				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations load meta');
-				
-				$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations setup relations');
-				foreach($ids as $id) {
-					$post = $wp->get_post($id);
-					$this->add_relation($post);
+					$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations');
 				}
-				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations setup relations');
-				
-				$wprr_data_api->performance()->stop_meassure('ObjectRelationType::get_all_relations');
-				*/
 			}
 			
 			return $this->_relations;

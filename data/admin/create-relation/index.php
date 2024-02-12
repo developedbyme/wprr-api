@@ -15,26 +15,21 @@
 			}
 			
 			$post_data = json_decode(file_get_contents('php://input'), true);
-			$from_id = $post_data['from'];
-			$to_id = $post_data['to'];
-			$type = $post_data['type'];
+			
+			//METODO: validate from, to, type
+			
+			$from_post = $wprr_data_api->wordpress()->get_post($post_data['from']);
+			$to_post = $wprr_data_api->wordpress()->get_post($post_data['to']);
 			
 			$wordpress_editor = $wprr_data_api->wordpress()->editor();
-			
-			$post = $wordpress_editor->create_post('dbm_object_relation', $from_id.' '.$type.' '.$to_id);
-			$editor = $post->editor();
-			$editor->add_term_by_path('dbm_type', 'object-relation');
-			$editor->add_term_by_path('dbm_type', 'object-relation/'.$type);
 			
 			$time = -1;
 			if(!isset($data['skipStart']) || !$data['skipStart']) {
 				$time = time();
 			}
 			
-			$editor->add_meta('fromId', $from_id);
-			$editor->add_meta('toId', $to_id);
-			$editor->add_meta('startAt', $time);
-			$editor->add_meta('endAt', -1);
+			$post = $wordpress_editor->create_relation($from_post, $to_post, $post_data['type'], $time);
+			$editor = $post->editor();
 			
 			if(isset($data['makePrivate']) && $data['makePrivate']) {
 				$editor->make_private('private');

@@ -68,6 +68,10 @@
 			return false;
 		}
 		
+		public function get_children() {
+			return $this->get_taxonomy()->get_children_of($this);
+		}
+		
 		public function get_ids() {
 			
 			if($this->_ids === null) {

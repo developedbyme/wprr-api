@@ -99,16 +99,17 @@
 			$this->start_session();
 			$wprr_data_api->performance()->count('Database::query_without_storage query');
 			
+			$is_ok = false;
 			$wprr_data_api->performance()->start_meassure('Database::query_without_storage query');
 			try {
-				$this->_db->query($query);
+				$is_ok = $this->_db->query($query);
 			}
 			catch(\Exception $exception) {
 				throw(new \Exception('SQL error: '.$exception->getMessage().' from query '.$query));
 			}
 			$wprr_data_api->performance()->stop_meassure('Database::query_without_storage query');
 			
-			return null;
+			return $is_ok;
 		}
 		
 		public function insert($query) {
@@ -148,6 +149,14 @@
 			$wprr_data_api->performance()->stop_meassure('Database::update query');
 			
 			return $result;
+		}
+		
+		public function get_single_field($table, $field, $where_field, $value) {
+			$sql = "SELECT $field FROM ".DB_TABLE_PREFIX.$table." WHERE $where_field = '".($this->escape($value))."'";
+			
+			$row = $this->query_first($sql);
+			
+			return $row[$field];
 		}
 		
 		public function end_session() {

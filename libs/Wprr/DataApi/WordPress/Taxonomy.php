@@ -164,6 +164,22 @@
 			
 			return $terms;
 		}
+		
+		public function get_children_of($parent_term) {
+			$return_array = array();
+			
+			$terms = $this->get_terms();
+			foreach($terms as $term) {
+				$parent = $term->get_parent();
+				if($parent) {
+					if($parent === $parent_term) {
+						$return_array[] = $term;
+					}
+				}
+			}
+			
+			return $return_array;
+		}
 
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\Taxonomy<br />");

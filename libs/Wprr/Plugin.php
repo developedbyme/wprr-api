@@ -465,6 +465,11 @@
 			$code .= wprr_get_data_api_registry_registration_code('action/example', json_encode($action_namespace.'Example::apply_action'));
 			$code .= wprr_get_data_api_registry_registration_code('action/privateFile', json_encode($action_namespace.'PrivateFile::apply_action'));
 			
+			$code .= wprr_get_data_api_registry_registration_code('action/setup/setupObjectRelationDatabases', json_encode($action_namespace.'Setup\SetupObjectRelationDatabases::apply_action'));
+			$code .= wprr_get_data_api_registry_registration_code('action/setup/copyObjectRelationTypesFromTerms', json_encode($action_namespace.'Setup\CopyObjectRelationTypesFromTerms::apply_action'));
+			$code .= wprr_get_data_api_registry_registration_code('action/setup/migrateObjectRelations', json_encode($action_namespace.'Setup\MigrateObjectRelations::apply_action'));
+			
+			
 			return $code;
 		}
 		

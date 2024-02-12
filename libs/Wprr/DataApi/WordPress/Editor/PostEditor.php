@@ -240,9 +240,7 @@
 		public function add_outgoing_relation_by_name($post, $name, $start_time = -1, $make_private = true) {
 			global $wprr_data_api;
 			
-			$term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term('object-relation/'.$name);
-			
-			$relation = $wprr_data_api->wordpress()->editor()->create_relation($this, $post, $term, $start_time);
+			$relation = $wprr_data_api->wordpress()->editor()->create_relation($this, $post, $name, $start_time);
 			
 			if($make_private) {
 				$relation->editor()->change_status('private');
@@ -270,9 +268,7 @@
 		public function add_incoming_relation_by_name($post, $name, $start_time = -1, $make_private = true) {
 			global $wprr_data_api;
 			
-			$term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term('object-relation/'.$name);
-			
-			$relation = $wprr_data_api->wordpress()->editor()->create_relation($post, $this, $term, $start_time);
+			$relation = $wprr_data_api->wordpress()->editor()->create_relation($post, $this, $name, $start_time);
 			
 			if($make_private) {
 				$relation->editor()->change_status('private');
@@ -511,6 +507,27 @@
 			$query = 'INSERT INTO '.DB_TABLE_PREFIX.'icl_translations '.$insert_statement;
 			
 			$id = $db->insert($query);
+			
+			return $this;
+		}
+		
+		public function set_object_relation_field($field, $value) {
+			//var_dump('set_object_relation_field');
+			
+			if(true) {
+				$this->update_meta($field, $value);
+			}
+			
+			if(true) {
+				
+				global $wprr_data_api;
+			
+				$db = $wprr_data_api->database();
+				
+				$query = 'UPDATE '.DB_TABLE_PREFIX.'dbm_object_relations SET '.$field.' = \''.$db->escape($value).'\' WHERE id = '.($this->post()->get_id());
+				
+				$result = $db->update($query);
+			}
 			
 			return $this;
 		}

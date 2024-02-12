@@ -245,9 +245,6 @@
 			if($make_private) {
 				$relation->editor()->change_status('private');
 				
-				$this->delete_meta('dbm/objectRelations/outgoing');
-				$post->editor()->delete_meta('dbm/objectRelations/incoming');
-				
 				$this->post()->clear_object_relation_cache();
 				$post->clear_object_relation_cache();
 			}
@@ -272,9 +269,6 @@
 			
 			if($make_private) {
 				$relation->editor()->change_status('private');
-				
-				$post->editor()->delete_meta('dbm/objectRelations/outgoing');
-				$this->delete_meta('dbm/objectRelations/incoming');
 				
 				$this->post()->clear_object_relation_cache();
 				$post->clear_object_relation_cache();
@@ -306,13 +300,11 @@
 			foreach($relations as $relation) {
 				$end_time = $relation->end_at;
 				if($end_time === -1 || $end_time >= $time) {
-					$relation->post()->editor()->update_meta('endAt', $time);
-					$relation->get_object()->editor()->delete_meta('dbm/objectRelations/outgoing');
+					$relation->post()->editor()->set_object_relation_field('endAt', $time);
 					$relation->get_object()->clear_object_relation_cache();
 				}
 			}
 			
-			$this->delete_meta('dbm/objectRelations/incoming');
 			$this->post()->clear_object_relation_cache();
 		}
 		
@@ -329,13 +321,11 @@
 			foreach($relations as $relation) {
 				$end_time = $relation->end_at;
 				if($end_time === -1 || $end_time >= $time) {
-					$relation->post()->editor()->update_meta('endAt', $time);
-					$relation->get_object()->editor()->delete_meta('dbm/objectRelations/incoming');
+					$relation->post()->editor()->set_object_relation_field('endAt', $time);
 					$relation->get_object()->clear_object_relation_cache();
 				}
 			}
 			
-			$this->delete_meta('dbm/objectRelations/outgoing');
 			$this->post()->clear_object_relation_cache();
 		}
 		
@@ -396,8 +386,7 @@
 			$relation = $this->get_incoming_relation_to_if_exists($post, $name);
 			
 			if($relation) {
-				$relation->post()->editor()->update_meta('endAt', $time);
-				$relation->get_object()->editor()->delete_meta('dbm/objectRelations/outgoing');
+				$relation->post()->editor()->set_object_relation_field('endAt', $time);
 				$relation->get_object()->clear_object_relation_cache();
 			}
 			
@@ -413,8 +402,7 @@
 			$relation = $this->get_outgoing_relation_to_if_exists($post, $name);
 			
 			if($relation) {
-				$relation->post()->editor()->update_meta('endAt', $time);
-				$relation->get_object()->editor()->delete_meta('dbm/objectRelations/incoming');
+				$relation->post()->editor()->set_object_relation_field('endAt', $time);
 				$relation->get_object()->clear_object_relation_cache();
 			}
 			

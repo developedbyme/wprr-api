@@ -4,20 +4,24 @@
 	// \Wprr\DataApi\WordPress\ObjectRelation\ObjectUserRelationFromUserType
 	class ObjectUserRelationFromUserType {
 		
-		protected $_user = null;
+		protected $_direction = null;
 		protected $_type = null;
-		protected $_relations = array();
+		protected $_relations = null;
 		
 		function __construct() {
 			
 		}
 		
 		public function get_user() {
-			return $this->_user;
+			return $this->_direction->get_user();
 		}
 		
-		public function setup($user, $type) {
-			$this->_user = $user;
+		public function get_type():string {
+			return $this->_type;
+		}
+		
+		public function setup($direction, $type) {
+			$this->_direction = $direction;
 			$this->_type = $type;
 			
 			return $this;
@@ -34,8 +38,9 @@
 				
 				if(defined("READ_OBJECT_RELATION_TABLES") && READ_OBJECT_RELATION_TABLES) {
 					
-					$user_id = $this->_user->get_id();
-					$sql = "SELECT ".DB_TABLE_PREFIX."dbm_object_user_relations.id as id, ".DB_TABLE_PREFIX."dbm_object_user_relations.postId as linkedId, ".DB_TABLE_PREFIX."dbm_object_user_relations.startAt as startAt, ".DB_TABLE_PREFIX."dbm_object_user_relations.endAt as endAt FROM ".DB_TABLE_PREFIX."dbm_object_user_relations INNER JOIN ".DB_TABLE_PREFIX."posts ON ".DB_TABLE_PREFIX."dbm_object_user_relations.id = ".DB_TABLE_PREFIX."posts.ID INNER JOIN ".DB_TABLE_PREFIX."dbm_object_relation_types ON ".DB_TABLE_PREFIX."dbm_object_user_relations.type = ".DB_TABLE_PREFIX."dbm_object_relation_types.id WHERE ".DB_TABLE_PREFIX."dbm_object_user_relations.toId = $user_id AND ".DB_TABLE_PREFIX."posts.post_status IN ('publish', 'private') AND ".DB_TABLE_PREFIX."dbm_object_relation_types.path = '".$this->get_type()."'";
+					$type = $this->get_type();
+					$user_id = $this->_direction->get_user()->get_id();
+					$sql = "SELECT ".DB_TABLE_PREFIX."dbm_object_user_relations.id as id, ".DB_TABLE_PREFIX."dbm_object_user_relations.postId as linkedId, ".DB_TABLE_PREFIX."dbm_object_user_relations.startAt as startAt, ".DB_TABLE_PREFIX."dbm_object_user_relations.endAt as endAt FROM ".DB_TABLE_PREFIX."dbm_object_user_relations INNER JOIN ".DB_TABLE_PREFIX."posts ON ".DB_TABLE_PREFIX."dbm_object_user_relations.id = ".DB_TABLE_PREFIX."posts.ID INNER JOIN ".DB_TABLE_PREFIX."dbm_object_relation_types ON ".DB_TABLE_PREFIX."dbm_object_user_relations.type = ".DB_TABLE_PREFIX."dbm_object_relation_types.id WHERE ".DB_TABLE_PREFIX."dbm_object_user_relations.userId = $user_id AND ".DB_TABLE_PREFIX."posts.post_status IN ('publish', 'private') AND ".DB_TABLE_PREFIX."dbm_object_relation_types.path = '".$this->get_type()."'";
 					$relations = $wprr_data_api->database()->query_without_storage($sql);
 					
 					foreach($relations as $relation_data) {
@@ -44,6 +49,7 @@
 						$relation_post->set_parsed_meta('toId', $user_id);
 						$relation_post->set_parsed_meta('startAt', (int)$relation_data['startAt']);
 						$relation_post->set_parsed_meta('endAt', (int)$relation_data['endAt']);
+						$relation_post->set_parsed_meta('type', $type);
 						$this->add_relation($relation_post);
 					}
 					
@@ -56,11 +62,11 @@
 				
 					$query->term_query_by_path('dbm_type', 'object-user-relation/'.$this->get_type());
 				
-					$query->meta_query('toId', $this->_user->get_id());
+					$query->meta_query('toId', $this->_direction->get_user()->get_id());
 				
 					$ids = $query->get_ids_without_storage();
 				
-					$wp->load_meta_for_relations($ids);
+					$wp->load_meta_for_user_relations($ids);
 					
 					foreach($ids as $id) {
 						$post = $wp->get_post($id);

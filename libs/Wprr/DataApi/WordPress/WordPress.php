@@ -91,14 +91,75 @@
 			if(!empty($ids_to_load)) {
 				global $wprr_data_api;
 				$db = $wprr_data_api->database();
-			
-				$query = 'SELECT post_id as id, meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key IN ("startAt", "endAt", "fromId", "toId") AND post_id IN ('.implode(',', $ids_to_load).')';
-				$meta_fields = $db->query_without_storage($query);
-			
-				foreach($meta_fields as $meta_field) {
-					$id = (int)$meta_field['id'];
+				
+				if(defined("READ_OBJECT_RELATION_TABLES") && READ_OBJECT_RELATION_TABLES) {
+					$relations_table = DB_TABLE_PREFIX."dbm_object_relations";
+					$types_table = DB_TABLE_PREFIX."dbm_object_relation_types";
+					$posts_table = DB_TABLE_PREFIX."posts";
+					$sql = "SELECT $relations_table.id as id, $relations_table.fromId as fromId, $relations_table.toId as toId, $relations_table.startAt as startAt, $relations_table.endAt as endAt, $types_table.path as type FROM $relations_table INNER JOIN $posts_table ON $relations_table.id = $posts_table.ID INNER JOIN $types_table ON $relations_table.type = $types_table.id WHERE $posts_table.post_status IN ('publish', 'private') AND $relations_table.id IN (".implode(',', $ids_to_load).")";
+					$relations = $wprr_data_api->database()->query_without_storage($sql);
 					
-					$this->get_post($id)->set_parsed_meta($meta_field['meta_key'], (int)$meta_field['meta_value']);
+					foreach($relations as $relation_data) {
+						$relation_post = $this->get_post((int)$relation_data['id']);
+						$relation_post->set_parsed_meta('fromId', (int)$relation_data['fromId']);
+						$relation_post->set_parsed_meta('toId', (int)$relation_data['toId']);
+						$relation_post->set_parsed_meta('startAt', (int)$relation_data['startAt']);
+						$relation_post->set_parsed_meta('endAt', (int)$relation_data['endAt']);
+						$relation_post->set_parsed_meta('type', $relation_data['type']);
+					}
+				}
+				else {
+					$query = 'SELECT post_id as id, meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key IN ("startAt", "endAt", "fromId", "toId") AND post_id IN ('.implode(',', $ids_to_load).')';
+					$meta_fields = $db->query_without_storage($query);
+			
+					foreach($meta_fields as $meta_field) {
+						$id = (int)$meta_field['id'];
+					
+						$this->get_post($id)->set_parsed_meta($meta_field['meta_key'], (int)$meta_field['meta_value']);
+					}
+				}
+			}
+		}
+		
+		public function load_meta_for_user_relations($ids) {
+			$ids_to_load = array();
+			
+			foreach($ids as $id) {
+				$post = $this->get_post($id);
+				if(!$post->has_parsed_meta('startAt')) {
+					$ids_to_load[] = (int)$id;
+				}
+			}
+			
+			if(!empty($ids_to_load)) {
+				global $wprr_data_api;
+				$db = $wprr_data_api->database();
+				
+				if(defined("READ_OBJECT_RELATION_TABLES") && READ_OBJECT_RELATION_TABLES) {
+					$relations_table = DB_TABLE_PREFIX."dbm_object_user_relations";
+					$types_table = DB_TABLE_PREFIX."dbm_object_relation_types";
+					$posts_table = DB_TABLE_PREFIX."posts";
+					$sql = "SELECT $relations_table.id as id, $relations_table.postId as fromId, $relations_table.userId as toId, $relations_table.startAt as startAt, $relations_table.endAt as endAt, $types_table.path as type FROM $relations_table INNER JOIN $posts_table ON $relations_table.id = $posts_table.ID INNER JOIN $types_table ON $relations_table.type = $types_table.id WHERE $posts_table.post_status IN ('publish', 'private') AND $relations_table.id IN (".implode(',', $ids_to_load).")";
+					$relations = $wprr_data_api->database()->query_without_storage($sql);
+					
+					foreach($relations as $relation_data) {
+						$relation_post = $this->get_post((int)$relation_data['id']);
+						$relation_post->set_parsed_meta('fromId', (int)$relation_data['fromId']);
+						$relation_post->set_parsed_meta('toId', (int)$relation_data['toId']);
+						$relation_post->set_parsed_meta('startAt', (int)$relation_data['startAt']);
+						$relation_post->set_parsed_meta('endAt', (int)$relation_data['endAt']);
+						$relation_post->set_parsed_meta('type', $relation_data['type']);
+					}
+				}
+				else {
+					$query = 'SELECT post_id as id, meta_key, meta_value FROM '.DB_TABLE_PREFIX.'postmeta WHERE meta_key IN ("startAt", "endAt", "fromId", "toId") AND post_id IN ('.implode(',', $ids_to_load).')';
+					$meta_fields = $db->query_without_storage($query);
+			
+					foreach($meta_fields as $meta_field) {
+						$id = (int)$meta_field['id'];
+					
+						$this->get_post($id)->set_parsed_meta($meta_field['meta_key'], (int)$meta_field['meta_value']);
+					}
 				}
 			}
 		}

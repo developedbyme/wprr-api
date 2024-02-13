@@ -29,16 +29,25 @@
 					}
 					
 					$current_items = $wp->get_users($new_ids);
-					
-					//METODO: go on from user
-					return $current_items;
 				}
 				else {
 					$object_type = $path_part_data[2];
 					$time = isset($path_part_data[3]) ? (($path_part_data[3] === "*") ? false : 1*$path_part_data[3]) : time();
 					
 					foreach($current_items as $current_item) {
-						$direction = ($direction_type === "in") ? $current_item->get_incoming_direction() : $current_item->get_outgoing_direction();
+						$direction = null;
+						if($direction_type === "in") {
+							$direction = $current_item->get_incoming_direction();
+						}
+						else if($direction_type === "out") {
+							$direction = $current_item->get_outgoing_direction();
+						}
+						else if($direction_type === "fromUser") {
+							$direction = $current_item->get_post_relations();
+						}
+						else {
+							throw(new \Exception('Unknown direction '.$direction_type));
+						}
 						$current_ids = $direction->get_type($type)->get_object_ids($object_type, $time);
 					
 						$new_ids = array_merge($new_ids, $current_ids);

@@ -350,6 +350,7 @@
 				'byObjectType' => 'ByObjectType',
 				'byTrigger' => 'ByTrigger',
 				'byDateMeta' => 'ByDateMeta',
+				'myObjectRelation' => 'MyObjectRelation'
 			);
 			
 			foreach($selections as $id => $class_name) {
@@ -468,6 +469,7 @@
 			$code .= wprr_get_data_api_registry_registration_code('action/setup/setupObjectRelationDatabases', json_encode($action_namespace.'Setup\SetupObjectRelationDatabases::apply_action'));
 			$code .= wprr_get_data_api_registry_registration_code('action/setup/copyObjectRelationTypesFromTerms', json_encode($action_namespace.'Setup\CopyObjectRelationTypesFromTerms::apply_action'));
 			$code .= wprr_get_data_api_registry_registration_code('action/setup/migrateObjectRelations', json_encode($action_namespace.'Setup\MigrateObjectRelations::apply_action'));
+			$code .= wprr_get_data_api_registry_registration_code('action/setup/migrateObjectUserRelations', json_encode($action_namespace.'Setup\MigrateObjectUserRelations::apply_action'));
 			
 			
 			return $code;

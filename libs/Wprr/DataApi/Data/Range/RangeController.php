@@ -290,6 +290,28 @@
 			return $id;
 		}
 		
+		public function encode_virtual_term($taxonomy_name, $path, $slug, $name = null) {
+			
+			$encoded_data = $this->get_encoded_data();
+			
+			$id = $taxonomy_name.':'.$path;
+			
+			$encoded_item = $encoded_data->get_item($id);
+			
+			if(!$encoded_data->has_encoded_object($id, 'taxonomyTerm')) {
+				if(!$name) {
+					$name = $slug;
+				}
+				
+				$encoded_item->data['slug'] = $slug;
+				$encoded_item->data['name'] = $name;
+				$encoded_item->data['path'] = $path;
+				$encoded_data->add_object_to_range($id, 'taxonomyTerm');
+			}
+			
+			return $id;
+		}
+		
 		public function encode_user($user) {
 			
 			$id = $user->get_id();

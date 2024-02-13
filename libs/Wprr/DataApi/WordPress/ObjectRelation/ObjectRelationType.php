@@ -46,8 +46,12 @@
 				if(defined("READ_OBJECT_RELATION_TABLES") && READ_OBJECT_RELATION_TABLES) {
 					$wprr_data_api->performance()->start_meassure('ObjectRelationType::get_all_relations (tables)');
 					
+					$type = $this->get_type();
 					$post_id = $this->_direction->get_post()->get_id();
-					$sql = "SELECT ".DB_TABLE_PREFIX."dbm_object_relations.id as id, ".DB_TABLE_PREFIX."dbm_object_relations.$reverse_field as linkedId, ".DB_TABLE_PREFIX."dbm_object_relations.startAt as startAt, ".DB_TABLE_PREFIX."dbm_object_relations.endAt as endAt FROM ".DB_TABLE_PREFIX."dbm_object_relations INNER JOIN ".DB_TABLE_PREFIX."posts ON ".DB_TABLE_PREFIX."dbm_object_relations.id = ".DB_TABLE_PREFIX."posts.ID INNER JOIN ".DB_TABLE_PREFIX."dbm_object_relation_types ON ".DB_TABLE_PREFIX."dbm_object_relations.type = ".DB_TABLE_PREFIX."dbm_object_relation_types.id WHERE ".DB_TABLE_PREFIX."dbm_object_relations.$field = $post_id AND ".DB_TABLE_PREFIX."posts.post_status IN ('publish', 'private') AND ".DB_TABLE_PREFIX."dbm_object_relation_types.path = '".$this->get_type()."'";
+					$relations_table = DB_TABLE_PREFIX."dbm_object_relations";
+					$types_table = DB_TABLE_PREFIX."dbm_object_relation_types";
+					$posts_table = DB_TABLE_PREFIX."posts";
+					$sql = "SELECT $relations_table.id as id, $relations_table.$reverse_field as linkedId, $relations_table.startAt as startAt, $relations_table.endAt as endAt FROM $relations_table INNER JOIN $posts_table ON $relations_table.id = $posts_table.ID INNER JOIN $types_table ON $relations_table.type = $types_table.id WHERE $relations_table.$field = $post_id AND $posts_table.post_status IN ('publish', 'private') AND $types_table.path = '$type'";
 					$relations = $wprr_data_api->database()->query_without_storage($sql);
 					
 					foreach($relations as $relation_data) {
@@ -56,6 +60,7 @@
 						$relation_post->set_parsed_meta($reverse_field, (int)$relation_data['linkedId']);
 						$relation_post->set_parsed_meta('startAt', (int)$relation_data['startAt']);
 						$relation_post->set_parsed_meta('endAt', (int)$relation_data['endAt']);
+						$relation_post->set_parsed_meta('type', $type);
 						$this->add_relation($relation_post);
 					}
 					

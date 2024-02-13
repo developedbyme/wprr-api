@@ -13,6 +13,10 @@
 			
 		}
 		
+		public function get_user() {
+			return $this->_user;
+		}
+		
 		public function setup($user) {
 			$this->_user = $user;
 			

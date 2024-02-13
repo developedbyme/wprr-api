@@ -19,6 +19,10 @@
 			return $this;
 		}
 		
+		public function get_post() {
+			return $this->_post;
+		}
+		
 		protected function ensure_type($type) {
 			if(!isset($this->_types[$type])) {
 				$new_type = new \Wprr\DataApi\WordPress\ObjectRelation\ObjectUserRelationFromObjectType();

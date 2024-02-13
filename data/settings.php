@@ -1,8 +1,5 @@
 <?php
-	global $wprr_data_api;
-	if(!$wprr_data_api) {
-		$wprr_data_api = new Wprr\DataApi\DataApiController();
-	}
+	require_once(WPRR_DIR.'/data/settings-base.php');
 	
 	register_shutdown_function(function() {
 		$error = error_get_last();

@@ -5,7 +5,7 @@
 	}
 	
 	define('READ_OBJECT_RELATION_TABLES', false);
-	define('WRITE_OBJECT_RELATION_TABLES', false);
+	define('WRITE_OBJECT_RELATION_TABLES', true);
 	define('SKIP_OBJECT_RELATION_META', false);
 	
 ?>

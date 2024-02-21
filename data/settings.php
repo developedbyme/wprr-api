@@ -4,6 +4,11 @@
 		$wprr_data_api = new Wprr\DataApi\DataApiController();
 	}
 	
+	function wprr_get_data_api() {
+		global $wprr_data_api;
+		return $wprr_data_api;
+	}
+	
 	register_shutdown_function(function() {
 		$error = error_get_last();
 		

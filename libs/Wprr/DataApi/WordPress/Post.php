@@ -144,6 +144,10 @@
 			return $this->get_data('post_content');
 		}
 		
+		public function get_status() {
+			return $this->get_data('post_status');
+		}
+		
 		public function get_data($field) {
 			$data = &$this->get_database_data();
 			

@@ -442,7 +442,8 @@
 				'communication/transactionalEmail' => 'Communication/TransactionalEmail',
 				'communication/content' => 'Communication/CommunicationContent',
 				'communication/title' => 'Communication/CommunicationTitle',
-				'formSubmission' => 'FormSubmission'
+				'formSubmission' => 'FormSubmission',
+				'name' => 'Name'
 			);
 			
 			foreach($encodings as $id => $class_name) {

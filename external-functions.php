@@ -153,15 +153,15 @@
 	}
 	
 	function wprr_get_data_api_select_registration_code($type, $file_path, $class_path) {
-		return '$range_controller->register_selection("'.$type.'", "'.$file_path.'", "'.$class_path.'");';
+		return '$range_controller->register_selection("'.$type.'", "'.str_replace('\\', '/', $file_path).'", "'.$class_path.'");';
 	}
 	
 	function wprr_get_data_api_encode_registration_code($type, $file_path, $class_path) {
-		return '$range_controller->register_encoding(\''.$type.'\', \''.$file_path.'\', \''.$class_path.'\');';
+		return '$range_controller->register_encoding(\''.$type.'\', \''.str_replace('\\', '/', $file_path).'\', \''.$class_path.'\');';
 	}
 	
 	function wprr_get_data_api_data_function_registration_code($type, $file_path, $class_path) {
-		return '$range_controller->register_data_function(\''.$type.'\', \''.$file_path.'\', \''.$class_path.'\');';
+		return '$range_controller->register_data_function(\''.$type.'\', \''.str_replace('\\', '/', $file_path).'\', \''.$class_path.'\');';
 	}
 	
 	function wprr_get_data_api_registry_registration_code($id, $value) {
@@ -169,7 +169,7 @@
 	}
 	
 	function wprr_get_data_api_auto_loader_registration_code($namespace, $directory) {
-		return '$wprr_data_api->auto_loader()->add_auto_loader(\''.$namespace.'\', \''.$directory.'\');';
+		return '$wprr_data_api->auto_loader()->add_auto_loader(\''.$namespace.'\', \''.str_replace('\\', '/', $directory).'\');';
 	}
 	
 	function wprr_get_data_api() {

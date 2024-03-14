@@ -11,6 +11,7 @@
 		protected $_trusted_roles = array();
 		protected $_woocommerce = null;
 		protected $_editor = null;
+		protected $_front_page_id = 0;
 
 		function __construct() {
 			$this->add_trusted_role('administrator');
@@ -304,15 +305,18 @@
 		}
 		
 		public function get_front_page_id() {
-			global $wprr_data_api;
-			$db = $wprr_data_api->database();
 			
-			$result = $db->query_first('SELECT option_value as id FROM '.DB_TABLE_PREFIX.'options WHERE option_name = "page_on_front"');
-			if($result) {
-				return (int)$result['id'];
+			if(!$this->_front_page_id) {
+				global $wprr_data_api;
+				$db = $wprr_data_api->database();
+			
+				$result = $db->query_first('SELECT option_value as id FROM '.DB_TABLE_PREFIX.'options WHERE option_name = "page_on_front"');
+				if($result) {
+					$this->_front_page_id = (int)$result['id'];
+				}
 			}
 			
-			return 0;
+			return $this->_front_page_id;
 		}
 		
 		public function is_user_trusted($user) {

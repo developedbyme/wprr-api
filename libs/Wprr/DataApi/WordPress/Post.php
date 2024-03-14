@@ -345,6 +345,12 @@
 			if($parent) {
 				$parent_path = $parent->get_link();
 			}
+			else {
+				global $wprr_data_api;
+				if($wprr_data_api->wordpress()->get_front_page_id() === $this->get_id()) {
+					return '/';
+				}
+			}
 			
 			return $parent_path.$this->get_slug().'/';
 		}

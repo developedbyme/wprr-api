@@ -16,13 +16,14 @@
 			$post = $wprr_data_api->wordpress()->get_post($id);
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
-			$wprr_data_api->range()->encode_object_as($related_post->get_id(), 'value');
-			$wprr_data_api->range()->encode_object_as($related_post->get_id(), 'value/translations');
+			$wprr_data_api->range()->encode_object_as($post->get_id(), 'value');
+			$wprr_data_api->range()->encode_object_as($post->get_id(), 'value/translations');
 			
 			$related_post = $post->single_object_relation_query('out:by:*');
 			$encoded_data->data['by'] = $related_post ? $wprr_data_api->range()->encode_object_as($related_post->get_id(), 'postTranslation/translations') : 0;
 			if($related_post) {
-				$wprr_data_api->range()->encode_object_as($related_post->get_id(), 'preview');
+				$wprr_data_api->range()->encode_object_as($related_post->get_id(), 'permalink');
+				$wprr_data_api->range()->encode_object_as($related_post->get_id(), 'postTitle');
 			}
 			
 			$related_post = $post->single_object_relation_query('out:of:*');

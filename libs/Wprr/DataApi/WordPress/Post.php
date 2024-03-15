@@ -348,7 +348,7 @@
 			else {
 				global $wprr_data_api;
 				if($wprr_data_api->wordpress()->get_front_page_id() === $this->get_id()) {
-					return '/';
+					return '';
 				}
 			}
 			

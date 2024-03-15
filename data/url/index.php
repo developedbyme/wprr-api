@@ -39,7 +39,13 @@
 		
 		if($post_id) {
 			$result['pageType'] = "page";
-			$result['language'] = $wprr_data_api->wordpress()->get_language_by_path($path);
+			
+			$language = $wprr_data_api->wordpress()->get_language_by_path($path);
+			if(!$language) {
+				$language = $wprr_data_api->wordpress()->get_post($post_id)->get_meta('language');
+			}
+			
+			$result['language'] = $language;
 			$result['posts'] = $wprr_data_api->range()->encode_range(array($post_id), 'page,pageTemplate', $data);
 		}
 		

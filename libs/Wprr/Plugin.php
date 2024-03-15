@@ -686,7 +686,11 @@
 				'communication/content' => 'Communication/CommunicationContent',
 				'communication/title' => 'Communication/CommunicationTitle',
 				'formSubmission' => 'FormSubmission',
-				'name' => 'Name'
+				'name' => 'Name',
+				'postTranslation' => 'PostTranslation/PostTranslation',
+				'postTranslation/language' => 'PostTranslation/Language',
+				'postTranslation/translations' => 'PostTranslation/Translations',
+				'postTranslation/translationsGroup' => 'PostTranslation/TranslationsGroup',
 			);
 			
 			foreach($encodings as $id => $class_name) {

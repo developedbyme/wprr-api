@@ -21,6 +21,7 @@
 			
 			$encoded_data->data['posts'] = $wprr_data_api->range()->encode_objects_as($related_ids, 'postTranslation/language');
 			$wprr_data_api->range()->encode_objects_as($related_ids, 'postTranslation/translations');
+			$wprr_data_api->range()->encode_objects_as($related_ids, 'permalink');
 			
 			$related_post = $post->single_object_relation_query('out:of:*');
 			$encoded_data->data['of'] = $related_post ? $wprr_data_api->range()->encode_object_as($related_post->get_id(), 'postTranslation/language') : 0;

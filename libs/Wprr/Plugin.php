@@ -691,6 +691,8 @@
 				'postTranslation/language' => 'PostTranslation/Language',
 				'postTranslation/translations' => 'PostTranslation/Translations',
 				'postTranslation/translationsGroup' => 'PostTranslation/TranslationsGroup',
+				'representation' => 'Representation/Representation',
+				'representation/representations' => 'Representation/Representations',
 			);
 			
 			foreach($encodings as $id => $class_name) {

@@ -43,6 +43,9 @@
 			$language = $wprr_data_api->wordpress()->get_language_by_path($path);
 			if(!$language) {
 				$language = $wprr_data_api->wordpress()->get_post($post_id)->get_meta('language');
+				if(!$language && defined('SITE_LANGUAGE')) {
+					$language = explode('_', SITE_LANGUAGE)[0];
+				}
 			}
 			
 			$result['language'] = $language;

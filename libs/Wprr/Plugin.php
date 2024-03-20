@@ -544,6 +544,7 @@
 			
 			$code .= $this->define_varaible_code('LANGUAGE_BASE_URLS', $array_code, '');
 			$code .= $this->define_varaible_code('DEFAULT_LANGUAGE', $default_language, '\'');
+			$code .= $this->define_varaible_code('SITE_LANGUAGE', get_locale(), '\'');
 			
 			return $code;
 		}

@@ -241,8 +241,6 @@
 			
 			$previous_status = $this->post()->get_status();
 			
-			var_dump($previous_status);
-			
 			if($previous_status !== 'trash') {
 				
 				$post_name = $this->post()->get_data('post_name');

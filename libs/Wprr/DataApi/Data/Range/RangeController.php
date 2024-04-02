@@ -123,7 +123,7 @@
 			$debug_counter = 0;
 			while(!empty($this->_queued_encodings)) {
 				if($debug_counter++ > 10000) {
-					throw(new \Exception('Encoding nhas been queued for too long'));
+					throw(new \Exception('Encoding has been queued for too long'));
 					break;
 				}
 				
@@ -144,6 +144,24 @@
 			$encoded_data = $this->get_encoded_data();
 			$return_data = $encoded_data->get_result();
 			$return_data['ids'] = $ids;
+			
+			return $return_data; 
+		}
+		
+		public function encode_user_range($ids, $data) {
+			
+			global $wprr_data_api;
+			
+			$encoded_ids = array();
+			
+			foreach($ids as $id) {
+				$this->encode_user($wprr_data_api->wordpress()->get_user($id));
+				$encoded_ids[] = 'user'.$id;
+			}
+			
+			$encoded_data = $this->get_encoded_data();
+			$return_data = $encoded_data->get_result();
+			$return_data['ids'] = $encoded_ids;
 			
 			return $return_data; 
 		}

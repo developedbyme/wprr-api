@@ -195,6 +195,20 @@
 			return $return_array;
 		}
 		
+		public function get_user_by_email($email) {
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$query = 'SELECT ID as id FROM '.DB_TABLE_PREFIX.'users WHERE user_email = "'.$db->escape($email).'" LIMIT 1';
+			$user_data = $db->query_first($query);
+			
+			if($user_data) {
+				return $this->get_user($user_data['id']);
+			}
+			
+			return null;
+		}
+		
 		public function get_fields_structure($type) {
 			if(!isset($this->_fields_structures[$type])) {
 				$new_fields_structure = new \Wprr\DataApi\WordPress\Field\FieldsStructure();

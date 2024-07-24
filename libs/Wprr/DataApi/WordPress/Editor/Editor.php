@@ -221,6 +221,82 @@
 			return $action;
 		}
 		
+		public function create_term($slug, $taxonomy) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$slug_parts = explode('/', $slug);
+			
+			$parent_id = 0;
+			foreach($slug_parts as $slug_part) {
+				$escaped_part = $db->escape($slug_part);
+				$query = 'SELECT '.DB_TABLE_PREFIX.'term_taxonomy.term_taxonomy_id as id, '.DB_TABLE_PREFIX.'term_taxonomy.term_id as termId FROM '.DB_TABLE_PREFIX.'term_taxonomy INNER JOIN '.DB_TABLE_PREFIX.'terms WHERE '.DB_TABLE_PREFIX.'term_taxonomy.taxonomy = "'.$taxonomy.'" AND '.DB_TABLE_PREFIX.'term_taxonomy.parent = '.$parent_id.' AND '.DB_TABLE_PREFIX.'terms.slug = "'.$escaped_part.'";';
+				
+				$result = $db->query_first($query);
+				if(!$result) {
+					$sql = 'INSERT INTO '.DB_TABLE_PREFIX.'terms (name, slug) VALUES ("'.$escaped_part.'", "'.$escaped_part.'")';
+					
+					$new_term_id = $db->insert($sql);
+					
+					$sql = 'INSERT INTO '.DB_TABLE_PREFIX.'term_taxonomy (term_id, taxonomy, description, parent) VALUES ('.$new_term_id.', "'.$taxonomy.'", "", '.$parent_id.')';
+					$new_id = $db->insert($sql);
+					
+					$parent_id = $new_id;
+				}
+				else {
+					$parent_id = $result['id'];
+				}
+			}
+			
+			return $parent_id;
+		}
+		
+		public function create_object_relation_type($path) {
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			if(!defined("SKIP_OBJECT_RELATION_META") || !SKIP_OBJECT_RELATION_META) {
+				$this->create_term('object-relation/'.$path, 'dbm_type');
+			}
+			
+			if(defined("WRITE_OBJECT_RELATION_TABLES") && WRITE_OBJECT_RELATION_TABLES) {
+				$escaped_path = $db->escape($path);
+				
+				$sql = 'INSERT IGNORE INTO '.DB_TABLE_PREFIX."dbm_object_relation_types (path) VALUES ('".$escaped_path."');";
+				$db->query_operation($sql);
+			}
+		}
+		
+		public function create_object_relation_types(...$paths) {
+			foreach($paths as $path) {
+				$this->create_object_relation_type($path);
+			}
+		}
+		
+		public function create_object_user_relation_type($path) {
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			if(!defined("SKIP_OBJECT_RELATION_META") || !SKIP_OBJECT_RELATION_META) {
+				$this->create_term('object-user-relation/'.$path, 'dbm_type');
+			}
+			
+			if(defined("WRITE_OBJECT_RELATION_TABLES") && WRITE_OBJECT_RELATION_TABLES) {
+				$escaped_path = $db->escape($path);
+			
+				$sql = 'INSERT IGNORE INTO '.DB_TABLE_PREFIX."dbm_object_relation_types (path) VALUES ('".$escaped_path."');";
+				$db->query_operation($sql);
+			}
+		}
+		
+		public function create_object_user_relation_types(...$paths) {
+			foreach($paths as $path) {
+				$this->create_object_user_relation_type($path);
+			}
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress\Editor<br />");
 		}

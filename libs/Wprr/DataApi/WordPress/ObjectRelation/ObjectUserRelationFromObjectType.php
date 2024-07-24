@@ -17,7 +17,7 @@
 		}
 		
 		public function setup($user, $type) {
-			$this->_user = $user;
+			$this->_user = $user; //METODO: this is not a user
 			$this->_type = $type;
 			
 			return $this;

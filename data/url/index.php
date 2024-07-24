@@ -23,7 +23,7 @@
 		
 		if(isset($site_url['path'])) {
 			$site_path = trim($site_url['path'], "/");
-			if(strpos($site_path, $path) === 0) {
+			if(strpos($path, $site_path) === 0) {
 				$path = trim(substr($path, strlen($site_path)), "/");
 			}
 			else {

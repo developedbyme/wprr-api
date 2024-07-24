@@ -11,7 +11,7 @@
 			$user = $wprr_data_api->user()->get_user_for_call($_GET);
 			$is_ok = $user->is_trusted();
 			if(!$is_ok) {
-				throw(new \Exception('User '.$as_user.' is not allowed to use admin function'));
+				throw(new \Exception('User '.$user->get_id().' is not allowed to use admin function'));
 			}
 			
 			$post_data = json_decode(file_get_contents('php://input'), true);

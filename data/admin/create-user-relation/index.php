@@ -18,8 +18,8 @@
 			
 			//METODO: validate from, to, type
 			
-			$from_post = $wprr_data_api->wordpress()->get_post($post_data['from']);
-			$to_post = $wprr_data_api->wordpress()->get_post($post_data['to']);
+			$to_user = $wprr_data_api->wordpress()->get_post($post_data['user']);
+			$from_object = $wprr_data_api->wordpress()->get_post($post_data['object']);
 			
 			$wordpress_editor = $wprr_data_api->wordpress()->editor();
 			
@@ -28,7 +28,7 @@
 				$time = time();
 			}
 			
-			$post = $wordpress_editor->create_relation($from_post, $to_post, $post_data['type'], $time);
+			$post = $wordpress_editor->create_user_relation($from_object, $to_user, $post_data['type'], $time);
 			$editor = $post->editor();
 			
 			if(isset($data['makePrivate']) && $data['makePrivate']) {

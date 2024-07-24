@@ -258,6 +258,44 @@
 			return $post;
 		}
 		
+		public function add_action_to_process($type, $from_ids = null, $data = null, $time = null) {
+			$action_type = $this->get_or_create_type('type/action-type', $type);
+		
+			$action = $this->create_post('dbm_data', 'Action: '.$type);
+			
+			$action->editor()->add_term_by_path('dbm_type', 'action');
+			
+			if($data) {
+				$action->editor()->add_term_by_path('dbm_type', 'value-item');
+				$action->editor()->add_meta('value', $data);
+			}
+		
+			if($from_ids) {
+				if(!is_array($from_ids)) {
+					$from_ids = array($from_ids);
+				}
+			
+				foreach($from_ids as $from_id) {
+					$action->editor()->add_outgoing_relation_by_name(wprr_get_data_api()->wordpress()->get_post($from_id), 'from');
+				}
+			}
+			
+			$action->editor()->add_incoming_relation_by_name($action_type, 'for');
+			
+			$action->editor()->make_private();
+		
+			$action->editor()->add_meta('needsToProcess', true);
+			$status = $this->get_or_create_type('type/action-status', 'readyToProcess');
+		
+			if(!$time) {
+				$time = time();
+			}
+		
+			$action->editor()->add_incoming_relation_by_name($status, 'for', $time);
+			
+			return $action;
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\WordPress\Editor<br />");
 		}

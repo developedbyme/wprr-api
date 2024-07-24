@@ -144,6 +144,10 @@
 			return $this->get_data('post_content');
 		}
 		
+		public function get_status() {
+			return $this->get_data('post_status');
+		}
+		
 		public function get_data($field) {
 			$data = &$this->get_database_data();
 			
@@ -340,6 +344,12 @@
 			$parent = $this->get_parent();
 			if($parent) {
 				$parent_path = $parent->get_link();
+			}
+			else {
+				global $wprr_data_api;
+				if($wprr_data_api->wordpress()->get_front_page_id() === $this->get_id()) {
+					return '';
+				}
 			}
 			
 			return $parent_path.$this->get_slug().'/';

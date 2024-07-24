@@ -237,6 +237,29 @@
 			return $this->change_status('private');
 		}
 		
+		public function trash() {
+			
+			$previous_status = $this->post()->get_status();
+			
+			if($previous_status !== 'trash') {
+				
+				$post_name = $this->post()->get_data('post_name');
+				
+				if($post_name !== '' && !str_ends_with($post_name, '__trashed')) {
+					$this->update_meta('_wp_desired_post_slug', $post_name);
+					$post_name = $post_name.'__trashed';
+					$this->update_field('post_name', $post_name);
+				}
+				
+				$this->update_meta('_wp_trash_meta_status', $previous_status );
+				$this->update_meta('_wp_trash_meta_time', time());
+				$this->change_status('trash');
+			}
+			
+			
+			return $this;
+		}
+		
 		public function add_outgoing_relation_by_name($post, $name, $start_time = -1, $make_private = true) {
 			global $wprr_data_api;
 			

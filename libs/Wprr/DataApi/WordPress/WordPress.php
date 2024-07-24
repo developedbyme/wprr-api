@@ -11,6 +11,7 @@
 		protected $_trusted_roles = array();
 		protected $_woocommerce = null;
 		protected $_editor = null;
+		protected $_front_page_id = 0;
 
 		function __construct() {
 			$this->add_trusted_role('administrator');
@@ -255,6 +256,20 @@
 			return $return_array;
 		}
 		
+		public function get_user_by_email($email) {
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$query = 'SELECT ID as id FROM '.DB_TABLE_PREFIX.'users WHERE user_email = "'.$db->escape($email).'" LIMIT 1';
+			$user_data = $db->query_first($query);
+			
+			if($user_data) {
+				return $this->get_user($user_data['id']);
+			}
+			
+			return null;
+		}
+		
 		public function get_fields_structure($type) {
 			if(!isset($this->_fields_structures[$type])) {
 				$new_fields_structure = new \Wprr\DataApi\WordPress\Field\FieldsStructure();
@@ -365,15 +380,18 @@
 		}
 		
 		public function get_front_page_id() {
-			global $wprr_data_api;
-			$db = $wprr_data_api->database();
 			
-			$result = $db->query_first('SELECT option_value as id FROM '.DB_TABLE_PREFIX.'options WHERE option_name = "page_on_front"');
-			if($result) {
-				return (int)$result['id'];
+			if(!$this->_front_page_id) {
+				global $wprr_data_api;
+				$db = $wprr_data_api->database();
+			
+				$result = $db->query_first('SELECT option_value as id FROM '.DB_TABLE_PREFIX.'options WHERE option_name = "page_on_front"');
+				if($result) {
+					$this->_front_page_id = (int)$result['id'];
+				}
 			}
 			
-			return 0;
+			return $this->_front_page_id;
 		}
 		
 		public function is_user_trusted($user) {

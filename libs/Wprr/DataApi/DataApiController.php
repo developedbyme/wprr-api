@@ -12,6 +12,7 @@
 		protected $_wordpress = null;
 		protected $_performance = null;
 		protected $_action = null;
+		protected $_http_request = null;
 		protected $_registry = null;
 		protected $_auto_loader = null;
 
@@ -92,11 +93,11 @@
 		}
 		
 		public function http_request() {
-			if(!$this->_http_requeset) {
-				$this->_http_requeset = new \Wprr\DataApi\HttpRequest();
+			if(!$this->_http_request) {
+				$this->_http_request = new \Wprr\DataApi\HttpRequest();
 			}
 			
-			return $this->_http_requeset;
+			return $this->_http_request;
 		}
 		
 		public function auto_loader() {

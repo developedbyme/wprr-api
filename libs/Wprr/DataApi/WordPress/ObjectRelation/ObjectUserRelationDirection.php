@@ -6,7 +6,7 @@
 		
 		protected $_post = null;
 		
-		protected $_types = null;
+		protected $_types = array();
 		protected $_has_all_types = false;
 		
 		function __construct() {
@@ -95,12 +95,15 @@
 			$return_array = array();
 			
 			$types = $this->get_types();
-			foreach($types as $type) {
+			if($types) {
+				foreach($types as $type) {
 				
-				$relations = $type->get_all_relations();
+					$relations = $type->get_all_relations();
 				
-				$return_array = array_merge($return_array, $relations);
+					$return_array = array_merge($return_array, $relations);
+				}
 			}
+			
 			
 			return $return_array;
 		}

@@ -23,7 +23,7 @@
 		
 		if(isset($site_url['path'])) {
 			$site_path = trim($site_url['path'], "/");
-			if(strpos($site_path, $path) === 0) {
+			if(strpos($path, $site_path) === 0) {
 				$path = trim(substr($path, strlen($site_path)), "/");
 			}
 			else {
@@ -39,7 +39,16 @@
 		
 		if($post_id) {
 			$result['pageType'] = "page";
-			$result['language'] = $wprr_data_api->wordpress()->get_language_by_path($path);
+			
+			$language = $wprr_data_api->wordpress()->get_language_by_path($path);
+			if(!$language) {
+				$language = $wprr_data_api->wordpress()->get_post($post_id)->get_meta('language');
+				if(!$language && defined('SITE_LANGUAGE')) {
+					$language = explode('_', SITE_LANGUAGE)[0];
+				}
+			}
+			
+			$result['language'] = $language;
 			$result['posts'] = $wprr_data_api->range()->encode_range(array($post_id), 'page,pageTemplate', $data);
 		}
 		

@@ -300,6 +300,7 @@
 			
 			$code .= $this->define_varaible_code('LANGUAGE_BASE_URLS', $array_code, '');
 			$code .= $this->define_varaible_code('DEFAULT_LANGUAGE', $default_language, '\'');
+			$code .= $this->define_varaible_code('SITE_LANGUAGE', get_locale(), '\'');
 			
 			return $code;
 		}
@@ -442,7 +443,14 @@
 				'communication/transactionalEmail' => 'Communication/TransactionalEmail',
 				'communication/content' => 'Communication/CommunicationContent',
 				'communication/title' => 'Communication/CommunicationTitle',
-				'formSubmission' => 'FormSubmission'
+				'formSubmission' => 'FormSubmission',
+				'name' => 'Name',
+				'postTranslation' => 'PostTranslation/PostTranslation',
+				'postTranslation/language' => 'PostTranslation/Language',
+				'postTranslation/translations' => 'PostTranslation/Translations',
+				'postTranslation/translationsGroup' => 'PostTranslation/TranslationsGroup',
+				'representation' => 'Representation/Representation',
+				'representation/representations' => 'Representation/Representations',
 			);
 			
 			foreach($encodings as $id => $class_name) {

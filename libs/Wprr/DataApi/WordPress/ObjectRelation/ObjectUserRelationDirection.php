@@ -42,7 +42,7 @@
 				
 				$query->set_post_type('dbm_object_relation')->include_private();
 				$query->term_query_by_path('dbm_type', 'object-user-relation');
-				$query->meta_query('fromId', $this->_post->get_id());
+				$query->meta_query_join('fromId', $this->_post->get_id());
 				$ids = $query->get_ids();
 				
 				$wp = $wprr_data_api->wordpress();

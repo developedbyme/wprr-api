@@ -595,6 +595,7 @@
 				'byObjectType' => 'ByObjectType',
 				'byTrigger' => 'ByTrigger',
 				'byDateMeta' => 'ByDateMeta',
+				'userObjectRelation' => 'UserObjectRelation'
 			);
 			
 			foreach($selections as $id => $class_name) {

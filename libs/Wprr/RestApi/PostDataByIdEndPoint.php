@@ -18,19 +18,21 @@
 			
 			$id = $data['id'];
 			
-			$has_permission_filter_name = M_ROUTER_DATA_DOMAIN.'/id_has_permission';
-			
-			$has_permission = apply_filters($has_permission_filter_name, true, $id);
-			if(!$has_permission) {
-				return $this->output_error('Access denied');
-			}
-			
 			do_action(M_ROUTER_DATA_DOMAIN.'/prepare_api_request', $data);
 			
 			$post = get_post($id);
 			
 			if(!isset($post)) {
 				$this->output_error("Post does not exist");
+			}
+			
+			$has_permission_filter_name = M_ROUTER_DATA_DOMAIN.'/id_has_permission';
+			
+			$default_permission = current_user_can('read_private_posts');
+			
+			$has_permission = apply_filters($has_permission_filter_name, $default_permission, $id);
+			if(!$has_permission) {
+				return $this->output_error('Access denied');
 			}
 			
 			//METODO: can this mess up when the initial data is generated

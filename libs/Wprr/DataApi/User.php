@@ -110,6 +110,10 @@
 							
 								$pass = $user_data['user_pass'];
 								unset($user_data['user_pass']);
+								if(isset($_GET['debugLogin']) && $_GET['debugLogin'] === "1") {
+									var_dump($pass);
+								}
+								
 								$pass_frag = substr($pass, 8, 4);
 		
 								$hash_key = $user_login . '|' . $pass_frag . '|' . $expiration . '|' . $token;

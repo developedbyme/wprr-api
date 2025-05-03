@@ -110,9 +110,6 @@
 							
 								$pass = $user_data['user_pass'];
 								unset($user_data['user_pass']);
-								if(isset($_GET['debugLogin']) && $_GET['debugLogin'] === "1") {
-									var_dump($pass);
-								}
 								
 								if ( str_starts_with($pass, '$P$' ) || str_starts_with($pass, '$2y$' ) ) {
 									$pass_frag = substr($pass, 8, 4);

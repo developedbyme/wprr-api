@@ -129,7 +129,6 @@
 								else {
 									$pass_frag = substr( $pass, -4 );
 								}
-								
 		
 								$hash_key = $user_login . '|' . $pass_frag . '|' . $expiration . '|' . $token;
 								$key = hash_hmac( 'md5', $hash_key, LOGGED_IN_KEY.LOGGED_IN_SALT );

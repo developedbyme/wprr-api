@@ -110,7 +110,12 @@
 							
 								$pass = $user_data['user_pass'];
 								unset($user_data['user_pass']);
-								$pass_frag = substr($pass, 8, 4);
+								if ( str_starts_with($pass, '$P$' ) || str_starts_with($pass, '$2y$' ) ) {
+									$pass_frag = substr($pass, 8, 4);
+								}
+								else {
+									$pass_frag = substr( $pass, -4 );
+								}
 		
 								$hash_key = $user_login . '|' . $pass_frag . '|' . $expiration . '|' . $token;
 								$key = hash_hmac( 'md5', $hash_key, LOGGED_IN_KEY.LOGGED_IN_SALT );

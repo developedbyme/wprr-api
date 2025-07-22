@@ -37,7 +37,7 @@
 		
 		protected function check_application_password($password, $stored_hash) {
 			
-			if (str_starts_with($stored_hash, '$generic$')) {
+			if (strpos($stored_hash, '$generic$') === 0) {
 				
 				$hashed_password = sodium_crypto_generichash( $password, 'wp_fast_hash_6.8+', 30 );
 				$generated = '$generic$' . sodium_bin2base64( $hashed_password, SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING );
@@ -122,7 +122,8 @@
 							
 								$pass = $user_data['user_pass'];
 								unset($user_data['user_pass']);
-								if ( str_starts_with($pass, '$P$' ) || str_starts_with($pass, '$2y$' ) ) {
+								
+								if ( strpos($pass, '$P$' ) === 0 || strpos($pass, '$2y$' ) === 0 ) {
 									$pass_frag = substr($pass, 8, 4);
 								}
 								else {

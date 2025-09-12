@@ -19,7 +19,7 @@
 				$query->include_only($type_term->get_ids());
 			}
 			else {
-				throw(new \Exception('No type or relation set for relation selection'));
+				throw(new \Exception('No type set'));
 			}
 		}
 		

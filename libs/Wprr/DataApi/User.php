@@ -37,22 +37,34 @@
 		
 		protected function check_application_password($password, $stored_hash) {
 			
-			$count_log2 = strpos($this->itoa64, $stored_hash[3]);
+			if (strpos($stored_hash, '$generic$') === 0) {
+				
+				$hashed_password = sodium_crypto_generichash( $password, 'wp_fast_hash_6.8+', 30 );
+				$generated = '$generic$' . sodium_bin2base64( $hashed_password, SODIUM_BASE64_VARIANT_URLSAFE_NO_PADDING );
+				
+				return $stored_hash === $generated;
+			}
+			else {
+				$count_log2 = strpos($this->itoa64, $stored_hash[3]);
 			
-			$count = 1 << $count_log2;
+				$count = 1 << $count_log2;
+				
 			
-			$salt = substr($stored_hash, 4, 8);
-			$hash = md5($salt . $password, TRUE);
-			do {
-				$hash = md5($hash . $password, TRUE);
-			} while (--$count);
+				$salt = substr($stored_hash, 4, 8);
+				$hash = md5($salt . $password, TRUE);
+				do {
+					$hash = md5($hash . $password, TRUE);
+				} while (--$count);
 			
-			$output = substr($stored_hash, 0, 12);
-			$output .= $this->encode64($hash, 16);
+				$output = substr($stored_hash, 0, 12);
+				$output .= $this->encode64($hash, 16);
 			
-			$hash = $output;
+				$hash = $output;
 			
-			return $hash === $stored_hash;
+				return $hash === $stored_hash;
+			}
+			
+			
 			
 		}
 		
@@ -110,13 +122,14 @@
 							
 								$pass = $user_data['user_pass'];
 								unset($user_data['user_pass']);
-								if ( str_starts_with($pass, '$P$' ) || str_starts_with($pass, '$2y$' ) ) {
+
+								if ( strpos($pass, '$P$' ) === 0 || strpos($pass, '$2y$' ) === 0 ) {
+
 									$pass_frag = substr($pass, 8, 4);
 								}
 								else {
 									$pass_frag = substr( $pass, -4 );
 								}
-								
 		
 								$hash_key = $user_login . '|' . $pass_frag . '|' . $expiration . '|' . $token;
 								$key = hash_hmac( 'md5', $hash_key, LOGGED_IN_KEY.LOGGED_IN_SALT );

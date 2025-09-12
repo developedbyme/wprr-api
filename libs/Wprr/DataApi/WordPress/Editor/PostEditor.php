@@ -538,6 +538,12 @@
 			return $this;
 		}
 		
+		public function set_object_relation_field($field, $value) {
+			//var_dump('set_object_relation_field');
+			
+			$this->update_meta($field, $value);
+		}
+		
 		public static function test_import() {
 			echo("Imported \Wprr\DataApi\PostEditor<br />");
 		}

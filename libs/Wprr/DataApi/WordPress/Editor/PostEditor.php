@@ -264,8 +264,6 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
-			var_dump($this->get_id());
-			
 			$query = 'DELETE FROM '.DB_TABLE_PREFIX.'postmeta WHERE post_id = '.$this->get_id();
 			$result = $db->update($query);
 			

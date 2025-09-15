@@ -261,6 +261,8 @@
 		}
 		
 		public function permanently_delete() {
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
 			
 			var_dump($this->get_id());
 			

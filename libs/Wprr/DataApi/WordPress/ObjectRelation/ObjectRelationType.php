@@ -50,8 +50,8 @@
 				
 				$query->term_query_by_path('dbm_type', 'object-relation/'.$this->get_type());
 				
-				$query->meta_query($field, $this->_direction->get_post()->get_id());
-				//$query->meta_query_join($field, $this->_post->get_id());
+				//$query->meta_query($field, $this->_direction->get_post()->get_id());
+				$query->meta_query_join($field, $this->_direction->get_post()->get_id());
 				
 				$ids = $query->get_ids_without_storage();
 				

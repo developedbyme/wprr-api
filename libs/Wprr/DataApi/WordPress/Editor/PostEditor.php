@@ -260,6 +260,20 @@
 			return $this;
 		}
 		
+		public function permanently_delete() {
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			
+			$query = 'DELETE FROM '.DB_TABLE_PREFIX.'postmeta WHERE post_id = '.$this->get_id();
+			$result = $db->update($query);
+			
+			$query = 'DELETE FROM '.DB_TABLE_PREFIX.'term_relationships WHERE object_id = '.$this->get_id();
+			$result = $db->update($query);
+			
+			$query = 'DELETE FROM '.DB_TABLE_PREFIX.'posts WHERE id = '.$this->get_id();
+			$result = $db->update($query);
+		}
+		
 		public function add_outgoing_relation_by_name($post, $name, $start_time = -1, $make_private = true) {
 			global $wprr_data_api;
 			

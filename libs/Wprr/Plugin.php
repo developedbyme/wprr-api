@@ -402,6 +402,7 @@
 				'orderItems' => 'OrderItems',
 				'product' => 'Product',
 				'order/items' => 'Order/Items',
+				'order/productIds' => 'Order/ProductIds',
 				'order/totals' => 'Order/Totals',
 				'order/details' => 'Order/Details',
 				'order/user' => 'Order/User',

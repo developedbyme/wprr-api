@@ -316,6 +316,10 @@
 			return $this;
 		}
 		
+		public function add_custom_where($statement) {
+			$this->_wheres[] = $statement;
+		}
+		
 		public function get_query() {
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();

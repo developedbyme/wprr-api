@@ -316,6 +316,10 @@
 			return $this;
 		}
 		
+		public function add_custom_where($statement) {
+			$this->_wheres[] = $statement;
+		}
+		
 		public function get_query() {
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
@@ -375,6 +379,33 @@
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			$query = $this->get_query();
+			
+			if($this->_store) {
+				$posts = $db->query($query);
+			}
+			else {
+				$posts = $db->query_without_storage($query);
+			}
+			
+			return array_map(function($item) {
+				return (int)$item['id'];
+			}, $posts);
+		}
+		
+		public function get_ids_with_limit($limit = 10, $offset = 0) {
+			if($this->_only !== null && empty($this->_only)) {
+				return array();
+			}
+			
+			global $wprr_data_api;
+			$db = $wprr_data_api->database();
+			$query = $this->get_query();
+			
+			$query .= ' LIMIT '.$limit;
+			
+			if($offset) {
+				$query .= ' OFFSET '.$offset;
+			}
 			
 			if($this->_store) {
 				$posts = $db->query($query);

@@ -21,7 +21,7 @@
 			$post = $wprr_data_api->wordpress()->get_post($id);
 			$encoded_data = $wprr_data_api->range()->get_encoded_object($id);
 			
-			$encoded_data->data['numberOfPayments'] = 1*$post->get_meta('_wcs_number_payments');
+			$encoded_data->data['numberOfPayments'] = (int)$post->get_meta('_wcs_number_payments');
 			
 		}
 

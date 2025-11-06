@@ -222,7 +222,7 @@
 		}
 		
 		public function create_term($slug, $taxonomy) {
-			
+
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			
@@ -231,8 +231,8 @@
 			$parent_id = 0;
 			foreach($slug_parts as $slug_part) {
 				$escaped_part = $db->escape($slug_part);
-				$query = 'SELECT '.DB_TABLE_PREFIX.'term_taxonomy.term_taxonomy_id as id, '.DB_TABLE_PREFIX.'term_taxonomy.term_id as termId FROM '.DB_TABLE_PREFIX.'term_taxonomy INNER JOIN '.DB_TABLE_PREFIX.'terms WHERE '.DB_TABLE_PREFIX.'term_taxonomy.taxonomy = "'.$taxonomy.'" AND '.DB_TABLE_PREFIX.'term_taxonomy.parent = '.$parent_id.' AND '.DB_TABLE_PREFIX.'terms.slug = "'.$escaped_part.'";';
-				
+				$query = 'SELECT '.DB_TABLE_PREFIX.'term_taxonomy.term_taxonomy_id as id, '.DB_TABLE_PREFIX.'term_taxonomy.term_id as termId FROM '.DB_TABLE_PREFIX.'term_taxonomy INNER JOIN '.DB_TABLE_PREFIX.'terms ON '.DB_TABLE_PREFIX.'term_taxonomy.term_id = '.DB_TABLE_PREFIX.'terms.term_id  WHERE '.DB_TABLE_PREFIX.'term_taxonomy.taxonomy = "'.$taxonomy.'" AND '.DB_TABLE_PREFIX.'term_taxonomy.parent = '.$parent_id.' AND '.DB_TABLE_PREFIX.'terms.slug = "'.$escaped_part.'";';
+
 				$result = $db->query_first($query);
 				if(!$result) {
 					$sql = 'INSERT INTO '.DB_TABLE_PREFIX.'terms (name, slug) VALUES ("'.$escaped_part.'", "'.$escaped_part.'")';
@@ -276,6 +276,7 @@
 		}
 		
 		public function create_object_user_relation_type($path) {
+			
 			global $wprr_data_api;
 			$db = $wprr_data_api->database();
 			

@@ -272,6 +272,17 @@
 			
 			$query = 'DELETE FROM '.DB_TABLE_PREFIX.'posts WHERE id = '.$this->get_id();
 			$result = $db->update($query);
+			
+			if(defined("READ_OBJECT_RELATION_TABLES") && READ_OBJECT_RELATION_TABLES) {
+				$query = 'DELETE FROM '.DB_TABLE_PREFIX.'dbm_object_relations WHERE fromId = '.$this->get_id();
+				$result = $db->update($query);
+				
+				$query = 'DELETE FROM '.DB_TABLE_PREFIX.'dbm_object_relations WHERE toId = '.$this->get_id();
+				$result = $db->update($query);
+				
+				$query = 'DELETE FROM '.DB_TABLE_PREFIX.'dbm_object_user_relations WHERE postId = '.$this->get_id();
+				$result = $db->update($query);
+			}
 		}
 		
 		public function add_outgoing_relation_by_name($post, $name, $start_time = -1, $make_private = true) {

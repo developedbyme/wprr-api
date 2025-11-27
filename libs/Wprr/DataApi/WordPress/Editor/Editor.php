@@ -82,6 +82,54 @@
 			
 			return $relation_post;
 		}
+
+		public function create_user_relation($from_post, $to_user, $type, $start_time = -1) {
+			//var_dump("Editor::create_relation");
+			
+			global $wprr_data_api;
+			
+			if(!is_string($type)) {
+				$type = $type_term->get_slug();
+			}
+			
+			$relation_post = $this->create_post('dbm_object_relation', $from_post->get_id().' '.$type.' '.$to_user->get_id());
+			$editor = $relation_post->editor();
+			$editor->add_term($wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term('object-user-relation'));
+			
+			if(!defined("SKIP_OBJECT_RELATION_META") || !SKIP_OBJECT_RELATION_META) {
+				
+				$type_term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term('object-user-relation/'.$type);
+				$editor->add_term($type_term);
+			
+				$editor->add_meta('startAt', $start_time);
+				$editor->add_meta('endAt', -1);
+			
+				$editor->add_meta('fromId', $from_post->get_id());
+				$editor->add_meta('toId', $to_user->get_id());
+			}
+			
+			if(defined("WRITE_OBJECT_RELATION_TABLES") && WRITE_OBJECT_RELATION_TABLES) {
+				
+				$type_id = $wprr_data_api->database()->get_single_field('dbm_object_relation_types', 'id', 'path', $type);
+				
+				$fields = array(
+					'id' => $relation_post->get_id(),
+					'postId' => $from_post->get_id(),
+					'userId' => $to_user->get_id(),
+					'startAt' => $start_time,
+					'endAt' => -1,
+					'type' => $type_id
+				);
+			
+				$insert_statement = $this->get_insert_statement($fields);
+			
+				$query = 'INSERT INTO '.DB_TABLE_PREFIX.'dbm_object_user_relations '.$insert_statement;
+				
+				$wprr_data_api->database()->insert($query);
+			}
+			
+			return $relation_post;
+		}
 		
 		public function get_insert_statement($fields) {
 			

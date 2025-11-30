@@ -537,6 +537,7 @@
 			$return_object['coupons'] = $order->get_coupon_codes();
 			$return_object['totals'] = array(
 				'total' => $order->get_total(),
+				'tax' => $order->get_total_tax(),
 				'discount_total' => $order->get_discount_total()
 			);
 			$return_object['taxTotals'] = $order->get_tax_totals();

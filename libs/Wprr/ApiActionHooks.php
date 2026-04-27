@@ -311,8 +311,12 @@
 			$user_id = $data['userId'];
 			
 			$current_user_id = get_current_user_id();
+
+			$is_owner_or_admin = (current_user_can('edit_others_posts') || ($user_id != $current_user_id));
 			
-			if(!current_user_can('edit_others_posts') && $user_id != $current_user_id) {
+			$can_view_orders = apply_filters('wprr/current_user_can_get_private_order_data', $is_owner_or_admin);
+			
+			if(!$is_owner_or_admin) {
 				$response_data["code"] = 'error';
 				$response_data["message"] = 'Not authorized';
 				return;

@@ -316,7 +316,7 @@
 			
 			$can_view_orders = apply_filters('wprr/current_user_can_get_private_order_data', $is_owner_or_admin);
 			
-			if(!$is_owner_or_admin) {
+			if(!$can_view_orders) {
 				$response_data["code"] = 'error';
 				$response_data["message"] = 'Not authorized';
 				return;

@@ -11,6 +11,7 @@
 		protected $_trusted_roles = array();
 		protected $_woocommerce = null;
 		protected $_editor = null;
+		protected $_woocommerce_editor = null;
 		protected $_front_page_id = 0;
 
 		function __construct() {
@@ -37,6 +38,14 @@
 			}
 			
 			return $this->_editor;
+		}
+
+		public function woocommerce_editor() {
+			if(!$this->_woocommerce_editor) {
+				$this->_woocommerce_editor = new \Wprr\DataApi\WordPress\Editor\WoocommerceEditor();
+			}
+			
+			return $this->_woocommerce_editor;
 		}
 		
 		public function get_taxonomy($name) {

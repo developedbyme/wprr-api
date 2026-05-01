@@ -53,6 +53,15 @@
 			$this->add_line_item_meta($id, '_line_subtotal_tax', number_format($subtotal_tax, 2, '.', '' ));
 			$this->add_line_item_meta($id, '_line_tax', number_format($total_tax, 2, '.', '' ));
 
+			$this->add_line_item_meta($id, '_line_tax_data', serialize(array(
+				'total'    => array(
+					1 => number_format($total_tax, 2, '.', '' ),
+				),
+				'subtotal' => array(
+					1 => number_format($subtotal_tax, 2, '.', '' ),
+				),
+			)));
+
 			return $id;
 		}
 
@@ -72,6 +81,29 @@
 
 			$this->add_line_item_meta($id, 'discount_amount', number_format($amount, 2, '.', ''));
 			$this->add_line_item_meta($id, 'discount_amount_tax', number_format($amount_tax, 2, '.', ''));
+
+			return $id;
+		}
+
+		public function add_tax_line_item($post, $amount, $percentage = 25, $label = "VAT") {
+			$fields = array(
+				'order_item_name' => $label,
+        		'order_item_type' => 'tax',
+        		'order_id' => $post->get_id(),
+			);
+			
+			$insert_statement = $this->get_insert_statement($fields);
+			
+			$query = 'INSERT INTO '.DB_TABLE_PREFIX.'woocommerce_order_items '.$insert_statement;
+			
+			$id = wprr_get_data_api()->database()->insert($query);
+
+			$this->add_line_item_meta($id, 'rate_id', 1);
+			$this->add_line_item_meta($id, 'label', $label);
+			$this->add_line_item_meta($id, 'compound', '');
+			$this->add_line_item_meta($id, 'tax_amount', number_format($amount, 2, '.', ''));
+			$this->add_line_item_meta($id, 'shipping_tax_amount', '0');
+			$this->add_line_item_meta($id, 'rate_percent', number_format($percentage, 4, '.', ''));
 
 			return $id;
 		}

@@ -94,20 +94,25 @@
 			$this->create_rest_api_end_point(new \Wprr\RestApi\GetTermsEndPoint(), 'taxonomy/(?P<taxonomy>[a-z0-9\-\_]+)/terms', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			$this->create_rest_api_end_point(new \Wprr\RestApi\GetTaxonomiesEndPoint(), 'taxonomies', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
-			$this->create_rest_api_end_point(new \Wprr\RestApi\GlobalItemEndpoint(), 'global/(?P<item>[a-z0-9\-\_\/]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
+			$current_end_point = new \Wprr\RestApi\GlobalItemEndpoint();
+			$current_end_point->add_legacy_warning = false;
+			$this->create_rest_api_end_point($current_end_point, 'global/(?P<item>[a-z0-9\-\_\/]+)', $api_namespace, array('Access-Control-Allow-Origin' => '*'));
 			
 			$current_end_point = new \Wprr\RestApi\Admin\CreatePostEndpoint();
+			$current_end_point->add_legacy_warning = false;
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('admin/(?P<post_type>[a-z0-9\-\_]+)/create', $api_namespace, 1, 'POST');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
 			$current_end_point = new \Wprr\RestApi\Admin\ChangePostEndpoint();
+			$current_end_point->add_legacy_warning = false;
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('admin/post/(?P<post_id>\d+)/edit', $api_namespace, 1, 'POST');
 			//$current_end_point->set_requiered_capability('edit_others_posts');
 			$this->_rest_api_end_points[] = $current_end_point;
 			
 			$current_end_point = new \Wprr\RestApi\Admin\BatchChangePostsEndpoint();
+			$current_end_point->add_legacy_warning = false;
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('admin/batch/edit-posts', $api_namespace, 1, 'POST');
 			$current_end_point->set_requiered_capability('edit_others_posts');
@@ -120,6 +125,7 @@
 			$this->_rest_api_end_points[] = $current_end_point;
 			
 			$current_end_point = new \Wprr\RestApi\ActionEndpoint();
+			$current_end_point->add_legacy_warning = false;
 			$current_end_point->add_headers(array('Access-Control-Allow-Origin' => '*'));
 			$current_end_point->setup('action/(?P<action_name>[a-zA-Z0-9\-\_\/]+)', $api_namespace, 1, 'POST');
 			$this->_rest_api_end_points[] = $current_end_point;

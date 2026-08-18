@@ -15,6 +15,8 @@
 		protected $_headers = array();
 		protected $_requiered_capability = null;
 		protected $_logs = array();
+
+		protected $_add_legacy_warning = true;
 		
 		function __construct() {
 			//echo("\OddCore\RestApi\EndPoint::__construct<br />");
@@ -87,11 +89,14 @@
 		
 		public function hook_perform_call($data) {
 
-			$line = date('Y-m-d H:i:s').' - '.$_SERVER['HTTP_REFERER'].' -> '.$_SERVER['REQUEST_URI']."\n";
+			if($this->_add_legacy_warning) {
+				$line = date('Y-m-d H:i:s').' - '.$_SERVER['HTTP_REFERER'].' -> '.$_SERVER['REQUEST_URI']."\n";
 
-			$upload_dir = wp_upload_dir();
-			$file = $upload_dir['basedir'] . '/wprr-legacy.txt';
-			file_put_contents($file, $line, FILE_APPEND);
+				$upload_dir = wp_upload_dir();
+				$file = $upload_dir['basedir'] . '/wprr-legacy.txt';
+				file_put_contents($file, $line, FILE_APPEND);
+			}
+			
 
 			return $this->perform_call($data);
 		}

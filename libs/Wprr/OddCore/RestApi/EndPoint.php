@@ -82,11 +82,17 @@
 		
 		public function perform_call($data) {
 			//echo("\OddCore\RestApi\EndPoint::perform_call<br />");
-			
 			return $this->output_error("End point not implemented");
 		}
 		
 		public function hook_perform_call($data) {
+
+			$line = date('Y-m-d H:i:s').' - '.$_SERVER['HTTP_REFERER'].' -> '.$_SERVER['REQUEST_URI']."\n";
+
+			$upload_dir = wp_upload_dir();
+			$file = $upload_dir['basedir'] . '/wprr-legacy.txt';
+			file_put_contents($file, $line, FILE_APPEND);
+
 			return $this->perform_call($data);
 		}
 		

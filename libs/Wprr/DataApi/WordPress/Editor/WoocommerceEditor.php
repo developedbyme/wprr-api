@@ -85,6 +85,25 @@
 			return $id;
 		}
 
+		public function increase_tax_line_item($post, $amount, $percentage = 25, $label = "VAT") {
+			$query = "SELECT order_item_id as id FROM " . DB_TABLE_PREFIX . "woocommerce_order_items WHERE order_id = " . intval($post->get_id()) . " AND order_item_type = 'tax' LIMIT 1";
+
+			$existing = wprr_get_data_api()->database()->query_first($query);
+
+    		if($existing) {
+
+				$line_item_id = $existing['id'];
+
+				$query = "UPDATE " . DB_TABLE_PREFIX . "woocommerce_order_itemmeta SET meta_value = (CAST(meta_value AS DECIMAL(20,4)) + " . floatval($amount) . ") WHERE order_item_id = " . intval($line_item_id) . " AND meta_key = 'tax_amount'";
+
+				wprr_get_data_api()->database()->update($query);
+				return $line_item_id;
+			}
+			else {
+				return $this->add_tax_line_item($post, $amount, $percentage, $label);
+			}
+		}
+
 		public function add_tax_line_item($post, $amount, $percentage = 25, $label = "VAT") {
 			$fields = array(
 				'order_item_name' => $label,
@@ -107,9 +126,6 @@
 
 			return $id;
 		}
-
-		//update_post_meta( $order_id, '_cart_discount', $discount_amount );
-		//update_post_meta( $order_id, '_cart_discount_tax', '0' );
 
 		public function add_line_item_meta($line_item_id, $key, $value) {
 

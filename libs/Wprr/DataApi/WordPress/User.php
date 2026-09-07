@@ -28,6 +28,11 @@
 			global $wprr_data_api;
 			return $wprr_data_api->wordpress()->is_user_trusted($this);
 		}
+
+		public function editor() {
+			global $wprr_data_api;
+			return $wprr_data_api->wordpress()->editor()->get_user_editor($this->get_id());
+		}
 		
 		public function get_database_data() {
 			if(!$this->_database_data) {
@@ -168,8 +173,18 @@
 			return $this->get_relation_types()[$type];
 		}
 
-		public static function test_import() {
-			echo("Imported \Wprr\DataApi\User<br />");
+		public function invalidate_user_data() {
+			
+			$this->_database_data = null;
+			
+			return $this;
+		}
+		
+		public function invalidate_meta() {
+			$this->_database_meta = null;
+			$this->_meta = array();
+			
+			return $this;
 		}
 	}
 ?>

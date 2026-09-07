@@ -1,10 +1,10 @@
 <?php
 	namespace Wprr\DataApi\WordPress\Editor;
 
-	// \Wprr\DataApi\WordPress\WordPress\Editor
 	class Editor {
 		
 		protected $_posts = array();
+		protected $_users = array();
 		
 		function __construct() {
 			
@@ -18,6 +18,16 @@
 			}
 			
 			return $this->_posts[$id];
+		}
+
+		public function get_user_editor($id) {
+			if(!isset($this->_users[$id])) {
+				$new_user = new \Wprr\DataApi\WordPress\Editor\UserEditor();
+				$new_user->setup($id);
+				$this->_users[$id] = $new_user;
+			}
+			
+			return $this->_users[$id];
 		}
 		
 		public function create_post($type, $title, $parent = 0) {
@@ -344,10 +354,6 @@
 			foreach($paths as $path) {
 				$this->create_object_user_relation_type($path);
 			}
-		}
-		
-		public static function test_import() {
-			echo("Imported \Wprr\DataApi\WordPress\Editor<br />");
 		}
 	}
 ?>

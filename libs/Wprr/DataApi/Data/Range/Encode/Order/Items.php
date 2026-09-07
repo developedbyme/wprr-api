@@ -95,9 +95,5 @@
 			$encoded_data->data['coupons'] = $coupons;
 			$encoded_data->data['fees'] = $fees;
 		}
-		
-		public static function test_import() {
-			echo("Imported \Wprr\DataApi\Data\Range\Encode\Order\Items<br />");
-		}
 	}
 ?>

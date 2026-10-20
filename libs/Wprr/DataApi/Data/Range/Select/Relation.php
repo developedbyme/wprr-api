@@ -17,9 +17,8 @@
 			
 			if(isset($data['type'])) {
 				$has_query = true;
-				$type_term = $wprr_data_api->wordpress()->get_taxonomy('dbm_type')->get_term($data['type']);
 				//METODO: multiple types
-				$query->include_only($type_term->get_ids());
+				$query->term_query_by_path('dbm_type', $data['type']);
 			}
 			
 			if(isset($data['relation'])) {
@@ -38,10 +37,6 @@
 			//var_dump("Relation::filter");
 			
 			return $posts;
-		}
-
-		public static function test_import() {
-			echo("Imported \Wprr\DataApi\Relation<br />");
 		}
 	}
 ?>
